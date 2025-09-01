@@ -218,7 +218,8 @@
                 searchPlaceholder: "Search clients...", noClientsFound: "No clients found.",
                 files: "Files", uploadFile: "Upload File", uploadingFile: "Uploading File...",
                 fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted.",
-                exportPDF: "Export PDF", exportExcel: "Export Excel"
+                exportPDF: "Export PDF", exportExcel: "Export Excel",
+                firebaseConfigError: "Firebase config error.", firebaseNotInitialized: "Database connection failed. Check configuration."
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
@@ -237,7 +238,8 @@
                 searchPlaceholder: "ابحث عن عملاء...", noClientsFound: "لم يتم العثور على عملاء.",
                 files: "الملفات", uploadFile: "رفع ملف", uploadingFile: "جاري رفع الملف...",
                 fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف.",
-                exportPDF: "تصدير PDF", exportExcel: "تصدير Excel"
+                exportPDF: "تصدير PDF", exportExcel: "تصدير Excel",
+                firebaseConfigError: "خطأ في إعدادات Firebase.", firebaseNotInitialized: "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات."
             }
         };
 
@@ -478,6 +480,7 @@
         };
 
         const handleDeleteClient = () => {
+            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             showConfirmationModal(
                 uiStrings[currentLanguage].confirmDeleteClientTitle,
                 uiStrings[currentLanguage].confirmDeleteClientText,
@@ -502,6 +505,7 @@
 
         const handleSaveClient = async (e) => {
             e.preventDefault();
+            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             const id = elements.clientIdInput.value;
             const clientData = {
                 name: elements.clientNameInput.value, 
@@ -529,6 +533,7 @@
         const handleAddTask = () => { elements.taskForm.reset(); elements.taskModal.classList.remove('hidden'); };
         const handleSaveTask = async (e) => {
             e.preventDefault();
+            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             const text = elements.taskTextInput.value;
             if (!text || !selectedClientId) return;
             const client = clients.find(c => c.id === selectedClientId);
@@ -543,6 +548,7 @@
             } catch(e) { console.error("Error adding task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
         };
         const handleDeleteTask = (taskId) => {
+            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             showConfirmationModal(uiStrings[currentLanguage].confirmDeleteTaskTitle, uiStrings[currentLanguage].confirmDeleteTaskText,
                 async () => {
                     const client = clients.find(c => c.id === selectedClientId);
@@ -561,9 +567,32 @@
         const handleDragEnd = () => { if(draggedTask) { draggedTask.classList.remove('dragging'); draggedTask = null; } };
         const handleDragOver = (e) => { e.preventDefault(); const column = e.target.closest('.kanban-column'); if(column) { document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over')); column.classList.add('drag-over'); }};
         const handleDragLeave = (e) => { const column = e.target.closest('.kanban-column'); if(column) column.classList.remove('drag-over'); };
-        const handleDrop = async (e) => { e.preventDefault(); const column = e.target.closest('.kanban-column'); document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over')); if (column && draggedTask) { const newStatus = column.dataset.status; const taskId = draggedTask.dataset.taskId; const client = clients.find(c => c.id === selectedClientId); if (!client) return; const taskIndex = client.tasks.findIndex(t => t.id === taskId); if (taskIndex === -1) return; const updatedTasks = [...client.tasks]; updatedTasks[taskIndex].status = newStatus; try { const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId); await updateDoc(clientRef, { tasks: updatedTasks }); } catch(error) { console.error("Error updating task status: ", error); showToast(uiStrings[currentLanguage].error, 'error'); }}};
+        const handleDrop = async (e) => {
+            e.preventDefault();
+            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
+            const column = e.target.closest('.kanban-column');
+            document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over'));
+            if (column && draggedTask) {
+                const newStatus = column.dataset.status;
+                const taskId = draggedTask.dataset.taskId;
+                const client = clients.find(c => c.id === selectedClientId);
+                if (!client) return;
+                const taskIndex = client.tasks.findIndex(t => t.id === taskId);
+                if (taskIndex === -1) return;
+                const updatedTasks = [...client.tasks];
+                updatedTasks[taskIndex].status = newStatus;
+                try {
+                    const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                    await updateDoc(clientRef, { tasks: updatedTasks });
+                } catch(error) {
+                    console.error("Error updating task status: ", error);
+                    showToast(uiStrings[currentLanguage].error, 'error');
+                }
+            }
+        };
 
         const handleFileUpload = (e) => {
+            if (!storage) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             const file = e.target.files[0];
             if (!file || !selectedClientId) return;
 
@@ -606,6 +635,7 @@
         };
 
         const handleDeleteFile = (storagePath, fileName) => {
+            if (!storage || !db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             showConfirmationModal(uiStrings[currentLanguage].confirmDeleteFileTitle, uiStrings[currentLanguage].confirmDeleteFileText,
                 async () => {
                     try {
@@ -634,14 +664,10 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            const FONT_FAMILY = 'Amiri'; // A font that supports Arabic
-            // This is a simplified way to add a font. For production, you'd host the font file.
-            // Since we can't add local files, we'll rely on jsPDF's built-in fonts, which may have limited Arabic support.
-            // For best results, jsPDF recommends embedding a .ttf font.
-            // doc.addFont('Amiri-Regular.ttf', FONT_FAMILY, 'normal');
-            // doc.setFont(FONT_FAMILY);
-
-            const isArabic = currentLanguage === 'ar';
+            // This is a simplified way to handle fonts. For full Arabic support in jsPDF,
+            // you would typically need to embed a .ttf font that contains the Arabic glyphs.
+            // As we cannot bundle external font files here, this will work for English but may have issues with Arabic rendering in the PDF.
+            
             const clientName = client.name || 'No Name';
 
             // Title
@@ -652,7 +678,6 @@
             doc.text(uiStrings[currentLanguage].appTitle, 105, 28, { align: 'center' });
 
             // Client Info Section
-            let infoY = 40;
             const info = [
                 { title: uiStrings[currentLanguage].clientCompany, value: client.company },
                 { title: uiStrings[currentLanguage].clientEmail, value: client.email },
@@ -660,7 +685,7 @@
             ].filter(item => item.value);
 
             doc.autoTable({
-                startY: infoY,
+                startY: 40,
                 head: [[uiStrings[currentLanguage].clientName, client.name]],
                 body: info.map(i => [i.title, i.value]),
                 theme: 'striped',
@@ -808,7 +833,12 @@
                 auth = getAuth(app);
                 storage = getStorage(app);
                 setupAuthListener();
-            } catch (e) { console.error("Firebase init failed:", e); elements.userInfo.textContent = "Firebase config error."; elements.loaderAuth.classList.add('hidden'); elements.userInfo.classList.remove('hidden'); }
+            } catch (e) {
+                console.error("Firebase init failed:", e);
+                elements.userInfo.textContent = uiStrings[currentLanguage].firebaseConfigError;
+                elements.loaderAuth.classList.add('hidden');
+                elements.userInfo.classList.remove('hidden');
+            }
         };
         
         const setupAuthListener = () => {
