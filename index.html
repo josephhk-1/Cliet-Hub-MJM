@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Hub - مدير العملاء</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --toast-bg: #1f2937;
+            --toast-text-color: #f9fafb;
+        }
+        [dir="ltr"] { font-family: 'Inter', sans-serif; }
+        [dir="rtl"] { font-family: 'Tajawal', sans-serif; }
+        .kanban-column { min-height: 200px; }
+        .task-card { 
+            touch-action: manipulation; 
+            position: relative;
+        }
+        .task-card:hover .delete-task-btn {
+            opacity: 1;
+        }
+        .delete-task-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            [dir="rtl"] & {
+                right: auto;
+                left: 4px;
+            }
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .drag-over {
+            background-color: rgba(34, 197, 94, 0.1);
+            border: 2px dashed rgba(34, 197, 94, 0.4);
+        }
+        #toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            background-color: var(--toast-bg);
+            color: var(--toast-text-color);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 100;
+        }
+        #toast.show {
+            bottom: 20px;
+        }
+        .client-item.selected {
+            background-color: #e5e7eb; /* bg-gray-200 */
+            border-right: 3px solid #1f2937; /* border-gray-800 */
+            [dir="rtl"] & {
+                border-right: none;
+                border-left: 3px solid #1f2937;
+            }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Main Application Container -->
+    <div id="app" class="flex flex-col h-screen">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
+            <div><h1 class="text-2xl font-bold text-gray-800" data-translate="appTitle">Client Hub</h1></div>
+            <div class="flex items-center space-x-4">
+                 <div id="auth-status" class="flex items-center">
+                    <span id="loader-auth" class="h-5 w-5 border-t-2 border-gray-600 rounded-full animate-spin"></span>
+                    <span id="user-info" class="text-sm text-gray-500 hidden" data-translate="loading">Loading...</span>
+                 </div>
+                <div class="flex items-center border border-gray-300 rounded-lg p-1">
+                    <button id="lang-en" class="px-3 py-1 text-sm rounded-md bg-gray-700 text-white">EN</button>
+                    <button id="lang-ar" class="px-3 py-1 text-sm rounded-md">AR</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex overflow-hidden">
+            <!-- Left Panel: Clients List -->
+            <aside id="client-list-panel" class="w-full md:w-1/3 lg:w-1/4 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 absolute md:relative z-20 h-full">
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold" data-translate="clients">Clients</h2>
+                        <button id="add-client-btn" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                            <span data-translate="addClient">Add Client</span>
+                        </button>
+                    </div>
+                    <div class="relative"><input type="text" id="client-search" placeholder="Search clients..." data-translate-placeholder="searchPlaceholder" class="w-full border border-gray-300 rounded-md p-2 pl-10 focus:ring-gray-500 focus:border-gray-500"><svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
+                </div>
+                <div id="clients-list" class="flex-1 overflow-y-auto"><div id="loader-clients" class="p-4 text-center"><span class="h-6 w-6 border-t-2 border-gray-600 rounded-full animate-spin inline-block"></span></div></div>
+                <div class="md:hidden p-2 border-t"><button id="close-panel-btn" class="w-full text-center text-sm py-2" data-translate="close">Close</button></div>
+            </aside>
+
+            <!-- Right Panel: Client Details -->
+            <section class="flex-1 flex flex-col bg-gray-100 overflow-y-auto">
+                 <div class="md:hidden p-4 border-b bg-white"><button id="open-panel-btn" class="flex items-center space-x-2 rtl:space-x-reverse text-sm font-semibold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg><span data-translate="clients">Clients</span></button></div>
+                <div id="client-details-view" class="hidden"></div>
+                <div id="empty-state" class="flex-1 flex items-center justify-center text-center p-8"><div><svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg><h3 class="mt-2 text-lg font-medium text-gray-900" data-translate="selectClientTitle">Select a client</h3><p class="mt-1 text-sm text-gray-500" data-translate="selectClientDesc">Select a client from the list to see their details, or add a new one.</p></div></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="client-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6 border-b"><h3 id="client-modal-title" class="text-xl font-semibold" data-translate="addClient">Add New Client</h3></div>
+            <form id="client-form" class="p-6 space-y-4">
+                <input type="hidden" id="client-id">
+                <div><label for="client-name" class="block text-sm font-medium text-gray-700" data-translate="clientName">Client Name</label><input type="text" id="client-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required></div>
+                <div><label for="client-company" class="block text-sm font-medium text-gray-700" data-translate="clientCompany">Company</label><input type="text" id="client-company" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
+                <div><label for="client-email" class="block text-sm font-medium text-gray-700" data-translate="clientEmail">Email</label><input type="email" id="client-email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
+                <div><label for="client-phone" class="block text-sm font-medium text-gray-700" data-translate="clientPhone">Phone</label><input type="tel" id="client-phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
+                <div><label for="client-notes" class="block text-sm font-medium text-gray-700" data-translate="notes">Notes</label><textarea id="client-notes" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></textarea></div>
+            </form>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
+                <button id="cancel-client-btn" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
+                <button id="save-client-btn" type="submit" form="client-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="save">Save Client</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="task-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <h3 class="text-xl font-semibold p-6 border-b" data-translate="addTask">Add New Task</h3>
+            <form id="task-form" class="p-6">
+                 <label for="task-text" class="block text-sm font-medium text-gray-700" data-translate="taskDescription">Task Description</label>
+                <input type="text" id="task-text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+            </form>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
+                <button id="cancel-task-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
+                <button id="save-task-btn" type="submit" form="task-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="saveTask">Save Task</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirm-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+            <div class="p-6 text-center">
+                <svg class="mx-auto h-12 w-12 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                <h3 id="confirm-modal-title" class="text-lg font-semibold mt-4"></h3>
+                <p id="confirm-modal-text" class="text-sm text-gray-600 mt-2"></p>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-center space-x-3 rtl:space-x-reverse">
+                <button id="confirm-cancel-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700" data-translate="delete">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="upload-progress-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <h3 class="text-lg font-semibold text-center" data-translate="uploadingFile">Uploading File...</h3>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+                <div id="upload-progress-bar" class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div>
+            </div>
+            <p id="upload-progress-text" class="text-center text-sm text-gray-600 mt-2">0%</p>
+        </div>
+    </div>
+
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <!-- Firebase -->
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+        // --- App State ---
+        let currentLanguage = 'en';
+        let clients = [];
+        let selectedClientId = null;
+        let db, auth, storage;
+        let userId;
+        let clientsUnsubscribe = null;
+        let confirmCallback = null;
+        
+        const uiStrings = {
+            en: {
+                appTitle: "Client Hub", clients: "Clients", addClient: "Add Client",
+                selectClientTitle: "Select a client", selectClientDesc: "Select a client from the list to see their details.",
+                loading: "Loading...", addClientTitle: "Add New Client", editClientTitle: "Edit Client",
+                clientName: "Client Name", clientEmail: "Email", clientPhone: "Phone", notes: "Notes", clientCompany: "Company",
+                cancel: "Cancel", save: "Save Client", edit: "Edit", delete: "Delete", tasks: "Tasks",
+                todo: "To Do", inprogress: "In Progress", done: "Done", addTask: "Add Task",
+                taskDescription: "Task Description", saveTask: "Save Task",
+                confirmDeleteClientTitle: "Delete Client?", confirmDeleteClientText: "This will permanently delete the client and all associated tasks and files. This action cannot be undone.",
+                confirmDeleteTaskTitle: "Delete Task?", confirmDeleteTaskText: "This will permanently delete this task. Are you sure?",
+                confirmDeleteFileTitle: "Delete File?", confirmDeleteFileText: "This will permanently delete this file. Are you sure?",
+                clientSaved: "Client saved successfully.", clientDeleted: "Client deleted.",
+                taskAdded: "Task added successfully.", taskDeleted: "Task deleted.", error: "An error occurred.",
+                close: "Close", authenticatedAs: "Authenticated as: ", anonymous: "Anonymous",
+                searchPlaceholder: "Search clients...", noClientsFound: "No clients found.",
+                files: "Files", uploadFile: "Upload File", uploadingFile: "Uploading File...",
+                fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted."
+            },
+            ar: {
+                appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
+                selectClientTitle: "اختر عميل", selectClientDesc: "اختر عميلًا من القائمة لرؤية تفاصيله.",
+                loading: "جاري التحميل...", addClientTitle: "إضافة عميل جديد", editClientTitle: "تعديل العميل",
+                clientName: "اسم العميل", clientEmail: "البريد الإلكتروني", clientPhone: "الهاتف", notes: "ملاحظات", clientCompany: "الشركة",
+                cancel: "إلغاء", save: "حفظ العميل", edit: "تعديل", delete: "حذف", tasks: "المهام",
+                todo: "مهام جديدة", inprogress: "قيد التنفيذ", done: "مكتملة", addTask: "إضافة مهمة",
+                taskDescription: "وصف المهمة", saveTask: "حفظ المهمة",
+                confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+                confirmDeleteTaskTitle: "حذف المهمة؟", confirmDeleteTaskText: "سيؤدي هذا إلى حذف هذه المهمة نهائيًا. هل أنت متأكد؟",
+                confirmDeleteFileTitle: "حذف الملف؟", confirmDeleteFileText: "سيؤدي هذا إلى حذف هذا الملف نهائيًا. هل أنت متأكد؟",
+                clientSaved: "تم حفظ العميل بنجاح.", clientDeleted: "تم حذف العميل.",
+                taskAdded: "تمت إضافة المهمة بنجاح.", taskDeleted: "تم حذف المهمة.", error: "حدث خطأ ما.",
+                close: "إغلاق", authenticatedAs: "تمت المصادقة كـ: ", anonymous: "مجهول",
+                searchPlaceholder: "ابحث عن عملاء...", noClientsFound: "لم يتم العثور على عملاء.",
+                files: "الملفات", uploadFile: "رفع ملف", uploadingFile: "جاري رفع الملف...",
+                fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف."
+            }
+        };
+
+        const elements = {
+            app: document.getElementById('app'),
+            langEnBtn: document.getElementById('lang-en'),
+            langArBtn: document.getElementById('lang-ar'),
+            clientsList: document.getElementById('clients-list'),
+            clientDetailsView: document.getElementById('client-details-view'),
+            emptyState: document.getElementById('empty-state'),
+            addClientBtn: document.getElementById('add-client-btn'),
+            clientSearch: document.getElementById('client-search'),
+            clientModal: document.getElementById('client-modal'),
+            clientModalTitle: document.getElementById('client-modal-title'),
+            clientForm: document.getElementById('client-form'),
+            clientIdInput: document.getElementById('client-id'),
+            clientNameInput: document.getElementById('client-name'),
+            clientCompanyInput: document.getElementById('client-company'),
+            clientEmailInput: document.getElementById('client-email'),
+            clientPhoneInput: document.getElementById('client-phone'),
+            clientNotesInput: document.getElementById('client-notes'),
+            cancelClientBtn: document.getElementById('cancel-client-btn'),
+            taskModal: document.getElementById('task-modal'),
+            taskForm: document.getElementById('task-form'),
+            taskTextInput: document.getElementById('task-text'),
+            cancelTaskBtn: document.getElementById('cancel-task-btn'),
+            toast: document.getElementById('toast'),
+            loaderAuth: document.getElementById('loader-auth'),
+            loaderClients: document.getElementById('loader-clients'),
+            userInfo: document.getElementById('user-info'),
+            clientListPanel: document.getElementById('client-list-panel'),
+            openPanelBtn: document.getElementById('open-panel-btn'),
+            closePanelBtn: document.getElementById('close-panel-btn'),
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmModalTitle: document.getElementById('confirm-modal-title'),
+            confirmModalText: document.getElementById('confirm-modal-text'),
+            confirmCancelBtn: document.getElementById('confirm-cancel-btn'),
+            confirmDeleteBtn: document.getElementById('confirm-delete-btn'),
+            uploadProgressModal: document.getElementById('upload-progress-modal'),
+            uploadProgressBar: document.getElementById('upload-progress-bar'),
+            uploadProgressText: document.getElementById('upload-progress-text'),
+        };
+
+        const setLanguage = (lang) => {
+            if (lang !== 'en' && lang !== 'ar') return;
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            elements.langEnBtn.classList.toggle('bg-gray-700', lang === 'en');
+            elements.langEnBtn.classList.toggle('text-white', lang === 'en');
+            elements.langArBtn.classList.toggle('bg-gray-700', lang === 'ar');
+            elements.langArBtn.classList.toggle('text-white', lang === 'ar');
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (uiStrings[currentLanguage][key]) el.textContent = uiStrings[currentLanguage][key];
+            });
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-translate-placeholder');
+                if (uiStrings[currentLanguage][key]) el.placeholder = uiStrings[currentLanguage][key];
+            });
+            renderClientsList(elements.clientSearch.value);
+            if(selectedClientId) renderClientDetails(selectedClientId);
+        };
+        
+        const getInitials = (name) => {
+            if (!name) return '?';
+            const names = name.split(' ');
+            if (names.length > 1) {
+                return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+            }
+            return name.substring(0, 2).toUpperCase();
+        };
+
+        const renderClientsList = (filter = '') => {
+            elements.loaderClients.classList.add('hidden');
+            if (!userId) return;
+
+            const filteredClients = clients.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filteredClients.length === 0) {
+                elements.clientsList.innerHTML = `<p class="p-4 text-sm text-gray-500 text-center">${uiStrings[currentLanguage].noClientsFound}</p>`;
+                return;
+            }
+
+            elements.clientsList.innerHTML = filteredClients.map(client => `
+                <div class="client-item p-3 border-b cursor-pointer hover:bg-gray-100 flex items-center space-x-3 rtl:space-x-reverse ${client.id === selectedClientId ? 'selected' : ''}" data-id="${client.id}">
+                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 flex-shrink-0">${getInitials(client.name)}</div>
+                    <div class="flex-1 overflow-hidden">
+                        <h4 class="font-semibold text-gray-800 truncate">${client.name}</h4>
+                        <p class="text-sm text-gray-500 truncate">${client.company || client.email || ''}</p>
+                    </div>
+                </div>
+            `).join('');
+        };
+        
+        const renderClientDetails = (clientId) => {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) {
+                elements.clientDetailsView.classList.add('hidden');
+                elements.emptyState.classList.remove('hidden');
+                return;
+            }
+
+            elements.emptyState.classList.add('hidden');
+            elements.clientDetailsView.classList.remove('hidden');
+
+            elements.clientDetailsView.innerHTML = `
+                <div class="p-6 border-b bg-white">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                            <div class="h-16 w-16 rounded-full bg-gray-700 text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">${getInitials(client.name)}</div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">${client.name}</h2>
+                                ${client.company ? `<p class="text-md text-gray-600">${client.company}</p>` : ''}
+                                <div class="text-sm text-gray-500 mt-1 flex items-center space-x-4 rtl:space-x-reverse">
+                                    ${client.email ? `<span class="flex items-center"><svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>${client.email}</span>` : ''}
+                                    ${client.phone ? `<span class="flex items-center"><svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a11.024 11.024 0 005.174 5.174l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>${client.phone}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <button id="edit-client-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="edit">Edit</button>
+                            <button id="delete-client-btn" class="text-sm font-medium text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-red-50" data-translate="delete">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2" data-translate="notes">Notes</h3>
+                        <div class="bg-white p-4 rounded-lg border min-h-[100px] text-gray-700 whitespace-pre-wrap">${client.notes || `<span class="text-gray-400">No notes yet.</span>`}</div>
+                    </div>
+
+                     <!-- Files Section -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold" data-translate="files">Files</h3>
+                            <label class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold cursor-pointer hover:bg-gray-700">
+                                <span data-translate="uploadFile">Upload File</span>
+                                <input type="file" id="file-upload-input" class="hidden">
+                            </label>
+                        </div>
+                        <div id="files-list" class="bg-white p-4 rounded-lg border space-y-3">
+                            ${(client.files && client.files.length > 0) ? client.files.map(file => renderFileItem(file)).join('') : '<span class="text-gray-400 text-sm">No files uploaded.</span>'}
+                        </div>
+                    </div>
+
+                    <!-- Tasks Section -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold" data-translate="tasks">Tasks</h3>
+                            <button id="add-task-btn" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold" data-translate="addTask">Add Task</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${renderKanbanColumn('todo', uiStrings[currentLanguage].todo, client.tasks || [])}
+                            ${renderKanbanColumn('inprogress', uiStrings[currentLanguage].inprogress, client.tasks || [])}
+                            ${renderKanbanColumn('done', uiStrings[currentLanguage].done, client.tasks || [])}
+                        </div>
+                    </div>
+                </div>`;
+            
+            // Manually apply translations to the new content to avoid recursion.
+            elements.clientDetailsView.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (uiStrings[currentLanguage][key]) el.textContent = uiStrings[currentLanguage][key];
+            });
+        };
+        
+        const renderKanbanColumn = (status, title, tasks) => {
+            const tasksInColumn = tasks.filter(t => t.status === status);
+            return `
+                <div class="bg-white rounded-lg p-3 kanban-column border" data-status="${status}">
+                    <h4 class="font-semibold mb-3 text-center text-gray-700 border-b pb-2">${title} <span class="text-sm text-gray-500">${tasksInColumn.length}</span></h4>
+                    <div class="space-y-3 task-list pt-2">
+                        ${tasksInColumn.map(task => `
+                            <div class="bg-white p-3 rounded-md shadow-sm border task-card" draggable="true" data-task-id="${task.id}">
+                                <p class="pr-6">${task.text}</p>
+                                <button class="delete-task-btn p-1 rounded-full hover:bg-red-100 text-gray-400 hover:text-red-600" data-task-id="${task.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                </button>
+                            </div>
+                        `).join('') || `<div class="text-xs text-gray-500 text-center p-4">Drop tasks here</div>`}
+                    </div>
+                </div>`;
+        };
+        
+        const renderFileItem = (file) => {
+            return `
+            <div class="flex items-center justify-between p-2 rounded-md hover:bg-gray-50">
+                <div class="flex items-center space-x-3 rtl:space-x-reverse flex-1 overflow-hidden">
+                    ${getFileTypeIcon(file.name)}
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-sm font-medium text-gray-800 truncate">${file.name}</p>
+                        <p class="text-xs text-gray-500">${formatBytes(file.size)}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 rtl:space-x-reverse ml-2">
+                     <a href="${file.url}" target="_blank" class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <button class="delete-file-btn p-1.5 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full" data-storage-path="${file.storagePath}" data-file-name="${file.name}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        const handleClientSelect = (e) => {
+            const clientItem = e.target.closest('.client-item');
+            if (clientItem) {
+                selectedClientId = clientItem.dataset.id;
+                renderClientsList(elements.clientSearch.value);
+                renderClientDetails(selectedClientId);
+                if(window.innerWidth < 768) elements.clientListPanel.classList.add('-translate-x-full');
+            }
+        };
+
+        const handleAddClient = () => {
+            elements.clientForm.reset();
+            elements.clientIdInput.value = '';
+            elements.clientModalTitle.textContent = uiStrings[currentLanguage].addClientTitle;
+            elements.clientModal.classList.remove('hidden');
+        };
+        
+        const handleEditClient = () => {
+            const client = clients.find(c => c.id === selectedClientId);
+            if(client) {
+                elements.clientForm.reset();
+                elements.clientIdInput.value = client.id;
+                elements.clientNameInput.value = client.name;
+                elements.clientCompanyInput.value = client.company || '';
+                elements.clientEmailInput.value = client.email || '';
+                elements.clientPhoneInput.value = client.phone || '';
+                elements.clientNotesInput.value = client.notes || '';
+                elements.clientModalTitle.textContent = uiStrings[currentLanguage].editClientTitle;
+                elements.clientModal.classList.remove('hidden');
+            }
+        };
+
+        const handleDeleteClient = () => {
+            showConfirmationModal(
+                uiStrings[currentLanguage].confirmDeleteClientTitle,
+                uiStrings[currentLanguage].confirmDeleteClientText,
+                async () => {
+                    try {
+                        const client = clients.find(c => c.id === selectedClientId);
+                        if (client && client.files && client.files.length > 0) {
+                            for (const file of client.files) {
+                                const fileRef = ref(storage, file.storagePath);
+                                await deleteObject(fileRef).catch(e => console.error(`Failed to delete file ${file.storagePath}`, e));
+                            }
+                        }
+                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        await deleteDoc(clientRef);
+                        showToast(uiStrings[currentLanguage].clientDeleted, 'success');
+                        selectedClientId = null;
+                        renderClientDetails(null);
+                    } catch(e) { console.error("Error deleting client: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+                }
+            );
+        };
+
+        const handleSaveClient = async (e) => {
+            e.preventDefault();
+            const id = elements.clientIdInput.value;
+            const clientData = {
+                name: elements.clientNameInput.value, 
+                company: elements.clientCompanyInput.value,
+                email: elements.clientEmailInput.value,
+                phone: elements.clientPhoneInput.value, 
+                notes: elements.clientNotesInput.value,
+            };
+            try {
+                if (id) {
+                    const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, id);
+                    await updateDoc(clientRef, clientData);
+                } else {
+                    const clientCollection = collection(db, `artifacts/${getAppId()}/users/${userId}/clients`);
+                    clientData.createdAt = serverTimestamp();
+                    clientData.tasks = [];
+                    clientData.files = [];
+                    await addDoc(clientCollection, clientData);
+                }
+                showToast(uiStrings[currentLanguage].clientSaved, 'success');
+                elements.clientModal.classList.add('hidden');
+            } catch (e) { console.error("Error saving client: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+        };
+        
+        const handleAddTask = () => { elements.taskForm.reset(); elements.taskModal.classList.remove('hidden'); };
+        const handleSaveTask = async (e) => {
+            e.preventDefault();
+            const text = elements.taskTextInput.value;
+            if (!text || !selectedClientId) return;
+            const client = clients.find(c => c.id === selectedClientId);
+            if (!client) return;
+            const newTask = { id: `task_${Date.now()}`, text: text, status: 'todo' };
+            const updatedTasks = [...(client.tasks || []), newTask];
+            try {
+                const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                await updateDoc(clientRef, { tasks: updatedTasks });
+                showToast(uiStrings[currentLanguage].taskAdded, 'success');
+                elements.taskModal.classList.add('hidden');
+            } catch(e) { console.error("Error adding task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+        };
+        const handleDeleteTask = (taskId) => {
+            showConfirmationModal(uiStrings[currentLanguage].confirmDeleteTaskTitle, uiStrings[currentLanguage].confirmDeleteTaskText,
+                async () => {
+                    const client = clients.find(c => c.id === selectedClientId);
+                    if (!client) return;
+                    const updatedTasks = client.tasks.filter(t => t.id !== taskId);
+                     try {
+                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        await updateDoc(clientRef, { tasks: updatedTasks });
+                        showToast(uiStrings[currentLanguage].taskDeleted, 'success');
+                    } catch(e) { console.error("Error deleting task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+                }
+            );
+        };
+        let draggedTask = null;
+        const handleDragStart = (e) => { if(e.target.classList.contains('task-card')){ draggedTask = e.target; setTimeout(() => e.target.classList.add('dragging'), 0); } };
+        const handleDragEnd = () => { if(draggedTask) { draggedTask.classList.remove('dragging'); draggedTask = null; } };
+        const handleDragOver = (e) => { e.preventDefault(); const column = e.target.closest('.kanban-column'); if(column) { document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over')); column.classList.add('drag-over'); }};
+        const handleDragLeave = (e) => { const column = e.target.closest('.kanban-column'); if(column) column.classList.remove('drag-over'); };
+        const handleDrop = async (e) => { e.preventDefault(); const column = e.target.closest('.kanban-column'); document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over')); if (column && draggedTask) { const newStatus = column.dataset.status; const taskId = draggedTask.dataset.taskId; const client = clients.find(c => c.id === selectedClientId); if (!client) return; const taskIndex = client.tasks.findIndex(t => t.id === taskId); if (taskIndex === -1) return; const updatedTasks = [...client.tasks]; updatedTasks[taskIndex].status = newStatus; try { const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId); await updateDoc(clientRef, { tasks: updatedTasks }); } catch(error) { console.error("Error updating task status: ", error); showToast(uiStrings[currentLanguage].error, 'error'); }}};
+
+        const handleFileUpload = (e) => {
+            const file = e.target.files[0];
+            if (!file || !selectedClientId) return;
+
+            elements.uploadProgressModal.classList.remove('hidden');
+            const storagePath = `artifacts/${getAppId()}/users/${userId}/clients/${selectedClientId}/${Date.now()}-${file.name}`;
+            const storageRef = ref(storage, storagePath);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    elements.uploadProgressBar.style.width = progress + '%';
+                    elements.uploadProgressText.textContent = Math.round(progress) + '%';
+                }, 
+                (error) => {
+                    console.error("Upload failed: ", error);
+                    showToast(uiStrings[currentLanguage].error, 'error');
+                    elements.uploadProgressModal.classList.add('hidden');
+                }, 
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        const client = clients.find(c => c.id === selectedClientId);
+                        const fileData = {
+                            name: file.name,
+                            url: downloadURL,
+                            size: file.size,
+                            type: file.type,
+                            storagePath: storagePath
+                        };
+                        const updatedFiles = [...(client.files || []), fileData];
+                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        await updateDoc(clientRef, { files: updatedFiles });
+
+                        showToast(uiStrings[currentLanguage].fileUploaded, 'success');
+                        elements.uploadProgressModal.classList.add('hidden');
+                        e.target.value = ''; // Reset file input
+                    });
+                }
+            );
+        };
+
+        const handleDeleteFile = (storagePath, fileName) => {
+            showConfirmationModal(uiStrings[currentLanguage].confirmDeleteFileTitle, uiStrings[currentLanguage].confirmDeleteFileText,
+                async () => {
+                    try {
+                        const fileRef = ref(storage, storagePath);
+                        await deleteObject(fileRef);
+
+                        const client = clients.find(c => c.id === selectedClientId);
+                        const updatedFiles = client.files.filter(f => f.storagePath !== storagePath);
+                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        await updateDoc(clientRef, { files: updatedFiles });
+                        
+                        showToast(uiStrings[currentLanguage].fileDeleted, 'success');
+
+                    } catch (error) {
+                        console.error("Error deleting file: ", error);
+                        showToast(uiStrings[currentLanguage].error, 'error');
+                    }
+                }
+            );
+        };
+
+
+        const showToast = (message, type = 'success') => {
+            elements.toast.textContent = message;
+            elements.toast.style.backgroundColor = type === 'success' ? '#10B981' : '#EF4444';
+            elements.toast.classList.add('show');
+            setTimeout(() => elements.toast.classList.remove('show'), 3000);
+        };
+        const showConfirmationModal = (title, text, onConfirm) => {
+            elements.confirmModalTitle.textContent = title;
+            elements.confirmModalText.textContent = text;
+            confirmCallback = onConfirm;
+            elements.confirmModal.classList.remove('hidden');
+        };
+        const getAppId = () => typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        const formatBytes = (bytes, decimals = 2) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        const getFileTypeIcon = (fileName) => {
+            const extension = fileName.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg>`;
+            if (extension === 'pdf') return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`;
+            if (['doc', 'docx', 'pages'].includes(extension)) return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`;
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>`;
+        };
+
+        const initFirebase = () => {
+            try {
+                setLogLevel('error');
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                storage = getStorage(app);
+                setupAuthListener();
+            } catch (e) { console.error("Firebase init failed:", e); elements.userInfo.textContent = "Firebase config error."; elements.loaderAuth.classList.add('hidden'); elements.userInfo.classList.remove('hidden'); }
+        };
+        
+        const setupAuthListener = () => {
+            onAuthStateChanged(auth, user => {
+                elements.loaderAuth.classList.add('hidden');
+                elements.userInfo.classList.remove('hidden');
+                if (user) {
+                    userId = user.uid;
+                    elements.userInfo.textContent = `${uiStrings[currentLanguage].authenticatedAs} ${user.isAnonymous ? uiStrings[currentLanguage].anonymous : user.email || user.uid.substring(0,6)}`;
+                    fetchClients();
+                } else {
+                    userId = null;
+                    if(clientsUnsubscribe) clientsUnsubscribe();
+                    clients = []; selectedClientId = null; renderClientsList(); renderClientDetails(null);
+                    elements.userInfo.textContent = "Not authenticated.";
+                }
+            });
+            const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+            if (token) signInWithCustomToken(auth, token).catch(err => signInAnonymously(auth));
+            else signInAnonymously(auth);
+        };
+
+        const fetchClients = () => {
+            if (clientsUnsubscribe) clientsUnsubscribe();
+            if (!userId) return;
+            elements.loaderClients.classList.remove('hidden');
+            const clientCollection = collection(db, `artifacts/${getAppId()}/users/${userId}/clients`);
+            clientsUnsubscribe = onSnapshot(clientCollection, (snapshot) => {
+                clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                clients.sort((a,b) => a.name.localeCompare(b.name));
+                renderClientsList(elements.clientSearch.value);
+                if(selectedClientId && clients.some(c => c.id === selectedClientId)) {
+                    renderClientDetails(selectedClientId);
+                } else if (selectedClientId) {
+                    selectedClientId = null;
+                    renderClientDetails(null);
+                }
+            }, (error) => { console.error("Error fetching clients:", error); elements.loaderClients.classList.add('hidden'); });
+        };
+        
+        const addEventListeners = () => {
+            elements.langEnBtn.addEventListener('click', () => setLanguage('en'));
+            elements.langArBtn.addEventListener('click', () => setLanguage('ar'));
+            elements.clientSearch.addEventListener('input', (e) => renderClientsList(e.target.value));
+            elements.addClientBtn.addEventListener('click', handleAddClient);
+            elements.clientsList.addEventListener('click', handleClientSelect);
+            elements.clientForm.addEventListener('submit', handleSaveClient);
+            elements.cancelClientBtn.addEventListener('click', () => elements.clientModal.classList.add('hidden'));
+            elements.taskForm.addEventListener('submit', handleSaveTask);
+            elements.cancelTaskBtn.addEventListener('click', () => elements.taskModal.classList.add('hidden'));
+            
+            elements.clientDetailsView.addEventListener('click', (e) => {
+                if (e.target.id === 'edit-client-btn') handleEditClient();
+                if (e.target.id === 'delete-client-btn') handleDeleteClient();
+                if (e.target.id === 'add-task-btn') handleAddTask();
+
+                const deleteBtn = e.target.closest('.delete-task-btn');
+                if (deleteBtn) handleDeleteTask(deleteBtn.dataset.taskId);
+
+                if (e.target.id === 'file-upload-input') {
+                    e.target.addEventListener('change', handleFileUpload, { once: true });
+                }
+
+                const deleteFileBtn = e.target.closest('.delete-file-btn');
+                if(deleteFileBtn) {
+                    handleDeleteFile(deleteFileBtn.dataset.storagePath, deleteFileBtn.dataset.fileName);
+                }
+            });
+            
+            elements.confirmCancelBtn.addEventListener('click', () => elements.confirmModal.classList.add('hidden'));
+            elements.confirmDeleteBtn.addEventListener('click', () => {
+                if(confirmCallback) confirmCallback();
+                elements.confirmModal.classList.add('hidden');
+            });
+            
+            elements.app.addEventListener('dragstart', handleDragStart);
+            elements.app.addEventListener('dragend', handleDragEnd);
+            elements.app.addEventListener('dragover', handleDragOver);
+            elements.app.addEventListener('dragleave', handleDragLeave);
+            elements.app.addEventListener('drop', handleDrop);
+            elements.openPanelBtn.addEventListener('click', () => elements.clientListPanel.classList.remove('-translate-x-full'));
+            elements.closePanelBtn.addEventListener('click', () => elements.clientListPanel.classList.add('-translate-x-full'));
+        };
+
+        document.addEventListener('DOMContentLoaded', () => { setLanguage('en'); addEventListeners(); initFirebase(); });
+    </script>
+</body>
+</html>
+
