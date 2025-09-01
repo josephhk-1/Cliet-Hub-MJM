@@ -22,25 +22,34 @@
         .task-card { 
             touch-action: manipulation; 
             position: relative;
+            border-left-width: 4px;
+            transition: box-shadow 0.2s ease-in-out;
         }
-        .task-card:hover .delete-task-btn {
-            opacity: 1;
+        .task-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
         }
-        .delete-task-btn {
+        .task-card[data-status="todo"] { border-left-color: #9ca3af; }
+        .task-card[data-status="inprogress"] { border-left-color: #3b82f6; }
+        .task-card[data-status="done"] { border-left-color: #22c55e; }
+
+        .task-card:hover .task-actions { opacity: 1; }
+        .task-actions {
             position: absolute;
             top: 4px;
             right: 4px;
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        [dir="rtl"] .delete-task-btn {
+        [dir="rtl"] .task-actions {
             right: auto;
             left: 4px;
         }
         .dragging {
             opacity: 0.5;
             transform: rotate(3deg);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .drag-over {
             background-color: rgba(34, 197, 94, 0.1);
@@ -59,9 +68,7 @@
             transition: bottom 0.5s ease-in-out;
             z-index: 100;
         }
-        #toast.show {
-            bottom: 20px;
-        }
+        #toast.show { bottom: 20px; }
         .client-item.selected {
             background-color: #e5e7eb; /* bg-gray-200 */
             border-right: 3px solid #1f2937; /* border-gray-800 */
@@ -70,8 +77,46 @@
             border-right: none;
             border-left: 3px solid #1f2937;
         }
-        .progress-bar {
-            transition: width 0.3s ease;
+        .progress-bar { transition: width 0.3s ease; }
+        #clear-search-btn { display: none; }
+
+        /* Status changer dropdown */
+        .status-change-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            z-index: 10;
+            width: 120px;
+            overflow: hidden;
+            transform-origin: top right;
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+        }
+         [dir="rtl"] .status-change-dropdown {
+            right: auto;
+            left: 0;
+            transform-origin: top left;
+        }
+        .status-change-dropdown.hidden {
+            transform: scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .status-change-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+         [dir="rtl"] .status-change-dropdown button {
+            text-align: right;
+        }
+        .status-change-dropdown button:hover {
+            background-color: #f3f4f6;
         }
     </style>
 </head>
@@ -116,7 +161,16 @@
                             <span data-translate="addClient">Add Client</span>
                         </button>
                     </div>
-                    <div class="relative"><input type="text" id="client-search" placeholder="Search clients..." data-translate-placeholder="searchPlaceholder" class="w-full border border-gray-300 rounded-md p-2 pl-10 focus:ring-gray-500 focus:border-gray-500"><svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
+                     <div class="mb-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                        <textarea id="ai-client-setup-input" class="w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm" rows="2" data-translate-placeholder="pasteClientInfoPlaceholder" placeholder="Paste client info..."></textarea>
+                        <button id="ai-client-setup-btn" class="mt-2 w-full bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 flex items-center justify-center gap-2 transition-colors">
+                             ✨ <span data-translate="setupWithAI">Setup with AI</span>
+                        </button>
+                    </div>
+                    <div class="relative"><input type="text" id="client-search" placeholder="Search clients..." data-translate-placeholder="searchPlaceholder" class="w-full border border-gray-300 rounded-md p-2 pl-10 focus:ring-gray-500 focus:border-gray-500">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                    <button id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                    </div>
                 </div>
                 <div id="clients-list" class="flex-1 overflow-y-auto"><div id="loader-clients" class="p-4 text-center"><span class="h-6 w-6 border-t-2 border-gray-600 rounded-full animate-spin inline-block"></span></div></div>
                 <div class="md:hidden p-2 border-t"><button id="close-panel-btn" class="w-full text-center text-sm py-2" data-translate="close">Close</button></div>
@@ -231,6 +285,7 @@
                 confirmDeleteFileTitle: "Delete File?", confirmDeleteFileText: "This will permanently delete this file. Are you sure?",
                 clientSaved: "Client saved successfully.", clientDeleted: "Client deleted.",
                 taskAdded: "Task added successfully.", taskDeleted: "Task deleted.", error: "An error occurred.",
+                taskStatusUpdated: "Task status updated.",
                 close: "Close", hubIdLabel: "HUB ID:", share: "Share",
                 searchPlaceholder: "Search clients...", noClientsFound: "No clients found.",
                 files: "Files", uploadFile: "Upload File", uploadingFile: "Uploading File...",
@@ -241,7 +296,11 @@
                 breakDownGoal: "✨ Break Down Goal",
                 enterGoalPlaceholder: "Enter a project goal to break down with AI...",
                 generatingTasks: "Generating...",
-                tasksGenerated: "AI tasks have been added!"
+                tasksGenerated: "AI tasks have been added!",
+                setupWithAI: "Setup with AI",
+                pasteClientInfoPlaceholder: "Paste client info (e.g., email signature) to setup with AI...",
+                parsingClientInfo: "Parsing...",
+                clientInfoParsed: "Client info parsed successfully!"
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
@@ -256,6 +315,7 @@
                 confirmDeleteFileTitle: "حذف الملف؟", confirmDeleteFileText: "سيؤدي هذا إلى حذف هذا الملف نهائيًا. هل أنت متأكد؟",
                 clientSaved: "تم حفظ العميل بنجاح.", clientDeleted: "تم حذف العميل.",
                 taskAdded: "تمت إضافة المهمة بنجاح.", taskDeleted: "تم حذف المهمة.", error: "حدث خطأ ما.",
+                taskStatusUpdated: "تم تحديث حالة المهمة.",
                 close: "إغلاق", hubIdLabel: "معرف المركز:", share: "مشاركة",
                 searchPlaceholder: "ابحث عن عملاء...", noClientsFound: "لم يتم العثور على عملاء.",
                 files: "الملفات", uploadFile: "رفع ملف", uploadingFile: "جاري رفع الملف...",
@@ -266,7 +326,11 @@
                 breakDownGoal: "✨ تحليل الهدف",
                 enterGoalPlaceholder: "أدخل هدف المشروع لتحليله بالذكاء الاصطناعي...",
                 generatingTasks: "جاري الإنشاء...",
-                tasksGenerated: "تمت إضافة مهام الذكاء الاصطناعي!"
+                tasksGenerated: "تمت إضافة مهام الذكاء الاصطناعي!",
+                setupWithAI: "إعداد بالذكاء الاصطناعي",
+                pasteClientInfoPlaceholder: "الصق معلومات العميل (مثل توقيع البريد الإلكتروني) للإعداد بالذكاء الاصطناعي...",
+                parsingClientInfo: "جاري التحليل...",
+                clientInfoParsed: "تم تحليل معلومات العميل بنجاح!"
             }
         };
 
@@ -279,6 +343,9 @@
             emptyState: document.getElementById('empty-state'),
             addClientBtn: document.getElementById('add-client-btn'),
             clientSearch: document.getElementById('client-search'),
+            clearSearchBtn: document.getElementById('clear-search-btn'),
+            aiClientSetupInput: document.getElementById('ai-client-setup-input'),
+            aiClientSetupBtn: document.getElementById('ai-client-setup-btn'),
             clientModal: document.getElementById('client-modal'),
             clientModalTitle: document.getElementById('client-modal-title'),
             clientForm: document.getElementById('client-form'),
@@ -357,7 +424,7 @@
         const getInitials = (name) => {
             if (!name) return '?';
             const names = name.trim().split(' ');
-            if (names.length > 1) {
+            if (names.length > 1 && names[1]) {
                 return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
             }
             return name.substring(0, 2).toUpperCase();
@@ -422,7 +489,7 @@
             clientTextInfo.appendChild(clientName);
             if(client.company) clientTextInfo.appendChild(createElement('p', ['text-md', 'text-gray-600'], client.company));
             
-            const contactInfoDiv = createElement('div', ['text-sm', 'text-gray-500', 'mt-1', 'flex', 'items-center', 'space-x-4', 'rtl:space-x-reverse']);
+            const contactInfoDiv = createElement('div', ['text-sm', 'text-gray-500', 'mt-1', 'flex', 'flex-wrap', 'gap-x-4', 'gap-y-1']);
             if(client.email) {
                 const emailSpan = createElement('span', ['flex', 'items-center']);
                 emailSpan.innerHTML = `<svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>`;
@@ -518,7 +585,6 @@
             elements.clientDetailsView.append(headerContainer, bodyContainer);
         };
 
-        // SECURE: Rewritten to return a DOM element instead of an HTML string
         const renderKanbanColumn = (status, title, tasks) => {
             const tasksInColumn = tasks.filter(t => t.status === status);
             
@@ -536,13 +602,35 @@
                     const cardDiv = createElement('div', ['bg-white', 'p-3', 'rounded-md', 'shadow-sm', 'border', 'task-card']);
                     cardDiv.draggable = true;
                     cardDiv.dataset.taskId = task.id;
+                    cardDiv.dataset.status = task.status;
                     
-                    const textP = createElement('p', 'pr-6', task.text);
+                    const textP = createElement('p', ['text-sm', 'break-words', 'pr-16'], task.text);
+                    
+                    const actionsDiv = createElement('div', ['task-actions']);
+                    
+                    // Status Change Dropdown
+                    const statusChangerContainer = createElement('div', 'relative');
+                    const statusButton = createElement('button', ['status-change-toggle-btn', 'p-1', 'text-gray-400', 'hover:text-gray-700', 'hover:bg-gray-100', 'rounded-full']);
+                    statusButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+                    
+                    const statusDropdown = createElement('div', ['status-change-dropdown', 'hidden']);
+                    statusDropdown.dataset.taskId = task.id;
+                    const statuses = ['todo', 'inprogress', 'done'];
+                    statuses.filter(s => s !== task.status).forEach(s => {
+                        const optionBtn = createElement('button', 'status-change-option', uiStrings[currentLanguage][s]);
+                        optionBtn.dataset.newStatus = s;
+                        statusDropdown.appendChild(optionBtn);
+                    });
+                    
+                    statusChangerContainer.append(statusButton, statusDropdown);
+
+                    // Delete button
                     const deleteBtn = createElement('button', ['delete-task-btn', 'p-1', 'rounded-full', 'hover:bg-red-100', 'text-gray-400', 'hover:text-red-600']);
                     deleteBtn.dataset.taskId = task.id;
                     deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
                     
-                    cardDiv.append(textP, deleteBtn);
+                    actionsDiv.append(statusChangerContainer, deleteBtn);
+                    cardDiv.append(textP, actionsDiv);
                     taskListDiv.appendChild(cardDiv);
                 });
             } else {
@@ -675,7 +763,7 @@
             if (!text || !selectedClientId) return;
             const client = clients.find(c => c.id === selectedClientId);
             if (!client) return;
-            const newTask = { id: `task_${Date.now()}`, text: text, status: 'todo' };
+            const newTask = { id: `task_${crypto.randomUUID()}`, text: text, status: 'todo' };
             const updatedTasks = [...(client.tasks || []), newTask];
             try {
                 const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
@@ -710,7 +798,7 @@
                 }
                 
                 const newTasks = taskStrings.map(text => ({ 
-                    id: `task_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`, 
+                    id: `task_${crypto.randomUUID()}`, 
                     text: text, 
                     status: 'todo' 
                 }));
@@ -774,6 +862,94 @@
 
             return JSON.parse(jsonText);
         };
+        
+        const handleAiClientSetup = async () => {
+            const text = elements.aiClientSetupInput.value.trim();
+            if (!text) {
+                showToast("Please paste some client information first.", "error");
+                return;
+            }
+
+            const originalButtonContent = elements.aiClientSetupBtn.innerHTML;
+            elements.aiClientSetupBtn.disabled = true;
+            elements.aiClientSetupBtn.innerHTML = `<span class="h-4 w-4 border-t-2 border-white rounded-full animate-spin"></span><span class="ml-2">${uiStrings[currentLanguage].parsingClientInfo}</span>`;
+            
+            try {
+                const clientData = await parseClientInfoWithGemini(text);
+                
+                // Reset form and open modal
+                elements.clientForm.reset();
+                elements.clientIdInput.value = '';
+                elements.clientModalTitle.textContent = uiStrings[currentLanguage].addClientTitle;
+                
+                // Pre-fill form
+                elements.clientNameInput.value = clientData.name || '';
+                elements.clientCompanyInput.value = clientData.company || '';
+                elements.clientEmailInput.value = clientData.email || '';
+                elements.clientPhoneInput.value = clientData.phone || '';
+                elements.clientNotesInput.value = clientData.notes || '';
+
+                elements.clientModal.classList.remove('hidden');
+                showToast(uiStrings[currentLanguage].clientInfoParsed, 'success');
+                elements.aiClientSetupInput.value = '';
+
+            } catch (error) {
+                console.error("Error setting up client with AI:", error);
+                showToast(uiStrings[currentLanguage].error, 'error');
+            } finally {
+                elements.aiClientSetupBtn.disabled = false;
+                elements.aiClientSetupBtn.innerHTML = originalButtonContent;
+            }
+        };
+
+        const parseClientInfoWithGemini = async (text) => {
+            const apiKey = ""; // Handled by environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const systemPrompt = "You are an expert data entry assistant. Your task is to parse unstructured text containing client information and extract it into a structured JSON object. The fields to extract are: 'name', 'company', 'email', 'phone', and 'notes'. If a piece of information is not present, the value should be an empty string. The 'notes' field should contain any extra contextual information. Respond ONLY with the valid JSON object. Do not include any other text, explanations, or markdown formatting.";
+            
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            name: { type: "STRING" },
+                            company: { type: "STRING" },
+                            email: { type: "STRING" },
+                            phone: { type: "STRING" },
+                            notes: { type: "STRING" },
+                        }
+                    }
+                }
+            };
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.text();
+                throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+            }
+
+            const result = await response.json();
+            const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!jsonText) {
+                console.error('Invalid response structure from API:', result);
+                throw new Error("Invalid or empty response from the AI model.");
+            }
+            
+            return JSON.parse(jsonText);
+        };
+
 
         const handleDeleteTask = (taskId) => {
             if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
@@ -790,6 +966,26 @@
                 }
             );
         };
+
+        const handleChangeTaskStatus = async (taskId, newStatus) => {
+            if (!db || !selectedClientId) return;
+            const client = clients.find(c => c.id === selectedClientId);
+            if (!client || !client.tasks) return;
+
+            const updatedTasks = client.tasks.map(task => 
+                task.id === taskId ? { ...task, status: newStatus } : task
+            );
+
+            try {
+                const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
+                await updateDoc(clientRef, { tasks: updatedTasks });
+                showToast(uiStrings[currentLanguage].taskStatusUpdated, 'success');
+            } catch(e) {
+                console.error("Error updating task status: ", e);
+                showToast(uiStrings[currentLanguage].error, 'error');
+            }
+        };
+
         let draggedTask = null;
         const handleDragStart = (e) => { if(e.target.classList.contains('task-card')){ draggedTask = e.target; setTimeout(() => e.target.classList.add('dragging'), 0); } };
         const handleDragEnd = () => { if(draggedTask) { draggedTask.classList.remove('dragging'); draggedTask = null; } };
@@ -797,25 +993,12 @@
         const handleDragLeave = (e) => { const column = e.target.closest('.kanban-column'); if(column) column.classList.remove('drag-over'); };
         const handleDrop = async (e) => {
             e.preventDefault();
-            if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             const column = e.target.closest('.kanban-column');
             document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over'));
             if (column && draggedTask) {
                 const newStatus = column.dataset.status;
                 const taskId = draggedTask.dataset.taskId;
-                const client = clients.find(c => c.id === selectedClientId);
-                if (!client) return;
-                const taskIndex = client.tasks.findIndex(t => t.id === taskId);
-                if (taskIndex === -1) return;
-                const updatedTasks = [...client.tasks];
-                updatedTasks[taskIndex].status = newStatus;
-                try {
-                    const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
-                    await updateDoc(clientRef, { tasks: updatedTasks });
-                } catch(error) {
-                    console.error("Error updating task status: ", error);
-                    showToast(uiStrings[currentLanguage].error, 'error');
-                }
+                handleChangeTaskStatus(taskId, newStatus);
             }
         };
 
@@ -1148,8 +1331,17 @@
         const addEventListeners = () => {
             elements.langEnBtn.addEventListener('click', () => setLanguage('en'));
             elements.langArBtn.addEventListener('click', () => setLanguage('ar'));
-            elements.clientSearch.addEventListener('input', (e) => renderClientsList(e.target.value));
+            elements.clientSearch.addEventListener('input', (e) => {
+                renderClientsList(e.target.value)
+                elements.clearSearchBtn.style.display = e.target.value ? 'block' : 'none';
+            });
+            elements.clearSearchBtn.addEventListener('click', () => {
+                elements.clientSearch.value = '';
+                elements.clearSearchBtn.style.display = 'none';
+                renderClientsList('');
+            });
             elements.addClientBtn.addEventListener('click', handleAddClient);
+            elements.aiClientSetupBtn.addEventListener('click', handleAiClientSetup);
             elements.clientsList.addEventListener('click', handleClientSelect);
             elements.clientForm.addEventListener('submit', handleSaveClient);
             elements.cancelClientBtn.addEventListener('click', () => elements.clientModal.classList.add('hidden'));
@@ -1181,8 +1373,35 @@
                 if(deleteFileBtn) {
                     handleDeleteFile(deleteFileBtn.dataset.storagePath, deleteFileBtn.dataset.fileName);
                 }
+
+                // Handle status change dropdown
+                const statusToggle = e.target.closest('.status-change-toggle-btn');
+                if (statusToggle) {
+                    const dropdown = statusToggle.nextElementSibling;
+                    const allDropdowns = document.querySelectorAll('.status-change-dropdown');
+                    allDropdowns.forEach(d => {
+                        if (d !== dropdown) d.classList.add('hidden');
+                    });
+                    dropdown.classList.toggle('hidden');
+                }
+
+                const statusOption = e.target.closest('.status-change-option');
+                if (statusOption) {
+                    const dropdown = statusOption.closest('.status-change-dropdown');
+                    const taskId = dropdown.dataset.taskId;
+                    const newStatus = statusOption.dataset.newStatus;
+                    handleChangeTaskStatus(taskId, newStatus);
+                    dropdown.classList.add('hidden');
+                }
             });
             
+            // Close status dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.status-change-toggle-btn')) {
+                    document.querySelectorAll('.status-change-dropdown').forEach(d => d.classList.add('hidden'));
+                }
+            });
+
             elements.confirmCancelBtn.addEventListener('click', () => elements.confirmModal.classList.add('hidden'));
             elements.confirmDeleteBtn.addEventListener('click', () => {
                 if(confirmCallback) confirmCallback();
