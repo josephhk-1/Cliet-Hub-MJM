@@ -30,12 +30,12 @@
             position: absolute;
             top: 4px;
             right: 4px;
-            [dir="rtl"] & {
-                right: auto;
-                left: 4px;
-            }
             opacity: 0;
             transition: opacity 0.2s ease-in-out;
+        }
+        [dir="rtl"] .delete-task-btn {
+            right: auto;
+            left: 4px;
         }
         .dragging {
             opacity: 0.5;
@@ -65,10 +65,10 @@
         .client-item.selected {
             background-color: #e5e7eb; /* bg-gray-200 */
             border-right: 3px solid #1f2937; /* border-gray-800 */
-            [dir="rtl"] & {
-                border-right: none;
-                border-left: 3px solid #1f2937;
-            }
+        }
+        [dir="rtl"] .client-item.selected {
+            border-right: none;
+            border-left: 3px solid #1f2937;
         }
         .progress-bar {
             transition: width 0.3s ease;
@@ -84,19 +84,19 @@
         <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
             <div><h1 class="text-2xl font-bold text-gray-800" data-translate="appTitle">Client Hub</h1></div>
             <div class="flex items-center space-x-2 md:space-x-4">
-                 <div id="hub-info-container" class="hidden items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+                <div id="hub-info-container" class="hidden items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-lg">
                     <span class="text-sm font-medium text-gray-600" data-translate="hubIdLabel">HUB ID:</span>
                     <span id="hub-id-display" class="text-sm font-semibold text-gray-800"></span>
                     <button id="copy-hub-link-btn" class="p-1 text-gray-500 hover:text-gray-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </button>
-                 </div>
-                 <button id="share-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2">
+                </div>
+                <button id="share-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
                     <span data-translate="share">Share</span>
-                 </button>
+                </button>
                 <div class="flex items-center border border-gray-300 rounded-lg p-1">
                     <button id="lang-en" class="px-3 py-1 text-sm rounded-md bg-gray-700 text-white">EN</button>
                     <button id="lang-ar" class="px-3 py-1 text-sm rounded-md">AR</button>
@@ -112,7 +112,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-lg font-semibold" data-translate="clients">Clients</h2>
                         <button id="add-client-btn" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
                             <span data-translate="addClient">Add Client</span>
                         </button>
                     </div>
@@ -124,7 +124,7 @@
 
             <!-- Right Panel: Client Details -->
             <section class="flex-1 flex flex-col bg-gray-100 overflow-y-auto">
-                 <div class="md:hidden p-4 border-b bg-white"><button id="open-panel-btn" class="flex items-center space-x-2 rtl:space-x-reverse text-sm font-semibold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg><span data-translate="clients">Clients</span></button></div>
+                <div class="md:hidden p-4 border-b bg-white"><button id="open-panel-btn" class="flex items-center space-x-2 rtl:space-x-reverse text-sm font-semibold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg><span data-translate="clients">Clients</span></button></div>
                 <div id="client-details-view" class="hidden"></div>
                 <div id="empty-state" class="flex-1 flex items-center justify-center text-center p-8"><div><svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg><h3 class="mt-2 text-lg font-medium text-gray-900" data-translate="selectClientTitle">Select a client</h3><p class="mt-1 text-sm text-gray-500" data-translate="selectClientDesc">Select a client from the list to see their details, or add a new one.</p></div></div>
             </section>
@@ -154,7 +154,7 @@
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
             <h3 class="text-xl font-semibold p-6 border-b" data-translate="addTask">Add New Task</h3>
             <form id="task-form" class="p-6">
-                 <label for="task-text" class="block text-sm font-medium text-gray-700" data-translate="taskDescription">Task Description</label>
+                <label for="task-text" class="block text-sm font-medium text-gray-700" data-translate="taskDescription">Task Description</label>
                 <input type="text" id="task-text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
             </form>
             <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
@@ -188,17 +188,25 @@
         </div>
     </div>
 
-
     <!-- Toast Notification -->
     <div id="toast"></div>
 
-    <!-- Firebase -->
     <script type="module">
         // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+        const firebaseConfigFromModule = {
+            apiKey: "AIzaSyBd-qKC_YUO9F3-Oh1WzgPi2osFaLO8G8Y",
+            authDomain: "cliet-hub-mjm.firebaseapp.com",
+            projectId: "cliet-hub-mjm",
+            storageBucket: "cliet-hub-mjm.appspot.com",
+            messagingSenderId: "416845101627",
+            appId: "1:416845101627:web:6259b28c1632554d7dba1e",
+            measurementId: "G-MGSP9CGS82"
+        };
 
         // --- App State ---
         let currentLanguage = 'en';
@@ -208,7 +216,7 @@
         let hubId = null;
         let clientsUnsubscribe = null;
         let confirmCallback = null;
-        
+
         const uiStrings = {
             en: {
                 appTitle: "Client Hub", clients: "Clients", addClient: "Add Client",
@@ -229,7 +237,11 @@
                 fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted.",
                 exportPDF: "Export PDF", exportExcel: "Export Excel",
                 firebaseConfigError: "Firebase config error.", firebaseNotInitialized: "Database connection failed. Check configuration.",
-                linkCopied: "Shareable link copied to clipboard!"
+                linkCopied: "Shareable link copied to clipboard!",
+                breakDownGoal: "✨ Break Down Goal",
+                enterGoalPlaceholder: "Enter a project goal to break down with AI...",
+                generatingTasks: "Generating...",
+                tasksGenerated: "AI tasks have been added!"
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
@@ -250,7 +262,11 @@
                 fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف.",
                 exportPDF: "تصدير PDF", exportExcel: "تصدير Excel",
                 firebaseConfigError: "خطأ في إعدادات Firebase.", firebaseNotInitialized: "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات.",
-                linkCopied: "تم نسخ رابط المشاركة إلى الحافظة!"
+                linkCopied: "تم نسخ رابط المشاركة إلى الحافظة!",
+                breakDownGoal: "✨ تحليل الهدف",
+                enterGoalPlaceholder: "أدخل هدف المشروع لتحليله بالذكاء الاصطناعي...",
+                generatingTasks: "جاري الإنشاء...",
+                tasksGenerated: "تمت إضافة مهام الذكاء الاصطناعي!"
             }
         };
 
@@ -296,6 +312,27 @@
             uploadProgressText: document.getElementById('upload-progress-text'),
         };
 
+        /**
+         * Creates a DOM element with specified tag, classes, and text content.
+         * @param {string} tag - The HTML tag for the element.
+         * @param {string[]|string} classes - A string or array of strings for CSS classes.
+         * @param {string} [textContent] - The text content for the element.
+         * @returns {HTMLElement} The created DOM element.
+         */
+        const createElement = (tag, classes = [], textContent = '') => {
+            const el = document.createElement(tag);
+            if (Array.isArray(classes)) {
+                el.classList.add(...classes);
+            } else if (typeof classes === 'string' && classes) {
+                el.classList.add(classes);
+            }
+            if (textContent) {
+                el.textContent = textContent;
+            }
+            return el;
+        };
+
+
         const setLanguage = (lang) => {
             if (lang !== 'en' && lang !== 'ar') return;
             currentLanguage = lang;
@@ -316,10 +353,10 @@
             renderClientsList(elements.clientSearch.value);
             if(selectedClientId) renderClientDetails(selectedClientId);
         };
-        
+
         const getInitials = (name) => {
             if (!name) return '?';
-            const names = name.split(' ');
+            const names = name.trim().split(' ');
             if (names.length > 1) {
                 return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
             }
@@ -328,28 +365,44 @@
 
         const renderClientsList = (filter = '') => {
             elements.loaderClients.classList.add('hidden');
+            // Clear previous list
+            elements.clientsList.innerHTML = '';
+            
             if (!hubId) return;
 
             const filteredClients = clients.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
 
             if (filteredClients.length === 0) {
-                elements.clientsList.innerHTML = `<p class="p-4 text-sm text-gray-500 text-center">${uiStrings[currentLanguage].noClientsFound}</p>`;
+                const p = createElement('p', ['p-4', 'text-sm', 'text-gray-500', 'text-center'], uiStrings[currentLanguage].noClientsFound);
+                elements.clientsList.appendChild(p);
                 return;
             }
 
-            elements.clientsList.innerHTML = filteredClients.map(client => `
-                <div class="client-item p-3 border-b cursor-pointer hover:bg-gray-100 flex items-center space-x-3 rtl:space-x-reverse ${client.id === selectedClientId ? 'selected' : ''}" data-id="${client.id}">
-                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 flex-shrink-0">${getInitials(client.name)}</div>
-                    <div class="flex-1 overflow-hidden">
-                        <h4 class="font-semibold text-gray-800 truncate">${client.name}</h4>
-                        <p class="text-sm text-gray-500 truncate">${client.company || client.email || ''}</p>
-                    </div>
-                </div>
-            `).join('');
+            filteredClients.forEach(client => {
+                const itemDiv = createElement('div', ['client-item', 'p-3', 'border-b', 'cursor-pointer', 'hover:bg-gray-100', 'flex', 'items-center', 'space-x-3', 'rtl:space-x-reverse']);
+                if (client.id === selectedClientId) {
+                    itemDiv.classList.add('selected');
+                }
+                itemDiv.dataset.id = client.id;
+                
+                const avatarDiv = createElement('div', ['h-10', 'w-10', 'rounded-full', 'bg-gray-200', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-gray-600', 'flex-shrink-0'], getInitials(client.name));
+                
+                const textDiv = createElement('div', ['flex-1', 'overflow-hidden']);
+                const nameH4 = createElement('h4', ['font-semibold', 'text-gray-800', 'truncate'], client.name);
+                const detailP = createElement('p', ['text-sm', 'text-gray-500', 'truncate'], client.company || client.email || '');
+                
+                textDiv.append(nameH4, detailP);
+                itemDiv.append(avatarDiv, textDiv);
+                elements.clientsList.appendChild(itemDiv);
+            });
         };
-        
+
+        // SECURE: Rewritten to use DOM element creation instead of innerHTML
         const renderClientDetails = (clientId) => {
             const client = clients.find(c => c.id === clientId);
+            // Clear previous view
+            elements.clientDetailsView.innerHTML = '';
+
             if (!client) {
                 elements.clientDetailsView.classList.add('hidden');
                 elements.emptyState.classList.remove('hidden');
@@ -359,105 +412,176 @@
             elements.emptyState.classList.add('hidden');
             elements.clientDetailsView.classList.remove('hidden');
 
-            elements.clientDetailsView.innerHTML = `
-                <div class="p-6 border-b bg-white">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="h-16 w-16 rounded-full bg-gray-700 text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">${getInitials(client.name)}</div>
-                            <div>
-                                <h2 class="text-2xl font-bold text-gray-900">${client.name}</h2>
-                                ${client.company ? `<p class="text-md text-gray-600">${client.company}</p>` : ''}
-                                <div class="text-sm text-gray-500 mt-1 flex items-center space-x-4 rtl:space-x-reverse">
-                                    ${client.email ? `<span class="flex items-center"><svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>${client.email}</span>` : ''}
-                                    ${client.phone ? `<span class="flex items-center"><svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a11.024 11.024 0 005.174 5.174l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>${client.phone}</span>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex-col md:flex-row flex space-y-2 md:space-y-0 md:space-x-2 rtl:space-x-reverse">
-                            <button id="export-pdf-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="exportPDF">Export PDF</button>
-                            <button id="export-excel-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="exportExcel">Export Excel</button>
-                            <button id="edit-client-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="edit">Edit</button>
-                            <button id="delete-client-btn" class="text-sm font-medium text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-red-50" data-translate="delete">Delete</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6 space-y-8">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2" data-translate="notes">Notes</h3>
-                        <div class="bg-white p-4 rounded-lg border min-h-[100px] text-gray-700 whitespace-pre-wrap">${client.notes || `<span class="text-gray-400">No notes yet.</span>`}</div>
-                    </div>
-
-                     <!-- Files Section -->
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold" data-translate="files">Files</h3>
-                            <label class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold cursor-pointer hover:bg-gray-700">
-                                <span data-translate="uploadFile">Upload File</span>
-                                <input type="file" id="file-upload-input" class="hidden">
-                            </label>
-                        </div>
-                        <div id="files-list" class="bg-white p-4 rounded-lg border space-y-3">
-                            ${(client.files && client.files.length > 0) ? client.files.map(file => renderFileItem(file)).join('') : '<span class="text-gray-400 text-sm">No files uploaded.</span>'}
-                        </div>
-                    </div>
-
-                    <!-- Tasks Section -->
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold" data-translate="tasks">Tasks</h3>
-                            <button id="add-task-btn" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold" data-translate="addTask">Add Task</button>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            ${renderKanbanColumn('todo', uiStrings[currentLanguage].todo, client.tasks || [])}
-                            ${renderKanbanColumn('inprogress', uiStrings[currentLanguage].inprogress, client.tasks || [])}
-                            ${renderKanbanColumn('done', uiStrings[currentLanguage].done, client.tasks || [])}
-                        </div>
-                    </div>
-                </div>`;
+            // --- Header ---
+            const headerContainer = createElement('div', ['p-6', 'border-b', 'bg-white']);
+            const headerFlex = createElement('div', ['flex', 'justify-between', 'items-start']);
+            const clientInfoFlex = createElement('div', ['flex', 'items-center', 'space-x-4', 'rtl:space-x-reverse']);
+            const avatar = createElement('div', ['h-16', 'w-16', 'rounded-full', 'bg-gray-700', 'text-white', 'flex', 'items-center', 'justify-center', 'text-2xl', 'font-bold', 'flex-shrink-0'], getInitials(client.name));
+            const clientTextInfo = createElement('div');
+            const clientName = createElement('h2', ['text-2xl', 'font-bold', 'text-gray-900'], client.name);
+            clientTextInfo.appendChild(clientName);
+            if(client.company) clientTextInfo.appendChild(createElement('p', ['text-md', 'text-gray-600'], client.company));
             
-            elements.clientDetailsView.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (uiStrings[currentLanguage][key]) el.textContent = uiStrings[currentLanguage][key];
-            });
+            const contactInfoDiv = createElement('div', ['text-sm', 'text-gray-500', 'mt-1', 'flex', 'items-center', 'space-x-4', 'rtl:space-x-reverse']);
+            if(client.email) {
+                const emailSpan = createElement('span', ['flex', 'items-center']);
+                emailSpan.innerHTML = `<svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>`;
+                emailSpan.appendChild(document.createTextNode(client.email));
+                contactInfoDiv.appendChild(emailSpan);
+            }
+            if(client.phone) {
+                const phoneSpan = createElement('span', ['flex', 'items-center']);
+                phoneSpan.innerHTML = `<svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a11.024 11.024 0 005.174 5.174l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>`;
+                phoneSpan.appendChild(document.createTextNode(client.phone));
+                contactInfoDiv.appendChild(phoneSpan);
+            }
+            clientTextInfo.appendChild(contactInfoDiv);
+            clientInfoFlex.append(avatar, clientTextInfo);
+            
+            const buttonGroup = createElement('div', ['flex-col', 'md:flex-row', 'flex', 'space-y-2', 'md:space-y-0', 'md:space-x-2', 'rtl:space-x-reverse']);
+            const exportPdfBtn = createElement('button', ['text-sm', 'font-medium', 'text-gray-600', 'hover:text-gray-900', 'p-2', 'rounded-md', 'hover:bg-gray-100'], uiStrings[currentLanguage].exportPDF);
+            exportPdfBtn.id = 'export-pdf-btn';
+            const exportExcelBtn = createElement('button', ['text-sm', 'font-medium', 'text-gray-600', 'hover:text-gray-900', 'p-2', 'rounded-md', 'hover:bg-gray-100'], uiStrings[currentLanguage].exportExcel);
+            exportExcelBtn.id = 'export-excel-btn';
+            const editBtn = createElement('button', ['text-sm', 'font-medium', 'text-gray-600', 'hover:text-gray-900', 'p-2', 'rounded-md', 'hover:bg-gray-100'], uiStrings[currentLanguage].edit);
+            editBtn.id = 'edit-client-btn';
+            const deleteBtn = createElement('button', ['text-sm', 'font-medium', 'text-red-600', 'hover:text-red-900', 'p-2', 'rounded-md', 'hover:bg-red-50'], uiStrings[currentLanguage].delete);
+            deleteBtn.id = 'delete-client-btn';
+            buttonGroup.append(exportPdfBtn, exportExcelBtn, editBtn, deleteBtn);
+            
+            headerFlex.append(clientInfoFlex, buttonGroup);
+            headerContainer.appendChild(headerFlex);
+            
+            // --- Body ---
+            const bodyContainer = createElement('div', ['p-6', 'space-y-8']);
+            
+            // Notes
+            const notesSection = createElement('div');
+            const notesTitle = createElement('h3', ['text-lg', 'font-semibold', 'mb-2'], uiStrings[currentLanguage].notes);
+            const notesContent = createElement('div', ['bg-white', 'p-4', 'rounded-lg', 'border', 'min-h-[100px]', 'text-gray-700', 'whitespace-pre-wrap']);
+            notesContent.textContent = client.notes || '';
+            if (!client.notes) {
+                const noNotesSpan = createElement('span', ['text-gray-400'], 'No notes yet.');
+                notesContent.appendChild(noNotesSpan);
+            }
+            notesSection.append(notesTitle, notesContent);
+
+            // Files
+            const filesSection = createElement('div');
+            const filesHeader = createElement('div', ['flex', 'justify-between', 'items-center', 'mb-4']);
+            const filesTitle = createElement('h3', ['text-lg', 'font-semibold'], uiStrings[currentLanguage].files);
+            const uploadLabel = createElement('label', ['bg-gray-800', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'text-sm', 'font-semibold', 'cursor-pointer', 'hover:bg-gray-700']);
+            uploadLabel.appendChild(createElement('span', [], uiStrings[currentLanguage].uploadFile));
+            const fileInput = createElement('input', 'hidden');
+            fileInput.type = 'file';
+            fileInput.id = 'file-upload-input';
+            uploadLabel.appendChild(fileInput);
+            filesHeader.append(filesTitle, uploadLabel);
+            
+            const filesListDiv = createElement('div', ['bg-white', 'p-4', 'rounded-lg', 'border', 'space-y-3']);
+            filesListDiv.id = 'files-list';
+            if (client.files && client.files.length > 0) {
+                client.files.forEach(file => filesListDiv.appendChild(renderFileItem(file)));
+            } else {
+                filesListDiv.appendChild(createElement('span', ['text-gray-400', 'text-sm'], 'No files uploaded.'));
+            }
+            filesSection.append(filesHeader, filesListDiv);
+
+            // Tasks
+            const tasksSection = createElement('div');
+            const tasksHeader = createElement('div', ['flex', 'justify-between', 'items-center', 'mb-4']);
+            const tasksTitle = createElement('h3', ['text-lg', 'font-semibold'], uiStrings[currentLanguage].tasks);
+            const addTaskBtn = createElement('button', ['bg-gray-800', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'text-sm', 'font-semibold'], uiStrings[currentLanguage].addTask);
+            addTaskBtn.id = 'add-task-btn';
+            tasksHeader.append(tasksTitle, addTaskBtn);
+
+            const kanbanGrid = createElement('div', ['grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-6']);
+            kanbanGrid.appendChild(renderKanbanColumn('todo', uiStrings[currentLanguage].todo, client.tasks || []));
+            kanbanGrid.appendChild(renderKanbanColumn('inprogress', uiStrings[currentLanguage].inprogress, client.tasks || []));
+            kanbanGrid.appendChild(renderKanbanColumn('done', uiStrings[currentLanguage].done, client.tasks || []));
+            
+            // --- AI Task Breakdown Feature ---
+            const aiFeatureDiv = createElement('div', ['mt-4', 'mb-2', 'p-4', 'bg-blue-50', 'border', 'border-blue-200', 'rounded-lg']);
+            const aiInput = createElement('input', ['w-full', 'border', 'border-gray-300', 'rounded-md', 'shadow-sm', 'p-2']);
+            aiInput.id = 'ai-goal-input';
+            aiInput.type = 'text';
+            aiInput.placeholder = uiStrings[currentLanguage].enterGoalPlaceholder;
+            
+            const aiButton = createElement('button', ['mt-2', 'w-full', 'bg-blue-600', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'text-sm', 'font-semibold', 'hover:bg-blue-700', 'flex', 'items-center', 'justify-center', 'gap-2', 'transition-colors']);
+            aiButton.id = 'ai-breakdown-btn';
+            aiButton.innerHTML = `✨ <span data-translate="breakDownGoal">${uiStrings[currentLanguage].breakDownGoal.replace('✨ ','')}</span>`;
+
+            aiFeatureDiv.append(aiInput, aiButton);
+            tasksSection.append(tasksHeader, aiFeatureDiv, kanbanGrid);
+
+            bodyContainer.append(notesSection, filesSection, tasksSection);
+            elements.clientDetailsView.append(headerContainer, bodyContainer);
         };
-        
+
+        // SECURE: Rewritten to return a DOM element instead of an HTML string
         const renderKanbanColumn = (status, title, tasks) => {
             const tasksInColumn = tasks.filter(t => t.status === status);
-            return `
-                <div class="bg-white rounded-lg p-3 kanban-column border" data-status="${status}">
-                    <h4 class="font-semibold mb-3 text-center text-gray-700 border-b pb-2">${title} <span class="text-sm text-gray-500">${tasksInColumn.length}</span></h4>
-                    <div class="space-y-3 task-list pt-2">
-                        ${tasksInColumn.map(task => `
-                            <div class="bg-white p-3 rounded-md shadow-sm border task-card" draggable="true" data-task-id="${task.id}">
-                                <p class="pr-6">${task.text}</p>
-                                <button class="delete-task-btn p-1 rounded-full hover:bg-red-100 text-gray-400 hover:text-red-600" data-task-id="${task.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                                </button>
-                            </div>
-                        `).join('') || `<div class="text-xs text-gray-500 text-center p-4">Drop tasks here</div>`}
-                    </div>
-                </div>`;
+            
+            const columnDiv = createElement('div', ['bg-white', 'rounded-lg', 'p-3', 'kanban-column', 'border']);
+            columnDiv.dataset.status = status;
+            
+            const titleH4 = createElement('h4', ['font-semibold', 'mb-3', 'text-center', 'text-gray-700', 'border-b', 'pb-2']);
+            titleH4.textContent = `${title} `;
+            titleH4.appendChild(createElement('span', ['text-sm', 'text-gray-500'], tasksInColumn.length));
+            
+            const taskListDiv = createElement('div', ['space-y-3', 'task-list', 'pt-2']);
+
+            if (tasksInColumn.length > 0) {
+                tasksInColumn.forEach(task => {
+                    const cardDiv = createElement('div', ['bg-white', 'p-3', 'rounded-md', 'shadow-sm', 'border', 'task-card']);
+                    cardDiv.draggable = true;
+                    cardDiv.dataset.taskId = task.id;
+                    
+                    const textP = createElement('p', 'pr-6', task.text);
+                    const deleteBtn = createElement('button', ['delete-task-btn', 'p-1', 'rounded-full', 'hover:bg-red-100', 'text-gray-400', 'hover:text-red-600']);
+                    deleteBtn.dataset.taskId = task.id;
+                    deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+                    
+                    cardDiv.append(textP, deleteBtn);
+                    taskListDiv.appendChild(cardDiv);
+                });
+            } else {
+                taskListDiv.appendChild(createElement('div', ['text-xs', 'text-gray-500', 'text-center', 'p-4'], 'Drop tasks here'));
+            }
+            
+            columnDiv.append(titleH4, taskListDiv);
+            return columnDiv;
         };
-        
+
+        // SECURE: Rewritten to return a DOM element instead of an HTML string
         const renderFileItem = (file) => {
-            return `
-            <div class="flex items-center justify-between p-2 rounded-md hover:bg-gray-50">
-                <div class="flex items-center space-x-3 rtl:space-x-reverse flex-1 overflow-hidden">
-                    ${getFileTypeIcon(file.name)}
-                    <div class="flex-1 overflow-hidden">
-                        <p class="text-sm font-medium text-gray-800 truncate">${file.name}</p>
-                        <p class="text-xs text-gray-500">${formatBytes(file.size)}</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2 rtl:space-x-reverse ml-2">
-                     <a href="${file.url}" target="_blank" class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                    </a>
-                    <button class="delete-file-btn p-1.5 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full" data-storage-path="${file.storagePath}" data-file-name="${file.name}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                    </button>
-                </div>
-            </div>`;
+            const fileItemDiv = createElement('div', ['flex', 'items-center', 'justify-between', 'p-2', 'rounded-md', 'hover:bg-gray-50']);
+            const leftDiv = createElement('div', ['flex', 'items-center', 'space-x-3', 'rtl:space-x-reverse', 'flex-1', 'overflow-hidden']);
+            
+            const iconContainer = createElement('div');
+            iconContainer.innerHTML = getFileTypeIcon(file.name);
+            
+            const textDiv = createElement('div', ['flex-1', 'overflow-hidden']);
+            const fileNameP = createElement('p', ['text-sm', 'font-medium', 'text-gray-800', 'truncate'], file.name);
+            const fileSizeP = createElement('p', ['text-xs', 'text-gray-500'], formatBytes(file.size));
+            textDiv.append(fileNameP, fileSizeP);
+            
+            leftDiv.append(iconContainer, textDiv);
+            
+            const rightDiv = createElement('div', ['flex', 'items-center', 'space-x-2', 'rtl:space-x-reverse', 'ml-2']);
+            const downloadLink = createElement('a', ['p-1.5', 'text-gray-500', 'hover:text-gray-800', 'hover:bg-gray-200', 'rounded-full']);
+            downloadLink.href = file.url;
+            downloadLink.target = '_blank';
+            downloadLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+            
+            const deleteBtn = createElement('button', ['delete-file-btn', 'p-1.5', 'text-red-500', 'hover:text-red-700', 'hover:bg-red-100', 'rounded-full']);
+            deleteBtn.dataset.storagePath = file.storagePath;
+            deleteBtn.dataset.fileName = file.name;
+            deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`;
+            
+            rightDiv.append(downloadLink, deleteBtn);
+            fileItemDiv.append(leftDiv, rightDiv);
+            return fileItemDiv;
         }
 
         const handleClientSelect = (e) => {
@@ -476,7 +600,7 @@
             elements.clientModalTitle.textContent = uiStrings[currentLanguage].addClientTitle;
             elements.clientModal.classList.remove('hidden');
         };
-        
+
         const handleEditClient = () => {
             const client = clients.find(c => c.id === selectedClientId);
             if(client) {
@@ -542,7 +666,7 @@
                 elements.clientModal.classList.add('hidden');
             } catch (e) { console.error("Error saving client: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
         };
-        
+
         const handleAddTask = () => { elements.taskForm.reset(); elements.taskModal.classList.remove('hidden'); };
         const handleSaveTask = async (e) => {
             e.preventDefault();
@@ -560,6 +684,97 @@
                 elements.taskModal.classList.add('hidden');
             } catch(e) { console.error("Error adding task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
         };
+        
+        const handleAiTaskBreakdown = async () => {
+            const aiButton = document.getElementById('ai-breakdown-btn');
+            const aiInput = document.getElementById('ai-goal-input');
+            if (!aiButton || !aiInput) return;
+
+            const goal = aiInput.value.trim();
+            if (!goal) {
+                showToast("Please enter a goal to break down.", 'error');
+                return;
+            }
+
+            const client = clients.find(c => c.id === selectedClientId);
+            if (!client) return;
+
+            const originalButtonContent = aiButton.innerHTML;
+            aiButton.disabled = true;
+            aiButton.innerHTML = `<span class="h-4 w-4 border-t-2 border-white rounded-full animate-spin"></span><span class="ml-2">${uiStrings[currentLanguage].generatingTasks}</span>`;
+
+            try {
+                const taskStrings = await generateTasksWithGemini(goal, client);
+                if (!taskStrings || taskStrings.length === 0) {
+                    throw new Error("AI did not generate any tasks.");
+                }
+                
+                const newTasks = taskStrings.map(text => ({ 
+                    id: `task_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`, 
+                    text: text, 
+                    status: 'todo' 
+                }));
+
+                const clientDoc = clients.find(c => c.id === selectedClientId); // Re-fetch latest client state
+                const updatedTasks = [...(clientDoc.tasks || []), ...newTasks];
+                
+                const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
+                await updateDoc(clientRef, { tasks: updatedTasks });
+                
+                showToast(uiStrings[currentLanguage].tasksGenerated, 'success');
+                aiInput.value = '';
+            } catch (error) {
+                console.error("Error generating AI tasks:", error);
+                showToast(uiStrings[currentLanguage].error, 'error');
+            } finally {
+                aiButton.disabled = false;
+                aiButton.innerHTML = originalButtonContent;
+            }
+        };
+
+        const generateTasksWithGemini = async (goal, client) => {
+            const apiKey = ""; // This will be handled by the environment, leave as an empty string.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const systemPrompt = "You are an expert project manager. Your task is to break down a high-level user goal into a concise list of 3 to 7 actionable tasks. Consider the client's information for context if provided. The tasks should be clear, specific, and begin with a verb. Respond ONLY with a valid JSON array of strings, where each string is a task. Do not include any other text, explanations, or markdown formatting. For example: [\"Task 1\", \"Task 2\", \"Task 3\"]";
+            const userQuery = `Client Name: ${client.name}\nClient Notes: ${client.notes || 'N/A'}\n\nHigh-Level Goal: "${goal}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: { type: "STRING" }
+                    }
+                }
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.text();
+                throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+            }
+
+            const result = await response.json();
+            const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (!jsonText) {
+                console.error('Invalid response structure from API:', result);
+                throw new Error("Invalid or empty response from the AI model.");
+            }
+
+            return JSON.parse(jsonText);
+        };
+
         const handleDeleteTask = (taskId) => {
             if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
             showConfirmationModal(uiStrings[currentLanguage].confirmDeleteTaskTitle, uiStrings[currentLanguage].confirmDeleteTaskText,
@@ -567,11 +782,11 @@
                     const client = clients.find(c => c.id === selectedClientId);
                     if (!client) return;
                     const updatedTasks = client.tasks.filter(t => t.id !== taskId);
-                     try {
-                        const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
-                        await updateDoc(clientRef, { tasks: updatedTasks });
-                        showToast(uiStrings[currentLanguage].taskDeleted, 'success');
-                    } catch(e) { console.error("Error deleting task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+                        try {
+                            const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
+                            await updateDoc(clientRef, { tasks: updatedTasks });
+                            showToast(uiStrings[currentLanguage].taskDeleted, 'success');
+                        } catch(e) { console.error("Error deleting task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
                 }
             );
         };
@@ -711,29 +926,29 @@
             }
 
             if (client.tasks && client.tasks.length > 0) {
-                 doc.autoTable({
-                    startY: currentY,
-                    head: [[uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks]],
-                    body: client.tasks.map(t => [t.text, uiStrings[currentLanguage][t.status.replace(' ','')] || t.status]),
-                    theme: 'grid',
-                    headStyles: { fillColor: [39, 174, 96] },
-                });
-                currentY = doc.autoTable.previous.finalY + 15;
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [[uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks]],
+                        body: client.tasks.map(t => [t.text, uiStrings[currentLanguage][t.status.replace(' ','')] || t.status]),
+                        theme: 'grid',
+                        headStyles: { fillColor: [39, 174, 96] },
+                    });
+                    currentY = doc.autoTable.previous.finalY + 15;
             }
 
             if (client.files && client.files.length > 0) {
-                 doc.autoTable({
-                    startY: currentY,
-                    head: [[uiStrings[currentLanguage].files]],
-                    body: client.files.map(f => [f.name]),
-                    theme: 'grid',
-                    headStyles: { fillColor: [80, 80, 80] },
-                });
+                    doc.autoTable({
+                        startY: currentY,
+                        head: [[uiStrings[currentLanguage].files]],
+                        body: client.files.map(f => [f.name]),
+                        theme: 'grid',
+                        headStyles: { fillColor: [80, 80, 80] },
+                    });
             }
 
             doc.save(`${client.name}_Report.pdf`);
         };
-        
+
         const handleExportExcel = () => {
             const client = clients.find(c => c.id === selectedClientId);
             if (!client) return;
@@ -756,7 +971,7 @@
                 [uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks],
                 ...tasks.map(t => [t.text, uiStrings[currentLanguage][t.status] || t.status])
             ];
-             const tasks_ws = XLSX.utils.aoa_to_sheet(tasksData);
+                const tasks_ws = XLSX.utils.aoa_to_sheet(tasksData);
             tasks_ws['A1'].s = { font: { bold: true }};
             tasks_ws['B1'].s = { font: { bold: true }};
             
@@ -801,7 +1016,7 @@
         const getAppId = () => typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         const formatBytes = (bytes, decimals = 2) => {
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes || bytes === 0) return '0 Bytes';
             const k = 1024;
             const dm = decimals < 0 ? 0 : decimals;
             const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -817,57 +1032,61 @@
             return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>`;
         };
 
-        const initFirebase = () => {
-            const firebaseConfigFromUser = {
-                apiKey: "AIzaSyBd-qKC_YUO9F3-Oh1WzgPi2osFaLO8G8Y",
-                authDomain: "cliet-hub-mjm.firebaseapp.com",
-                projectId: "cliet-hub-mjm",
-                storageBucket: "cliet-hub-mjm.appspot.com",
-                messagingSenderId: "416845101627",
-                appId: "1:416845101627:web:6259b28c1632554d7dba1e",
-                measurementId: "G-MGSP9CGS82"
-            };
-
+        const initFirebase = async () => {
             let firebaseConfig;
 
             if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
-                firebaseConfig = JSON.parse(__firebase_config);
+                try {
+                    firebaseConfig = JSON.parse(__firebase_config);
+                } catch (e) {
+                    console.error("Error parsing injected Firebase config:", e);
+                    showToast("Invalid Firebase configuration provided.", 'error');
+                    return;
+                }
             } else {
-                firebaseConfig = firebaseConfigFromUser;
+                firebaseConfig = firebaseConfigFromModule;
             }
 
             try {
                 setLogLevel('error');
                 if (!firebaseConfig || !firebaseConfig.apiKey) {
-                    throw new Error("Firebase configuration is missing or invalid. Please paste it into the client-hub.html file.");
+                    throw new Error("Firebase configuration is missing or invalid.");
                 }
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 storage = getStorage(app);
-                setupAuthListener();
+                await setupAuthListener();
             } catch (e) {
                 console.error("Firebase init failed:", e);
                 showToast(uiStrings[currentLanguage].firebaseConfigError, 'error');
             }
         };
-        
-        const setupAuthListener = () => {
-            onAuthStateChanged(auth, user => {
-                if (user) {
-                   initializeHub();
-                } else {
-                    signInAnonymously(auth).catch(err => {
-                        console.error("Anonymous sign-in failed", err);
-                        showToast(uiStrings[currentLanguage].error, 'error');
-                    });
-                }
+
+        const setupAuthListener = async () => {
+            return new Promise((resolve) => {
+                onAuthStateChanged(auth, user => {
+                    if (user) {
+                        initializeHub();
+                        resolve();
+                    } else if (typeof __initial_auth_token !== 'undefined') {
+                        signInWithCustomToken(auth, __initial_auth_token).catch(err => {
+                            console.error("Custom token sign-in failed", err);
+                            showToast(uiStrings[currentLanguage].error, 'error');
+                        });
+                    } else {
+                        signInAnonymously(auth).catch(err => {
+                            console.error("Anonymous sign-in failed", err);
+                            showToast(uiStrings[currentLanguage].error, 'error');
+                        });
+                    }
+                });
             });
         };
 
         const fetchClients = () => {
             if (clientsUnsubscribe) clientsUnsubscribe();
-            if (!hubId) return;
+            if (!hubId || !db) return;
             elements.loaderClients.classList.remove('hidden');
             const clientCollection = collection(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`);
             clientsUnsubscribe = onSnapshot(clientCollection, (snapshot) => {
@@ -882,7 +1101,7 @@
                 }
             }, (error) => { console.error("Error fetching clients:", error); elements.loaderClients.classList.add('hidden'); });
         };
-        
+
         const initializeHub = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const hubIdFromUrl = urlParams.get('hub');
@@ -910,12 +1129,20 @@
 
         const copyHubLink = () => {
             const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
+            // Use the older `execCommand` for wider compatibility in sandboxed environments
+            const textArea = document.createElement("textarea");
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
                 showToast(uiStrings[currentLanguage].linkCopied, 'success');
-            }, (err) => {
-                console.error('Could not copy text: ', err);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
                 showToast(uiStrings[currentLanguage].error, 'error');
-            });
+            }
+            document.body.removeChild(textArea);
         };
 
         const addEventListeners = () => {
@@ -932,18 +1159,23 @@
             elements.copyHubLinkBtn.addEventListener('click', copyHubLink);
             
             elements.clientDetailsView.addEventListener('click', (e) => {
-                if (e.target.id === 'edit-client-btn') handleEditClient();
-                if (e.target.id === 'delete-client-btn') handleDeleteClient();
-                if (e.target.id === 'add-task-btn') handleAddTask();
-                if (e.target.id === 'export-pdf-btn') handleExportPDF();
-                if (e.target.id === 'export-excel-btn') handleExportExcel();
+                const targetId = e.target.id;
+                if (targetId === 'edit-client-btn') handleEditClient();
+                if (targetId === 'delete-client-btn') handleDeleteClient();
+                if (targetId === 'add-task-btn') handleAddTask();
+                if (targetId === 'export-pdf-btn') handleExportPDF();
+                if (targetId === 'export-excel-btn') handleExportExcel();
+
+                if (e.target.closest('#ai-breakdown-btn')) {
+                    handleAiTaskBreakdown();
+                }
+
+                if (targetId === 'file-upload-input') {
+                    e.target.addEventListener('change', handleFileUpload, { once: true });
+                }
 
                 const deleteBtn = e.target.closest('.delete-task-btn');
                 if (deleteBtn) handleDeleteTask(deleteBtn.dataset.taskId);
-
-                if (e.target.id === 'file-upload-input') {
-                    e.target.addEventListener('change', handleFileUpload, { once: true });
-                }
 
                 const deleteFileBtn = e.target.closest('.delete-file-btn');
                 if(deleteFileBtn) {
@@ -966,7 +1198,11 @@
             elements.closePanelBtn.addEventListener('click', () => elements.clientListPanel.classList.add('-translate-x-full'));
         };
 
-        document.addEventListener('DOMContentLoaded', () => { setLanguage('en'); addEventListeners(); initFirebase(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            setLanguage('en'); 
+            addEventListeners(); 
+            initFirebase(); 
+        });
     </script>
 </body>
 </html>
