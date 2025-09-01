@@ -83,11 +83,20 @@
         <!-- Header -->
         <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
             <div><h1 class="text-2xl font-bold text-gray-800" data-translate="appTitle">Client Hub</h1></div>
-            <div class="flex items-center space-x-4">
-                 <div id="auth-status" class="flex items-center">
-                    <span id="loader-auth" class="h-5 w-5 border-t-2 border-gray-600 rounded-full animate-spin"></span>
-                    <span id="user-info" class="text-sm text-gray-500 hidden" data-translate="loading">Loading...</span>
+            <div class="flex items-center space-x-2 md:space-x-4">
+                 <div id="hub-info-container" class="hidden items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+                    <span class="text-sm font-medium text-gray-600" data-translate="hubIdLabel">HUB ID:</span>
+                    <span id="hub-id-display" class="text-sm font-semibold text-gray-800"></span>
+                    <button id="copy-hub-link-btn" class="p-1 text-gray-500 hover:text-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
                  </div>
+                 <button id="share-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
+                    <span data-translate="share">Share</span>
+                 </button>
                 <div class="flex items-center border border-gray-300 rounded-lg p-1">
                     <button id="lang-en" class="px-3 py-1 text-sm rounded-md bg-gray-700 text-white">EN</button>
                     <button id="lang-ar" class="px-3 py-1 text-sm rounded-md">AR</button>
@@ -187,7 +196,7 @@
     <script type="module">
         // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
@@ -196,14 +205,14 @@
         let clients = [];
         let selectedClientId = null;
         let db, auth, storage;
-        let userId;
+        let hubId = null;
         let clientsUnsubscribe = null;
         let confirmCallback = null;
         
         const uiStrings = {
             en: {
                 appTitle: "Client Hub", clients: "Clients", addClient: "Add Client",
-                selectClientTitle: "Select a client", selectClientDesc: "Select a client from the list to see their details.",
+                selectClientTitle: "Select a client", selectClientDesc: "Select a client from the list to see their details, or create a new hub to get started.",
                 loading: "Loading...", addClientTitle: "Add New Client", editClientTitle: "Edit Client",
                 clientName: "Client Name", clientEmail: "Email", clientPhone: "Phone", notes: "Notes", clientCompany: "Company",
                 cancel: "Cancel", save: "Save Client", edit: "Edit", delete: "Delete", tasks: "Tasks",
@@ -214,32 +223,34 @@
                 confirmDeleteFileTitle: "Delete File?", confirmDeleteFileText: "This will permanently delete this file. Are you sure?",
                 clientSaved: "Client saved successfully.", clientDeleted: "Client deleted.",
                 taskAdded: "Task added successfully.", taskDeleted: "Task deleted.", error: "An error occurred.",
-                close: "Close", authenticatedAs: "Authenticated as: ", anonymous: "Anonymous",
+                close: "Close", hubIdLabel: "HUB ID:", share: "Share",
                 searchPlaceholder: "Search clients...", noClientsFound: "No clients found.",
                 files: "Files", uploadFile: "Upload File", uploadingFile: "Uploading File...",
                 fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted.",
                 exportPDF: "Export PDF", exportExcel: "Export Excel",
-                firebaseConfigError: "Firebase config error.", firebaseNotInitialized: "Database connection failed. Check configuration."
+                firebaseConfigError: "Firebase config error.", firebaseNotInitialized: "Database connection failed. Check configuration.",
+                linkCopied: "Shareable link copied to clipboard!"
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
-                selectClientTitle: "اختر عميل", selectClientDesc: "اختر عميلًا من القائمة لرؤية تفاصيله.",
+                selectClientTitle: "اختر عميل", selectClientDesc: "اختر عميلًا من القائمة لرؤية تفاصيله، أو أنشئ مركزًا جديدًا للبدء.",
                 loading: "جاري التحميل...", addClientTitle: "إضافة عميل جديد", editClientTitle: "تعديل العميل",
                 clientName: "اسم العميل", clientEmail: "البريد الإلكتروني", clientPhone: "الهاتف", notes: "ملاحظات", clientCompany: "الشركة",
                 cancel: "إلغاء", save: "حفظ العميل", edit: "تعديل", delete: "حذف", tasks: "المهام",
                 todo: "مهام جديدة", inprogress: "قيد التنفيذ", done: "مكتملة", addTask: "إضافة مهمة",
                 taskDescription: "وصف المهمة", saveTask: "حفظ المهمة",
-                confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبط به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+                confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
                 confirmDeleteTaskTitle: "حذف المهمة؟", confirmDeleteTaskText: "سيؤدي هذا إلى حذف هذه المهمة نهائيًا. هل أنت متأكد؟",
                 confirmDeleteFileTitle: "حذف الملف؟", confirmDeleteFileText: "سيؤدي هذا إلى حذف هذا الملف نهائيًا. هل أنت متأكد؟",
                 clientSaved: "تم حفظ العميل بنجاح.", clientDeleted: "تم حذف العميل.",
                 taskAdded: "تمت إضافة المهمة بنجاح.", taskDeleted: "تم حذف المهمة.", error: "حدث خطأ ما.",
-                close: "إغلاق", authenticatedAs: "تمت المصادقة كـ: ", anonymous: "مجهول",
+                close: "إغلاق", hubIdLabel: "معرف المركز:", share: "مشاركة",
                 searchPlaceholder: "ابحث عن عملاء...", noClientsFound: "لم يتم العثور على عملاء.",
                 files: "الملفات", uploadFile: "رفع ملف", uploadingFile: "جاري رفع الملف...",
                 fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف.",
                 exportPDF: "تصدير PDF", exportExcel: "تصدير Excel",
-                firebaseConfigError: "خطأ في إعدادات Firebase.", firebaseNotInitialized: "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات."
+                firebaseConfigError: "خطأ في إعدادات Firebase.", firebaseNotInitialized: "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات.",
+                linkCopied: "تم نسخ رابط المشاركة إلى الحافظة!"
             }
         };
 
@@ -267,9 +278,11 @@
             taskTextInput: document.getElementById('task-text'),
             cancelTaskBtn: document.getElementById('cancel-task-btn'),
             toast: document.getElementById('toast'),
-            loaderAuth: document.getElementById('loader-auth'),
             loaderClients: document.getElementById('loader-clients'),
-            userInfo: document.getElementById('user-info'),
+            hubInfoContainer: document.getElementById('hub-info-container'),
+            hubIdDisplay: document.getElementById('hub-id-display'),
+            copyHubLinkBtn: document.getElementById('copy-hub-link-btn'),
+            shareBtn: document.getElementById('share-btn'),
             clientListPanel: document.getElementById('client-list-panel'),
             openPanelBtn: document.getElementById('open-panel-btn'),
             closePanelBtn: document.getElementById('close-panel-btn'),
@@ -315,7 +328,7 @@
 
         const renderClientsList = (filter = '') => {
             elements.loaderClients.classList.add('hidden');
-            if (!userId) return;
+            if (!hubId) return;
 
             const filteredClients = clients.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
 
@@ -493,7 +506,7 @@
                                 await deleteObject(fileRef).catch(e => console.error(`Failed to delete file ${file.storagePath}`, e));
                             }
                         }
-                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                         await deleteDoc(clientRef);
                         showToast(uiStrings[currentLanguage].clientDeleted, 'success');
                         selectedClientId = null;
@@ -516,10 +529,10 @@
             };
             try {
                 if (id) {
-                    const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, id);
+                    const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, id);
                     await updateDoc(clientRef, clientData);
                 } else {
-                    const clientCollection = collection(db, `artifacts/${getAppId()}/users/${userId}/clients`);
+                    const clientCollection = collection(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`);
                     clientData.createdAt = serverTimestamp();
                     clientData.tasks = [];
                     clientData.files = [];
@@ -541,7 +554,7 @@
             const newTask = { id: `task_${Date.now()}`, text: text, status: 'todo' };
             const updatedTasks = [...(client.tasks || []), newTask];
             try {
-                const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                 await updateDoc(clientRef, { tasks: updatedTasks });
                 showToast(uiStrings[currentLanguage].taskAdded, 'success');
                 elements.taskModal.classList.add('hidden');
@@ -555,7 +568,7 @@
                     if (!client) return;
                     const updatedTasks = client.tasks.filter(t => t.id !== taskId);
                      try {
-                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                         await updateDoc(clientRef, { tasks: updatedTasks });
                         showToast(uiStrings[currentLanguage].taskDeleted, 'success');
                     } catch(e) { console.error("Error deleting task: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
@@ -582,7 +595,7 @@
                 const updatedTasks = [...client.tasks];
                 updatedTasks[taskIndex].status = newStatus;
                 try {
-                    const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                    const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                     await updateDoc(clientRef, { tasks: updatedTasks });
                 } catch(error) {
                     console.error("Error updating task status: ", error);
@@ -597,7 +610,7 @@
             if (!file || !selectedClientId) return;
 
             elements.uploadProgressModal.classList.remove('hidden');
-            const storagePath = `artifacts/${getAppId()}/users/${userId}/clients/${selectedClientId}/${Date.now()}-${file.name}`;
+            const storagePath = `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients/${selectedClientId}/${Date.now()}-${file.name}`;
             const storageRef = ref(storage, storagePath);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -623,7 +636,7 @@
                             storagePath: storagePath
                         };
                         const updatedFiles = [...(client.files || []), fileData];
-                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                         await updateDoc(clientRef, { files: updatedFiles });
 
                         showToast(uiStrings[currentLanguage].fileUploaded, 'success');
@@ -644,7 +657,7 @@
 
                         const client = clients.find(c => c.id === selectedClientId);
                         const updatedFiles = client.files.filter(f => f.storagePath !== storagePath);
-                        const clientRef = doc(db, `artifacts/${getAppId()}/users/${userId}/clients`, selectedClientId);
+                        const clientRef = doc(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`, selectedClientId);
                         await updateDoc(clientRef, { files: updatedFiles });
                         
                         showToast(uiStrings[currentLanguage].fileDeleted, 'success');
@@ -664,20 +677,14 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // This is a simplified way to handle fonts. For full Arabic support in jsPDF,
-            // you would typically need to embed a .ttf font that contains the Arabic glyphs.
-            // As we cannot bundle external font files here, this will work for English but may have issues with Arabic rendering in the PDF.
-            
             const clientName = client.name || 'No Name';
 
-            // Title
             doc.setFontSize(22);
             doc.text(clientName, 105, 20, { align: 'center' });
             doc.setFontSize(12);
             doc.setTextColor(100);
             doc.text(uiStrings[currentLanguage].appTitle, 105, 28, { align: 'center' });
-
-            // Client Info Section
+            
             const info = [
                 { title: uiStrings[currentLanguage].clientCompany, value: client.company },
                 { title: uiStrings[currentLanguage].clientEmail, value: client.email },
@@ -693,7 +700,6 @@
             });
             let currentY = doc.autoTable.previous.finalY + 15;
 
-            // Notes
             if (client.notes) {
                 doc.setFontSize(16);
                 doc.text(uiStrings[currentLanguage].notes, 14, currentY);
@@ -704,7 +710,6 @@
                 currentY += (notes.length * 5) + 10;
             }
 
-            // Tasks
             if (client.tasks && client.tasks.length > 0) {
                  doc.autoTable({
                     startY: currentY,
@@ -716,7 +721,6 @@
                 currentY = doc.autoTable.previous.finalY + 15;
             }
 
-            // Files
             if (client.files && client.files.length > 0) {
                  doc.autoTable({
                     startY: currentY,
@@ -734,27 +738,19 @@
             const client = clients.find(c => c.id === selectedClientId);
             if (!client) return;
 
-            // --- Sheet 1: Summary ---
             const summaryData = [
-                ['Client Hub Report'],
-                [],
+                ['Client Hub Report'], [],
                 ['Client Name', client.name],
                 ['Company', client.company || 'N/A'],
                 ['Email', client.email || 'N/A'],
-                ['Phone', client.phone || 'N/A'],
-                [],
+                ['Phone', client.phone || 'N/A'], [],
                 ['Notes', client.notes || 'No notes.']
             ];
             const summary_ws = XLSX.utils.aoa_to_sheet(summaryData);
             summary_ws['A1'].s = { font: { bold: true, sz: 16 }};
-            summary_ws['A3'].s = { font: { bold: true }};
-            summary_ws['A4'].s = { font: { bold: true }};
-            summary_ws['A5'].s = { font: { bold: true }};
-            summary_ws['A6'].s = { font: { bold: true }};
-            summary_ws['A8'].s = { font: { bold: true }};
-            summary_ws['!cols'] = [{ wch: 15 }, { wch: 50 }]; // Column widths
+            ['A3','A4','A5','A6','A8'].forEach(cell => { if(summary_ws[cell]) summary_ws[cell].s = { font: { bold: true }}; });
+            summary_ws['!cols'] = [{ wch: 15 }, { wch: 50 }];
 
-            // --- Sheet 2: Tasks ---
             const tasks = client.tasks || [];
             const tasksData = [
                 [uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks],
@@ -763,8 +759,7 @@
              const tasks_ws = XLSX.utils.aoa_to_sheet(tasksData);
             tasks_ws['A1'].s = { font: { bold: true }};
             tasks_ws['B1'].s = { font: { bold: true }};
-
-            // Add formulas
+            
             const formula_start_row = tasksData.length + 2;
             XLSX.utils.sheet_add_aoa(tasks_ws, [['Task Status Summary']], {origin: `A${formula_start_row}`});
             tasks_ws[`A${formula_start_row}`].s = { font: { bold: true, sz: 14 }};
@@ -773,7 +768,6 @@
             XLSX.utils.sheet_add_aoa(tasks_ws, [[uiStrings[currentLanguage].done, {f: `COUNTIF(B2:B${tasks.length + 1}, "${uiStrings[currentLanguage].done}")`}]], {origin: `A${formula_start_row + 3}`});
             tasks_ws['!cols'] = [{ wch: 60 }, { wch: 20 }];
 
-             // --- Sheet 3: Files ---
             const files = client.files || [];
             const filesData = [
                 [uiStrings[currentLanguage].files, 'Size'],
@@ -783,8 +777,7 @@
             files_ws['A1'].s = { font: { bold: true }};
             files_ws['B1'].s = { font: { bold: true }};
             files_ws['!cols'] = [{ wch: 50 }, { wch: 15 }];
-
-            // --- Create Workbook and Download ---
+            
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, summary_ws, "Client Summary");
             XLSX.utils.book_append_sheet(wb, tasks_ws, "Tasks");
@@ -825,14 +818,6 @@
         };
 
         const initFirebase = () => {
-            // --- IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE ---
-            // To make this app work on GitHub Pages, you must paste your Firebase project's
-            // configuration object here.
-            // 1. Go to your Firebase project: https://console.firebase.google.com/
-            // 2. Click the gear icon -> Project settings.
-            // 3. In the "Your apps" card, find your web app.
-            // 4. Under "Firebase SDK snippet", select the "Config" option.
-            // 5. Copy the entire object (from { to }) and paste it below.
             const firebaseConfigFromUser = {
                 apiKey: "AIzaSyBd-qKC_YUO9F3-Oh1WzgPi2osFaLO8G8Y",
                 authDomain: "cliet-hub-mjm.firebaseapp.com",
@@ -842,15 +827,12 @@
                 appId: "1:416845101627:web:6259b28c1632554d7dba1e",
                 measurementId: "G-MGSP9CGS82"
             };
-            // --------------------------------------------------------------------
 
             let firebaseConfig;
 
             if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
-                // Use the environment's config if available (like in the original dev environment)
                 firebaseConfig = JSON.parse(__firebase_config);
             } else {
-                // Otherwise, use the config you pasted above for GitHub Pages
                 firebaseConfig = firebaseConfigFromUser;
             }
 
@@ -866,44 +848,28 @@
                 setupAuthListener();
             } catch (e) {
                 console.error("Firebase init failed:", e);
-                elements.userInfo.textContent = uiStrings[currentLanguage].firebaseConfigError;
-                elements.loaderAuth.classList.add('hidden');
-                elements.userInfo.classList.remove('hidden');
+                showToast(uiStrings[currentLanguage].firebaseConfigError, 'error');
             }
         };
         
         const setupAuthListener = () => {
             onAuthStateChanged(auth, user => {
-                elements.loaderAuth.classList.add('hidden');
-                elements.userInfo.classList.remove('hidden');
                 if (user) {
-                    userId = user.uid;
-                    elements.userInfo.textContent = `${uiStrings[currentLanguage].authenticatedAs} ${user.isAnonymous ? uiStrings[currentLanguage].anonymous : user.email || user.uid.substring(0,6)}`;
-                    fetchClients();
+                   initializeHub();
                 } else {
-                    userId = null;
-                    if(clientsUnsubscribe) clientsUnsubscribe();
-                    clients = []; selectedClientId = null; renderClientsList(); renderClientDetails(null);
-                    elements.userInfo.textContent = "Not authenticated.";
+                    signInAnonymously(auth).catch(err => {
+                        console.error("Anonymous sign-in failed", err);
+                        showToast(uiStrings[currentLanguage].error, 'error');
+                    });
                 }
             });
-            const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-            // On GitHub pages, there is no initial token, so it will always sign in anonymously.
-            if (token) {
-                 signInWithCustomToken(auth, token).catch(err => {
-                    console.error("Custom token sign-in failed, falling back to anonymous", err);
-                    signInAnonymously(auth);
-                });
-            } else {
-                signInAnonymously(auth);
-            }
         };
 
         const fetchClients = () => {
             if (clientsUnsubscribe) clientsUnsubscribe();
-            if (!userId) return;
+            if (!hubId) return;
             elements.loaderClients.classList.remove('hidden');
-            const clientCollection = collection(db, `artifacts/${getAppId()}/users/${userId}/clients`);
+            const clientCollection = collection(db, `artifacts/${getAppId()}/public/data/hubs/${hubId}/clients`);
             clientsUnsubscribe = onSnapshot(clientCollection, (snapshot) => {
                 clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 clients.sort((a,b) => a.name.localeCompare(b.name));
@@ -917,6 +883,41 @@
             }, (error) => { console.error("Error fetching clients:", error); elements.loaderClients.classList.add('hidden'); });
         };
         
+        const initializeHub = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hubIdFromUrl = urlParams.get('hub');
+
+            if (hubIdFromUrl) {
+                hubId = hubIdFromUrl;
+            } else {
+                hubId = generateHubId();
+                try {
+                    const newUrl = `${window.location.pathname}?hub=${hubId}`;
+                    window.history.pushState({ path: newUrl }, '', newUrl);
+                } catch (e) {
+                    console.warn("Could not update URL with history.pushState. This is expected in sandboxed environments and can be ignored.");
+                }
+            }
+            elements.hubIdDisplay.textContent = hubId;
+            elements.hubInfoContainer.classList.remove('hidden');
+            elements.hubInfoContainer.classList.add('flex');
+            fetchClients();
+        };
+
+        const generateHubId = () => {
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        };
+
+        const copyHubLink = () => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast(uiStrings[currentLanguage].linkCopied, 'success');
+            }, (err) => {
+                console.error('Could not copy text: ', err);
+                showToast(uiStrings[currentLanguage].error, 'error');
+            });
+        };
+
         const addEventListeners = () => {
             elements.langEnBtn.addEventListener('click', () => setLanguage('en'));
             elements.langArBtn.addEventListener('click', () => setLanguage('ar'));
@@ -927,6 +928,8 @@
             elements.cancelClientBtn.addEventListener('click', () => elements.clientModal.classList.add('hidden'));
             elements.taskForm.addEventListener('submit', handleSaveTask);
             elements.cancelTaskBtn.addEventListener('click', () => elements.taskModal.classList.add('hidden'));
+            elements.shareBtn.addEventListener('click', copyHubLink);
+            elements.copyHubLinkBtn.addEventListener('click', copyHubLink);
             
             elements.clientDetailsView.addEventListener('click', (e) => {
                 if (e.target.id === 'edit-client-btn') handleEditClient();
