@@ -229,7 +229,7 @@
                 cancel: "إلغاء", save: "حفظ العميل", edit: "تعديل", delete: "حذف", tasks: "المهام",
                 todo: "مهام جديدة", inprogress: "قيد التنفيذ", done: "مكتملة", addTask: "إضافة مهمة",
                 taskDescription: "وصف المهمة", saveTask: "حفظ المهمة",
-                confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+                confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبط به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
                 confirmDeleteTaskTitle: "حذف المهمة؟", confirmDeleteTaskText: "سيؤدي هذا إلى حذف هذه المهمة نهائيًا. هل أنت متأكد؟",
                 confirmDeleteFileTitle: "حذف الملف؟", confirmDeleteFileText: "سيؤدي هذا إلى حذف هذا الملف نهائيًا. هل أنت متأكد؟",
                 clientSaved: "تم حفظ العميل بنجاح.", clientDeleted: "تم حذف العميل.",
@@ -825,9 +825,40 @@
         };
 
         const initFirebase = () => {
+            // --- IMPORTANT: PASTE YOUR FIREBASE CONFIGURATION HERE ---
+            // To make this app work on GitHub Pages, you must paste your Firebase project's
+            // configuration object here.
+            // 1. Go to your Firebase project: https://console.firebase.google.com/
+            // 2. Click the gear icon -> Project settings.
+            // 3. In the "Your apps" card, find your web app.
+            // 4. Under "Firebase SDK snippet", select the "Config" option.
+            // 5. Copy the entire object (from { to }) and paste it below.
+            const firebaseConfigFromUser = {
+                // Example:
+                // apiKey: "AIzaSy...",
+                // authDomain: "your-project-id.firebaseapp.com",
+                // projectId: "your-project-id",
+                // storageBucket: "your-project-id.appspot.com",
+                // messagingSenderId: "...",
+                // appId: "..."
+            };
+            // --------------------------------------------------------------------
+
+            let firebaseConfig;
+
+            if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
+                // Use the environment's config if available (like in the original dev environment)
+                firebaseConfig = JSON.parse(__firebase_config);
+            } else {
+                // Otherwise, use the config you pasted above for GitHub Pages
+                firebaseConfig = firebaseConfigFromUser;
+            }
+
             try {
                 setLogLevel('error');
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                if (!firebaseConfig || !firebaseConfig.apiKey) {
+                    throw new Error("Firebase configuration is missing or invalid. Please paste it into the client-hub.html file.");
+                }
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -857,8 +888,15 @@
                 }
             });
             const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-            if (token) signInWithCustomToken(auth, token).catch(err => signInAnonymously(auth));
-            else signInAnonymously(auth);
+            // On GitHub pages, there is no initial token, so it will always sign in anonymously.
+            if (token) {
+                 signInWithCustomToken(auth, token).catch(err => {
+                    console.error("Custom token sign-in failed, falling back to anonymous", err);
+                    signInAnonymously(auth);
+                });
+            } else {
+                signInAnonymously(auth);
+            }
         };
 
         const fetchClients = () => {
