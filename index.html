@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Hub - مدير العملاء</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -214,7 +217,8 @@
                 close: "Close", authenticatedAs: "Authenticated as: ", anonymous: "Anonymous",
                 searchPlaceholder: "Search clients...", noClientsFound: "No clients found.",
                 files: "Files", uploadFile: "Upload File", uploadingFile: "Uploading File...",
-                fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted."
+                fileUploaded: "File uploaded successfully.", fileDeleted: "File deleted.",
+                exportPDF: "Export PDF", exportExcel: "Export Excel"
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
@@ -232,7 +236,8 @@
                 close: "إغلاق", authenticatedAs: "تمت المصادقة كـ: ", anonymous: "مجهول",
                 searchPlaceholder: "ابحث عن عملاء...", noClientsFound: "لم يتم العثور على عملاء.",
                 files: "الملفات", uploadFile: "رفع ملف", uploadingFile: "جاري رفع الملف...",
-                fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف."
+                fileUploaded: "تم رفع الملف بنجاح.", fileDeleted: "تم حذف الملف.",
+                exportPDF: "تصدير PDF", exportExcel: "تصدير Excel"
             }
         };
 
@@ -353,7 +358,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex space-x-2 rtl:space-x-reverse">
+                        <div class="flex-col md:flex-row flex space-y-2 md:space-y-0 md:space-x-2 rtl:space-x-reverse">
+                            <button id="export-pdf-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="exportPDF">Export PDF</button>
+                            <button id="export-excel-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="exportExcel">Export Excel</button>
                             <button id="edit-client-btn" class="text-sm font-medium text-gray-600 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" data-translate="edit">Edit</button>
                             <button id="delete-client-btn" class="text-sm font-medium text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-red-50" data-translate="delete">Delete</button>
                         </div>
@@ -393,7 +400,6 @@
                     </div>
                 </div>`;
             
-            // Manually apply translations to the new content to avoid recursion.
             elements.clientDetailsView.querySelectorAll('[data-translate]').forEach(el => {
                 const key = el.getAttribute('data-translate');
                 if (uiStrings[currentLanguage][key]) el.textContent = uiStrings[currentLanguage][key];
@@ -621,6 +627,146 @@
             );
         };
 
+        const handleExportPDF = () => {
+            const client = clients.find(c => c.id === selectedClientId);
+            if (!client) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const FONT_FAMILY = 'Amiri'; // A font that supports Arabic
+            // This is a simplified way to add a font. For production, you'd host the font file.
+            // Since we can't add local files, we'll rely on jsPDF's built-in fonts, which may have limited Arabic support.
+            // For best results, jsPDF recommends embedding a .ttf font.
+            // doc.addFont('Amiri-Regular.ttf', FONT_FAMILY, 'normal');
+            // doc.setFont(FONT_FAMILY);
+
+            const isArabic = currentLanguage === 'ar';
+            const clientName = client.name || 'No Name';
+
+            // Title
+            doc.setFontSize(22);
+            doc.text(clientName, 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text(uiStrings[currentLanguage].appTitle, 105, 28, { align: 'center' });
+
+            // Client Info Section
+            let infoY = 40;
+            const info = [
+                { title: uiStrings[currentLanguage].clientCompany, value: client.company },
+                { title: uiStrings[currentLanguage].clientEmail, value: client.email },
+                { title: uiStrings[currentLanguage].clientPhone, value: client.phone },
+            ].filter(item => item.value);
+
+            doc.autoTable({
+                startY: infoY,
+                head: [[uiStrings[currentLanguage].clientName, client.name]],
+                body: info.map(i => [i.title, i.value]),
+                theme: 'striped',
+                headStyles: { fillColor: [41, 128, 185] },
+            });
+            let currentY = doc.autoTable.previous.finalY + 15;
+
+            // Notes
+            if (client.notes) {
+                doc.setFontSize(16);
+                doc.text(uiStrings[currentLanguage].notes, 14, currentY);
+                currentY += 8;
+                doc.setFontSize(10);
+                const notes = doc.splitTextToSize(client.notes, 180);
+                doc.text(notes, 14, currentY);
+                currentY += (notes.length * 5) + 10;
+            }
+
+            // Tasks
+            if (client.tasks && client.tasks.length > 0) {
+                 doc.autoTable({
+                    startY: currentY,
+                    head: [[uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks]],
+                    body: client.tasks.map(t => [t.text, uiStrings[currentLanguage][t.status.replace(' ','')] || t.status]),
+                    theme: 'grid',
+                    headStyles: { fillColor: [39, 174, 96] },
+                });
+                currentY = doc.autoTable.previous.finalY + 15;
+            }
+
+            // Files
+            if (client.files && client.files.length > 0) {
+                 doc.autoTable({
+                    startY: currentY,
+                    head: [[uiStrings[currentLanguage].files]],
+                    body: client.files.map(f => [f.name]),
+                    theme: 'grid',
+                    headStyles: { fillColor: [80, 80, 80] },
+                });
+            }
+
+            doc.save(`${client.name}_Report.pdf`);
+        };
+        
+        const handleExportExcel = () => {
+            const client = clients.find(c => c.id === selectedClientId);
+            if (!client) return;
+
+            // --- Sheet 1: Summary ---
+            const summaryData = [
+                ['Client Hub Report'],
+                [],
+                ['Client Name', client.name],
+                ['Company', client.company || 'N/A'],
+                ['Email', client.email || 'N/A'],
+                ['Phone', client.phone || 'N/A'],
+                [],
+                ['Notes', client.notes || 'No notes.']
+            ];
+            const summary_ws = XLSX.utils.aoa_to_sheet(summaryData);
+            summary_ws['A1'].s = { font: { bold: true, sz: 16 }};
+            summary_ws['A3'].s = { font: { bold: true }};
+            summary_ws['A4'].s = { font: { bold: true }};
+            summary_ws['A5'].s = { font: { bold: true }};
+            summary_ws['A6'].s = { font: { bold: true }};
+            summary_ws['A8'].s = { font: { bold: true }};
+            summary_ws['!cols'] = [{ wch: 15 }, { wch: 50 }]; // Column widths
+
+            // --- Sheet 2: Tasks ---
+            const tasks = client.tasks || [];
+            const tasksData = [
+                [uiStrings[currentLanguage].taskDescription, uiStrings[currentLanguage].tasks],
+                ...tasks.map(t => [t.text, uiStrings[currentLanguage][t.status] || t.status])
+            ];
+             const tasks_ws = XLSX.utils.aoa_to_sheet(tasksData);
+            tasks_ws['A1'].s = { font: { bold: true }};
+            tasks_ws['B1'].s = { font: { bold: true }};
+
+            // Add formulas
+            const formula_start_row = tasksData.length + 2;
+            XLSX.utils.sheet_add_aoa(tasks_ws, [['Task Status Summary']], {origin: `A${formula_start_row}`});
+            tasks_ws[`A${formula_start_row}`].s = { font: { bold: true, sz: 14 }};
+            XLSX.utils.sheet_add_aoa(tasks_ws, [[uiStrings[currentLanguage].todo, {f: `COUNTIF(B2:B${tasks.length + 1}, "${uiStrings[currentLanguage].todo}")`}]], {origin: `A${formula_start_row + 1}`});
+            XLSX.utils.sheet_add_aoa(tasks_ws, [[uiStrings[currentLanguage].inprogress, {f: `COUNTIF(B2:B${tasks.length + 1}, "${uiStrings[currentLanguage].inprogress}")`}]], {origin: `A${formula_start_row + 2}`});
+            XLSX.utils.sheet_add_aoa(tasks_ws, [[uiStrings[currentLanguage].done, {f: `COUNTIF(B2:B${tasks.length + 1}, "${uiStrings[currentLanguage].done}")`}]], {origin: `A${formula_start_row + 3}`});
+            tasks_ws['!cols'] = [{ wch: 60 }, { wch: 20 }];
+
+             // --- Sheet 3: Files ---
+            const files = client.files || [];
+            const filesData = [
+                [uiStrings[currentLanguage].files, 'Size'],
+                ...files.map(f => [f.name, formatBytes(f.size)])
+            ];
+            const files_ws = XLSX.utils.aoa_to_sheet(filesData);
+            files_ws['A1'].s = { font: { bold: true }};
+            files_ws['B1'].s = { font: { bold: true }};
+            files_ws['!cols'] = [{ wch: 50 }, { wch: 15 }];
+
+            // --- Create Workbook and Download ---
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, summary_ws, "Client Summary");
+            XLSX.utils.book_append_sheet(wb, tasks_ws, "Tasks");
+            XLSX.utils.book_append_sheet(wb, files_ws, "Files");
+            XLSX.writeFile(wb, `${client.name}_Report.xlsx`);
+        };
+
 
         const showToast = (message, type = 'success') => {
             elements.toast.textContent = message;
@@ -718,6 +864,8 @@
                 if (e.target.id === 'edit-client-btn') handleEditClient();
                 if (e.target.id === 'delete-client-btn') handleDeleteClient();
                 if (e.target.id === 'add-task-btn') handleAddTask();
+                if (e.target.id === 'export-pdf-btn') handleExportPDF();
+                if (e.target.id === 'export-excel-btn') handleExportExcel();
 
                 const deleteBtn = e.target.closest('.delete-task-btn');
                 if (deleteBtn) handleDeleteTask(deleteBtn.dataset.taskId);
