@@ -118,6 +118,33 @@
         .status-change-dropdown button:hover {
             background-color: #f3f4f6;
         }
+        
+        /* Loading spinner for buttons */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            color: transparent !important;
+        }
+        .btn-loading > * {
+            visibility: hidden;
+        }
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -0.75rem; /* half width */
+            margin-top: -0.75rem; /* half height */
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -140,7 +167,12 @@
                 </div>
                 <button id="share-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
-                    <span data-translate="share">Share</span>
+                    <span data-translate="share">Partager</span>
+                </button>
+                 <button id="settings-btn" class="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0L8.21 5.15c-.5.42-1.12.74-1.79.92L4.31 6.53c-1.56.38-2.22 2.22-1.01 3.28l1.4 1.28c.42.38.68.95.79 1.57l.32 1.88c.19 1.13 1.63 1.63 2.6 1.02l1.6-.98c.6-.37 1.32-.37 1.92 0l1.6.98c.97.6 2.41.1 2.6-1.02l.32-1.88c.11-.62.37-1.19.79-1.57l1.4-1.28c1.2-1.06.56-2.9-.99-3.28l-2.11-.53c-.67-.18-1.29-.5-1.79-.92L11.49 3.17zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                    </svg>
                 </button>
                 <div class="flex items-center border border-gray-300 rounded-lg p-1">
                     <button id="lang-en" class="px-3 py-1 text-sm rounded-md bg-gray-700 text-white">EN</button>
@@ -158,29 +190,29 @@
                         <h2 class="text-lg font-semibold" data-translate="clients">Clients</h2>
                         <button id="add-client-btn" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                            <span data-translate="addClient">Add Client</span>
+                            <span data-translate="addClient">Ajouter Client</span>
                         </button>
                     </div>
                      <div class="mb-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
-                        <textarea id="ai-client-setup-input" class="w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm" rows="2" data-translate-placeholder="pasteClientInfoPlaceholder" placeholder="Paste client info..."></textarea>
+                        <textarea id="ai-client-setup-input" class="w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm" rows="2" data-translate-placeholder="pasteClientInfoPlaceholder" placeholder="Coller les informations du client..."></textarea>
                         <button id="ai-client-setup-btn" class="mt-2 w-full bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 flex items-center justify-center gap-2 transition-colors">
-                             ✨ <span data-translate="setupWithAI">Setup with AI</span>
+                             ✨ <span data-translate="setupWithAI">Configurer avec l'IA</span>
                         </button>
                     </div>
-                    <div class="relative"><input type="text" id="client-search" placeholder="Search clients..." data-translate-placeholder="searchPlaceholder" class="w-full border border-gray-300 rounded-md p-2 pl-10 focus:ring-gray-500 focus:border-gray-500">
+                    <div class="relative"><input type="text" id="client-search" placeholder="Rechercher des clients..." data-translate-placeholder="searchPlaceholder" class="w-full border border-gray-300 rounded-md p-2 pl-10 focus:ring-gray-500 focus:border-gray-500">
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
                     <button id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
                     </div>
                 </div>
                 <div id="clients-list" class="flex-1 overflow-y-auto"><div id="loader-clients" class="p-4 text-center"><span class="h-6 w-6 border-t-2 border-gray-600 rounded-full animate-spin inline-block"></span></div></div>
-                <div class="md:hidden p-2 border-t"><button id="close-panel-btn" class="w-full text-center text-sm py-2" data-translate="close">Close</button></div>
+                <div class="md:hidden p-2 border-t"><button id="close-panel-btn" class="w-full text-center text-sm py-2" data-translate="close">Fermer</button></div>
             </aside>
 
             <!-- Right Panel: Client Details -->
             <section class="flex-1 flex flex-col bg-gray-100 overflow-y-auto">
                 <div class="md:hidden p-4 border-b bg-white"><button id="open-panel-btn" class="flex items-center space-x-2 rtl:space-x-reverse text-sm font-semibold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg><span data-translate="clients">Clients</span></button></div>
                 <div id="client-details-view" class="hidden"></div>
-                <div id="empty-state" class="flex-1 flex items-center justify-center text-center p-8"><div><svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg><h3 class="mt-2 text-lg font-medium text-gray-900" data-translate="selectClientTitle">Select a client</h3><p class="mt-1 text-sm text-gray-500" data-translate="selectClientDesc">Select a client from the list to see their details, or add a new one.</p></div></div>
+                <div id="empty-state" class="flex-1 flex items-center justify-center text-center p-8"><div><svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg><h3 class="mt-2 text-lg font-medium text-gray-900" data-translate="selectClientTitle">Sélectionner un client</h3><p class="mt-1 text-sm text-gray-500" data-translate="selectClientDesc">Sélectionnez un client dans la liste pour voir ses détails, ou ajoutez-en un nouveau.</p></div></div>
             </section>
         </main>
     </div>
@@ -188,32 +220,32 @@
     <!-- Modals -->
     <div id="client-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div class="p-6 border-b"><h3 id="client-modal-title" class="text-xl font-semibold" data-translate="addClient">Add New Client</h3></div>
+            <div class="p-6 border-b"><h3 id="client-modal-title" class="text-xl font-semibold" data-translate="addClient">Ajouter un nouveau client</h3></div>
             <form id="client-form" class="p-6 space-y-4">
                 <input type="hidden" id="client-id">
-                <div><label for="client-name" class="block text-sm font-medium text-gray-700" data-translate="clientName">Client Name</label><input type="text" id="client-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required></div>
-                <div><label for="client-company" class="block text-sm font-medium text-gray-700" data-translate="clientCompany">Company</label><input type="text" id="client-company" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
+                <div><label for="client-name" class="block text-sm font-medium text-gray-700" data-translate="clientName">Nom du client</label><input type="text" id="client-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required></div>
+                <div><label for="client-company" class="block text-sm font-medium text-gray-700" data-translate="clientCompany">Entreprise</label><input type="text" id="client-company" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
                 <div><label for="client-email" class="block text-sm font-medium text-gray-700" data-translate="clientEmail">Email</label><input type="email" id="client-email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
-                <div><label for="client-phone" class="block text-sm font-medium text-gray-700" data-translate="clientPhone">Phone</label><input type="tel" id="client-phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
+                <div><label for="client-phone" class="block text-sm font-medium text-gray-700" data-translate="clientPhone">Téléphone</label><input type="tel" id="client-phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></div>
                 <div><label for="client-notes" class="block text-sm font-medium text-gray-700" data-translate="notes">Notes</label><textarea id="client-notes" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></textarea></div>
             </form>
             <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
-                <button id="cancel-client-btn" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
-                <button id="save-client-btn" type="submit" form="client-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="save">Save Client</button>
+                <button id="cancel-client-btn" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Annuler</button>
+                <button id="save-client-btn" type="submit" form="client-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="save">Sauvegarder Client</button>
             </div>
         </div>
     </div>
     
     <div id="task-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <h3 class="text-xl font-semibold p-6 border-b" data-translate="addTask">Add New Task</h3>
+            <h3 class="text-xl font-semibold p-6 border-b" data-translate="addTask">Ajouter une nouvelle tâche</h3>
             <form id="task-form" class="p-6">
-                <label for="task-text" class="block text-sm font-medium text-gray-700" data-translate="taskDescription">Task Description</label>
+                <label for="task-text" class="block text-sm font-medium text-gray-700" data-translate="taskDescription">Description de la tâche</label>
                 <input type="text" id="task-text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
             </form>
             <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
-                <button id="cancel-task-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
-                <button id="save-task-btn" type="submit" form="task-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="saveTask">Save Task</button>
+                <button id="cancel-task-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Annuler</button>
+                <button id="save-task-btn" type="submit" form="task-form" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="saveTask">Sauvegarder Tâche</button>
             </div>
         </div>
     </div>
@@ -226,21 +258,41 @@
                 <p id="confirm-modal-text" class="text-sm text-gray-600 mt-2"></p>
             </div>
             <div class="px-6 py-4 bg-gray-50 flex justify-center space-x-3 rtl:space-x-reverse">
-                <button id="confirm-cancel-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
-                <button id="confirm-delete-btn" class="bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700" data-translate="delete">Delete</button>
+                <button id="confirm-cancel-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Annuler</button>
+                <button id="confirm-delete-btn" class="bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700" data-translate="delete">Supprimer</button>
             </div>
         </div>
     </div>
     
     <div id="upload-progress-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
-            <h3 class="text-lg font-semibold text-center" data-translate="uploadingFile">Uploading File...</h3>
+            <h3 class="text-lg font-semibold text-center" data-translate="uploadingFile">Téléchargement du fichier...</h3>
             <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
                 <div id="upload-progress-bar" class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div>
             </div>
             <p id="upload-progress-text" class="text-center text-sm text-gray-600 mt-2">0%</p>
         </div>
     </div>
+
+    <!-- API Key Modal -->
+    <div id="api-key-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6 border-b"><h3 class="text-xl font-semibold" data-translate="apiKeyTitle">Configure Gemini API Key</h3></div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-gray-600" data-translate="apiKeyInstructions">To use the AI features, please provide your Gemini API Key. It will be stored securely in your browser session and not in the code.</p>
+                <div>
+                    <label for="api-key-input" class="block text-sm font-medium text-gray-700" data-translate="apiKeyLabel">Your API Key</label>
+                    <input type="password" id="api-key-input" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                </div>
+                 <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-sm text-blue-600 hover:underline" data-translate="getApiKeyLink">Get an API Key from Google AI Studio</a>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rtl:space-x-reverse">
+                <button id="cancel-api-key-btn" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium" data-translate="cancel">Cancel</button>
+                <button id="save-api-key-btn" type="button" class="bg-gray-800 text-white py-2 px-4 rounded-md text-sm font-medium" data-translate="save">Save Key</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Toast Notification -->
     <div id="toast"></div>
@@ -270,6 +322,7 @@
         let hubId = null;
         let clientsUnsubscribe = null;
         let confirmCallback = null;
+        let geminiApiKey = null;
 
         const uiStrings = {
             en: {
@@ -300,14 +353,22 @@
                 setupWithAI: "Setup with AI",
                 pasteClientInfoPlaceholder: "Paste client info (e.g., email signature) to setup with AI...",
                 parsingClientInfo: "Parsing...",
-                clientInfoParsed: "Client info parsed successfully!"
+                clientInfoParsed: "Client info parsed successfully!",
+                apiKeyTitle: "Configure Gemini API Key",
+                apiKeyInstructions: "To use the AI features, please provide your Gemini API Key. It will be stored securely in your browser session and not in the code.",
+                apiKeyLabel: "Your API Key",
+                getApiKeyLink: "Get an API Key from Google AI Studio",
+                save: "Save",
+                apiKeyNeeded: "API Key needed for AI features.",
+                apiKeySaved: "API Key saved successfully for this session.",
+                apiKeyNotSet: "Please set your Gemini API key in Settings (⚙️) to use this feature."
             },
             ar: {
                 appTitle: "مدير العملاء", clients: "العملاء", addClient: "إضافة عميل",
                 selectClientTitle: "اختر عميل", selectClientDesc: "اختر عميلًا من القائمة لرؤية تفاصيله، أو أنشئ مركزًا جديدًا للبدء.",
                 loading: "جاري التحميل...", addClientTitle: "إضافة عميل جديد", editClientTitle: "تعديل العميل",
                 clientName: "اسم العميل", clientEmail: "البريد الإلكتروني", clientPhone: "الهاتف", notes: "ملاحظات", clientCompany: "الشركة",
-                cancel: "إلغاء", save: "حفظ العميل", edit: "تعديل", delete: "حذف", tasks: "المهام",
+                cancel: "إلغاء", save: "حفظ", edit: "تعديل", delete: "حذف", tasks: "المهام",
                 todo: "مهام جديدة", inprogress: "قيد التنفيذ", done: "مكتملة", addTask: "إضافة مهمة",
                 taskDescription: "وصف المهمة", saveTask: "حفظ المهمة",
                 confirmDeleteClientTitle: "حذف العميل؟", confirmDeleteClientText: "سيؤدي هذا إلى حذف العميل وجميع المهام والملفات المرتبطة به بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
@@ -330,7 +391,14 @@
                 setupWithAI: "إعداد بالذكاء الاصطناعي",
                 pasteClientInfoPlaceholder: "الصق معلومات العميل (مثل توقيع البريد الإلكتروني) للإعداد بالذكاء الاصطناعي...",
                 parsingClientInfo: "جاري التحليل...",
-                clientInfoParsed: "تم تحليل معلومات العميل بنجاح!"
+                clientInfoParsed: "تم تحليل معلومات العميل بنجاح!",
+                apiKeyTitle: "إعداد مفتاح Gemini API",
+                apiKeyInstructions: "لاستخدام ميزات الذكاء الاصطناعي، يرجى تقديم مفتاح Gemini API الخاص بك. سيتم تخزينه بأمان في جلسة المتصفح وليس في الكود.",
+                apiKeyLabel: "مفتاح API الخاص بك",
+                getApiKeyLink: "الحصول على مفتاح API من Google AI Studio",
+                apiKeyNeeded: "مفتاح API مطلوب لميزات الذكاء الاصطناعي.",
+                apiKeySaved: "تم حفظ مفتاح API بنجاح لهذه الجلسة.",
+                apiKeyNotSet: "يرجى تعيين مفتاح Gemini API الخاص بك في الإعدادات (⚙️) لاستخدام هذه الميزة."
             }
         };
 
@@ -356,6 +424,7 @@
             clientPhoneInput: document.getElementById('client-phone'),
             clientNotesInput: document.getElementById('client-notes'),
             cancelClientBtn: document.getElementById('cancel-client-btn'),
+            saveClientBtn: document.getElementById('save-client-btn'),
             taskModal: document.getElementById('task-modal'),
             taskForm: document.getElementById('task-form'),
             taskTextInput: document.getElementById('task-text'),
@@ -366,6 +435,7 @@
             hubIdDisplay: document.getElementById('hub-id-display'),
             copyHubLinkBtn: document.getElementById('copy-hub-link-btn'),
             shareBtn: document.getElementById('share-btn'),
+            settingsBtn: document.getElementById('settings-btn'),
             clientListPanel: document.getElementById('client-list-panel'),
             openPanelBtn: document.getElementById('open-panel-btn'),
             closePanelBtn: document.getElementById('close-panel-btn'),
@@ -377,6 +447,10 @@
             uploadProgressModal: document.getElementById('upload-progress-modal'),
             uploadProgressBar: document.getElementById('upload-progress-bar'),
             uploadProgressText: document.getElementById('upload-progress-text'),
+            apiKeyModal: document.getElementById('api-key-modal'),
+            apiKeyInput: document.getElementById('api-key-input'),
+            saveApiKeyBtn: document.getElementById('save-api-key-btn'),
+            cancelApiKeyBtn: document.getElementById('cancel-api-key-btn'),
         };
 
         /**
@@ -528,7 +602,7 @@
             const notesContent = createElement('div', ['bg-white', 'p-4', 'rounded-lg', 'border', 'min-h-[100px]', 'text-gray-700', 'whitespace-pre-wrap']);
             notesContent.textContent = client.notes || '';
             if (!client.notes) {
-                const noNotesSpan = createElement('span', ['text-gray-400'], 'No notes yet.');
+                const noNotesSpan = createElement('span', ['text-gray-400'], 'Aucune note pour le moment.');
                 notesContent.appendChild(noNotesSpan);
             }
             notesSection.append(notesTitle, notesContent);
@@ -550,7 +624,7 @@
             if (client.files && client.files.length > 0) {
                 client.files.forEach(file => filesListDiv.appendChild(renderFileItem(file)));
             } else {
-                filesListDiv.appendChild(createElement('span', ['text-gray-400', 'text-sm'], 'No files uploaded.'));
+                filesListDiv.appendChild(createElement('span', ['text-gray-400', 'text-sm'], 'Aucun fichier téléchargé.'));
             }
             filesSection.append(filesHeader, filesListDiv);
 
@@ -634,7 +708,7 @@
                     taskListDiv.appendChild(cardDiv);
                 });
             } else {
-                taskListDiv.appendChild(createElement('div', ['text-xs', 'text-gray-500', 'text-center', 'p-4'], 'Drop tasks here'));
+                taskListDiv.appendChild(createElement('div', ['text-xs', 'text-gray-500', 'text-center', 'p-4'], 'Déposer les tâches ici'));
             }
             
             columnDiv.append(titleH4, taskListDiv);
@@ -731,6 +805,9 @@
         const handleSaveClient = async (e) => {
             e.preventDefault();
             if (!db) return showToast(uiStrings[currentLanguage].firebaseNotInitialized, 'error');
+            
+            elements.saveClientBtn.classList.add('btn-loading');
+
             const id = elements.clientIdInput.value;
             const clientData = {
                 name: elements.clientNameInput.value, 
@@ -752,7 +829,12 @@
                 }
                 showToast(uiStrings[currentLanguage].clientSaved, 'success');
                 elements.clientModal.classList.add('hidden');
-            } catch (e) { console.error("Error saving client: ", e); showToast(uiStrings[currentLanguage].error, 'error'); }
+            } catch (e) { 
+                console.error("Error saving client: ", e); 
+                showToast(uiStrings[currentLanguage].error, 'error');
+            } finally {
+                elements.saveClientBtn.classList.remove('btn-loading');
+            }
         };
 
         const handleAddTask = () => { elements.taskForm.reset(); elements.taskModal.classList.remove('hidden'); };
@@ -774,27 +856,28 @@
         };
         
         const handleAiTaskBreakdown = async () => {
+            const apiKey = getApiKey();
+            if (!apiKey) return;
+            
             const aiButton = document.getElementById('ai-breakdown-btn');
             const aiInput = document.getElementById('ai-goal-input');
             if (!aiButton || !aiInput) return;
 
             const goal = aiInput.value.trim();
             if (!goal) {
-                showToast("Please enter a goal to break down.", 'error');
+                showToast("Veuillez entrer un objectif à décomposer.", 'error');
                 return;
             }
 
             const client = clients.find(c => c.id === selectedClientId);
             if (!client) return;
-
-            const originalButtonContent = aiButton.innerHTML;
-            aiButton.disabled = true;
-            aiButton.innerHTML = `<span class="h-4 w-4 border-t-2 border-white rounded-full animate-spin"></span><span class="ml-2">${uiStrings[currentLanguage].generatingTasks}</span>`;
+            
+            aiButton.classList.add('btn-loading');
 
             try {
-                const taskStrings = await generateTasksWithGemini(goal, client);
+                const taskStrings = await generateTasksWithGemini(apiKey, goal, client);
                 if (!taskStrings || taskStrings.length === 0) {
-                    throw new Error("AI did not generate any tasks.");
+                    throw new Error("L'IA n'a généré aucune tâche.");
                 }
                 
                 const newTasks = taskStrings.map(text => ({ 
@@ -815,13 +898,11 @@
                 console.error("Error generating AI tasks:", error);
                 showToast(uiStrings[currentLanguage].error, 'error');
             } finally {
-                aiButton.disabled = false;
-                aiButton.innerHTML = originalButtonContent;
+                aiButton.classList.remove('btn-loading');
             }
         };
 
-        const generateTasksWithGemini = async (goal, client) => {
-            const apiKey = ""; // This will be handled by the environment, leave as an empty string.
+        const generateTasksWithGemini = async (apiKey, goal, client) => {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             const systemPrompt = "You are an expert project manager. Your task is to break down a high-level user goal into a concise list of 3 to 7 actionable tasks. Consider the client's information for context if provided. The tasks should be clear, specific, and begin with a verb. Respond ONLY with a valid JSON array of strings, where each string is a task. Do not include any other text, explanations, or markdown formatting. For example: [\"Task 1\", \"Task 2\", \"Task 3\"]";
@@ -864,18 +945,19 @@
         };
         
         const handleAiClientSetup = async () => {
+            const apiKey = getApiKey();
+            if (!apiKey) return;
+
             const text = elements.aiClientSetupInput.value.trim();
             if (!text) {
-                showToast("Please paste some client information first.", "error");
+                showToast("Veuillez d'abord coller des informations sur le client.", "error");
                 return;
             }
-
-            const originalButtonContent = elements.aiClientSetupBtn.innerHTML;
-            elements.aiClientSetupBtn.disabled = true;
-            elements.aiClientSetupBtn.innerHTML = `<span class="h-4 w-4 border-t-2 border-white rounded-full animate-spin"></span><span class="ml-2">${uiStrings[currentLanguage].parsingClientInfo}</span>`;
+            
+            elements.aiClientSetupBtn.classList.add('btn-loading');
             
             try {
-                const clientData = await parseClientInfoWithGemini(text);
+                const clientData = await parseClientInfoWithGemini(apiKey, text);
                 
                 // Reset form and open modal
                 elements.clientForm.reset();
@@ -897,13 +979,11 @@
                 console.error("Error setting up client with AI:", error);
                 showToast(uiStrings[currentLanguage].error, 'error');
             } finally {
-                elements.aiClientSetupBtn.disabled = false;
-                elements.aiClientSetupBtn.innerHTML = originalButtonContent;
+                elements.aiClientSetupBtn.classList.remove('btn-loading');
             }
         };
 
-        const parseClientInfoWithGemini = async (text) => {
-            const apiKey = ""; // Handled by environment
+        const parseClientInfoWithGemini = async (apiKey, text) => {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             const systemPrompt = "You are an expert data entry assistant. Your task is to parse unstructured text containing client information and extract it into a structured JSON object. The fields to extract are: 'name', 'company', 'email', 'phone', and 'notes'. If a piece of information is not present, the value should be an empty string. The 'notes' field should contain any extra contextual information. Respond ONLY with the valid JSON object. Do not include any other text, explanations, or markdown formatting.";
@@ -1215,6 +1295,20 @@
             return `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>`;
         };
 
+        const getApiKey = () => {
+            if (geminiApiKey) return geminiApiKey;
+            
+            const keyFromSession = sessionStorage.getItem('geminiApiKey');
+            if(keyFromSession) {
+                geminiApiKey = keyFromSession;
+                return geminiApiKey;
+            }
+
+            showToast(uiStrings[currentLanguage].apiKeyNeeded, 'error');
+            elements.apiKeyModal.classList.remove('hidden');
+            return null;
+        }
+
         const initFirebase = async () => {
             let firebaseConfig;
 
@@ -1288,18 +1382,30 @@
         const initializeHub = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const hubIdFromUrl = urlParams.get('hub');
+            const hubIdFromStorage = localStorage.getItem('clientHubId');
 
             if (hubIdFromUrl) {
                 hubId = hubIdFromUrl;
+                if(hubIdFromUrl !== hubIdFromStorage) {
+                   localStorage.setItem('clientHubId', hubId);
+                }
+            } else if (hubIdFromStorage) {
+                hubId = hubIdFromStorage;
             } else {
                 hubId = generateHubId();
+                localStorage.setItem('clientHubId', hubId);
+            }
+
+            const currentUrlHub = urlParams.get('hub');
+            if (currentUrlHub !== hubId) {
                 try {
                     const newUrl = `${window.location.pathname}?hub=${hubId}`;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
+                    window.history.replaceState({ path: newUrl }, '', newUrl);
                 } catch (e) {
-                    console.warn("Could not update URL with history.pushState. This is expected in sandboxed environments and can be ignored.");
+                    console.warn("Could not update URL with history.replaceState. This is expected in sandboxed environments and can be ignored.");
                 }
             }
+            
             elements.hubIdDisplay.textContent = hubId;
             elements.hubInfoContainer.classList.remove('hidden');
             elements.hubInfoContainer.classList.add('flex');
@@ -1349,6 +1455,21 @@
             elements.cancelTaskBtn.addEventListener('click', () => elements.taskModal.classList.add('hidden'));
             elements.shareBtn.addEventListener('click', copyHubLink);
             elements.copyHubLinkBtn.addEventListener('click', copyHubLink);
+            elements.settingsBtn.addEventListener('click', () => elements.apiKeyModal.classList.remove('hidden'));
+
+            // API Key Modal listeners
+            elements.saveApiKeyBtn.addEventListener('click', () => {
+                const key = elements.apiKeyInput.value.trim();
+                if(key) {
+                    sessionStorage.setItem('geminiApiKey', key);
+                    geminiApiKey = key;
+                    elements.apiKeyModal.classList.add('hidden');
+                    showToast(uiStrings[currentLanguage].apiKeySaved, 'success');
+                } else {
+                    showToast('Please enter a valid API key.', 'error');
+                }
+            });
+            elements.cancelApiKeyBtn.addEventListener('click', () => elements.apiKeyModal.classList.add('hidden'));
             
             elements.clientDetailsView.addEventListener('click', (e) => {
                 const targetId = e.target.id;
@@ -1419,6 +1540,7 @@
 
         document.addEventListener('DOMContentLoaded', () => { 
             setLanguage('en'); 
+            geminiApiKey = sessionStorage.getItem('geminiApiKey');
             addEventListeners(); 
             initFirebase(); 
         });
