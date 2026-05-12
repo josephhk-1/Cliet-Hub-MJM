@@ -542,7 +542,9 @@ function genId() {
 // ============================================================
 // FIREBASE DYNAMIC IMPORT
 // ============================================================
-var db, fs;
+var db = null;
+var fs = null;
+var FB_READY = false;
 
 async function loadFirebase() {
   var m = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
@@ -553,7 +555,12 @@ async function loadFirebase() {
   APP.db = db;
   fs = mfs;
   var auth = ma.getAuth(app);
-  await ma.signInAnonymously(auth);
+  try {
+    await ma.signInAnonymously(auth);
+  } catch(e) {
+    console.warn("Auth warning (ok to ignore):", e.message);
+  }
+  FB_READY = true;
 }
 
 function hubCol(col) {
@@ -597,6 +604,7 @@ function switchTab(tab) {
 }
 
 async function doCreate() {
+  if (!FB_READY) { toast("Connecting to database... please wait a moment and try again", "err"); return; }
   var id = (g("a-new-id").value || "").trim().toUpperCase();
   var pwd = g("a-new-pwd").value;
   var pwd2 = g("a-new-pwd2").value;
@@ -619,6 +627,7 @@ async function doCreate() {
 }
 
 async function doLogin() {
+  if (!FB_READY) { toast("Connecting to database... please wait a moment and try again", "err"); return; }
   var id = (g("a-ex-id").value || "").trim().toUpperCase();
   var pwd = g("a-ex-pwd").value;
   if (!id || !pwd) return toast("Hub ID and password required", "err");
@@ -1451,11 +1460,22 @@ async function init() {
 
   if (g("a-new-id")) g("a-new-id").value = genId();
 
+  // Show connecting state on buttons
+  var bCreate = g("btn-create"); var bLogin = g("btn-login");
+  function setBtnState(connecting) {
+    if (bCreate) { bCreate.disabled = connecting; bCreate.style.opacity = connecting ? "0.6" : "1"; }
+    if (bLogin) { bLogin.disabled = connecting; bLogin.style.opacity = connecting ? "0.6" : "1"; }
+  }
+  setBtnState(true);
   try {
     await loadFirebase();
+    setBtnState(false);
+    console.log("Firebase ready!");
   } catch(e) {
-    toast("Firebase connection error", "err");
-    console.error(e); return;
+    console.error("Firebase error:", e);
+    toast("Database connection failed. Check internet connection.", "err");
+    setBtnState(false);
+    return;
   }
 
   var savedHub = localStorage.getItem("rp_hub");
