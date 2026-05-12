@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rattan Palace — Hub Pro</title>
+<title>Rattan Palace — Professional Hub</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Tajawal:wght@400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #111008;
+    --bg: #0f0e0a;
     --sidebar: #0a0804;
-    --surface: #1c1710;
+    --surface: #1a1610;
     --surface2: #241e14;
     --border: #3a2e1a;
     --gold: #c9960c;
@@ -32,21 +32,21 @@
     --blue-bg: rgba(74,122,181,0.12);
     --orange: #c47a2c;
     --orange-bg: rgba(196,122,44,0.12);
+    --purple: #8b5cf6;
+    --purple-bg: rgba(139,92,246,0.12);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow: hidden; }
   [dir="rtl"] body, [dir="rtl"] * { font-family: 'Tajawal', sans-serif; }
   h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; letter-spacing: 0.02em; }
-  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: 'Tajawal', sans-serif; }
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: 'Amiri', serif; }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-  /* LAYOUT */
   #app { display: flex; height: 100vh; }
   #sidebar {
     width: 240px; min-width: 240px; background: var(--sidebar); border-right: 1px solid var(--border);
@@ -55,10 +55,9 @@
   #main-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
   #view-area { flex: 1; overflow-y: auto; }
 
-  /* SIDEBAR */
-  .sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid var(--border); text-align: center; }
   .logo-rp { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--gold); line-height:1; }
-  .logo-sub { font-size: 10px; color: var(--text2); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; }
+  .logo-sub { font-size: 10px; color: var(--text2); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
   .nav-section { padding: 16px 12px; }
   .nav-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.15em; padding: 0 8px; margin-bottom: 6px; }
   .nav-item {
@@ -70,24 +69,16 @@
   .nav-item:hover { background: var(--surface); color: var(--text); }
   .nav-item.active { background: var(--gold-faint); color: var(--gold); border-color: var(--gold-border); }
   .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .nav-item .nav-badge {
-    margin-left: auto; background: var(--red); color: white; border-radius: 99px;
-    font-size: 10px; padding: 1px 6px; min-width: 18px; text-align: center;
-  }
-  [dir="rtl"] .nav-item .nav-badge { margin-left: 0; margin-right: auto; }
   .sidebar-bottom { margin-top: auto; padding: 16px 12px; border-top: 1px solid var(--border); }
   .lang-toggle { display: flex; gap: 4px; }
   .lang-btn { flex:1; padding: 6px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text2); transition: all 0.15s; }
   .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
   .hub-id-badge { font-size: 11px; color: var(--text3); padding: 6px 8px; background: var(--surface); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-  .hub-id-badge button { color: var(--text3); hover:color: var(--gold); }
 
-  /* TOP BAR */
   #topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
   .topbar-title { font-size: 20px; color: var(--text); }
   .topbar-actions { display: flex; gap: 8px; }
 
-  /* AUTH SCREEN */
   #auth-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; }
   .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 440px; }
   .auth-logo { text-align: center; margin-bottom: 32px; }
@@ -97,7 +88,6 @@
   .auth-tab { flex:1; padding: 8px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); transition: all 0.15s; }
   .auth-tab.active { background: var(--gold); color: #000; }
 
-  /* FORM ELEMENTS */
   .field-label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.05em; }
   .field-input {
     width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
@@ -109,7 +99,6 @@
   select.field-input option { background: var(--surface); }
   textarea.field-input { resize: vertical; min-height: 80px; }
 
-  /* BUTTONS */
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; white-space: nowrap; font-family: inherit; }
   .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
   .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 5px; }
@@ -121,11 +110,11 @@
   .btn-red:hover { background: var(--red); color: white; }
   .btn-green { background: var(--green-bg); color: var(--green); border-color: var(--green); }
   .btn-blue { background: var(--blue-bg); color: var(--blue); border-color: var(--blue); }
+  .btn-purple { background: var(--purple-bg); color: var(--purple); border-color: var(--purple); }
   .btn-ai { background: linear-gradient(135deg, #6a3de8, #c9960c); color: white; border-color: transparent; }
   .btn-ai:hover { opacity: 0.9; }
   .btn:disabled { opacity: 0.5; pointer-events: none; }
 
-  /* LOADING */
   .btn-loading { position: relative; color: transparent !important; pointer-events: none; }
   .btn-loading::after {
     content: ''; position: absolute; inset: 0; margin: auto;
@@ -135,82 +124,41 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* CARDS */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
   .card-sm { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
 
-  /* KPI CARDS */
   .kpi-card { padding: 20px; position: relative; overflow: hidden; }
   .kpi-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; opacity: 0.08; }
   .kpi-gold::before { background: var(--gold); }
   .kpi-green::before { background: var(--green); }
   .kpi-blue::before { background: var(--blue); }
   .kpi-red::before { background: var(--red); }
+  .kpi-purple::before { background: var(--purple); }
   .kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; line-height: 1; }
   .kpi-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
 
-  /* BADGES */
   .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
   .badge-green { background: var(--green-bg); color: var(--green); }
   .badge-red { background: var(--red-bg); color: var(--red); }
   .badge-blue { background: var(--blue-bg); color: var(--blue); }
   .badge-orange { background: var(--orange-bg); color: var(--orange); }
   .badge-gold { background: var(--gold-faint); color: var(--gold); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
   .badge-gray { background: rgba(90,80,64,0.3); color: var(--text2); }
 
-  /* TABS */
   .tab-bar { display: flex; gap: 2px; padding: 4px; background: var(--bg); border-radius: 10px; }
   .tab-btn { padding: 8px 16px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); transition: all 0.15s; font-family: inherit; }
   .tab-btn.active { background: var(--surface); color: var(--gold); }
 
-  /* KANBAN */
-  .kanban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .kanban-col { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; min-height: 200px; }
-  .kanban-col-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .kanban-col-title { font-size: 13px; font-weight: 600; }
-  .kanban-col-count { font-size: 11px; background: var(--bg); color: var(--text2); padding: 2px 7px; border-radius: 99px; }
-  .kanban-tasks { padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
-  .task-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 12px; cursor: grab; position: relative;
-    transition: box-shadow 0.15s, border-color 0.15s; border-left: 3px solid var(--border);
-  }
-  .task-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-color: var(--gold-border); }
-  .task-card[data-status="todo"] { border-left-color: var(--text3); }
-  .task-card[data-status="inprogress"] { border-left-color: var(--blue); }
-  .task-card[data-status="done"] { border-left-color: var(--green); }
-  .task-card.dragging { opacity: 0.4; transform: rotate(2deg); }
-  .kanban-col.drag-over { border-color: var(--gold); background: var(--gold-faint); }
-  .task-text { font-size: 13px; line-height: 1.4; padding-right: 30px; word-break: break-word; }
-  [dir="rtl"] .task-text { padding-right: 0; padding-left: 30px; }
-  .task-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
-  .task-actions-btn { position: absolute; top: 8px; right: 8px; opacity: 0; transition: opacity 0.15s; }
-  [dir="rtl"] .task-actions-btn { right: auto; left: 8px; }
-  .task-card:hover .task-actions-btn { opacity: 1; }
-  .task-dropdown { position: absolute; top: 100%; right: 0; z-index: 50; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; min-width: 140px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-  [dir="rtl"] .task-dropdown { right: auto; left: 0; }
-  .task-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 12px; cursor: pointer; color: var(--text2); transition: all 0.1s; width: 100%; border: none; background: none; font-family: inherit; text-align: left; }
-  [dir="rtl"] .task-dropdown-item { text-align: right; }
-  .task-dropdown-item:hover { background: var(--surface); color: var(--text); }
-  .task-empty { padding: 20px; text-align: center; color: var(--text3); font-size: 12px; border: 2px dashed var(--border); border-radius: 8px; }
-
-  /* LIST ITEMS */
   .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; }
   .list-item:last-child { border-bottom: none; }
   .list-item:hover { background: var(--surface2); }
   .list-item.selected { background: var(--gold-faint); border-right: 2px solid var(--gold); }
   [dir="rtl"] .list-item.selected { border-right: none; border-left: 2px solid var(--gold); }
 
-  /* AVATAR */
   .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--gold); flex-shrink: 0; font-family: 'Cormorant Garamond', serif; }
   .avatar-lg { width: 52px; height: 52px; font-size: 18px; }
 
-  /* CLIENT SPLIT VIEW */
-  #clients-view { display: flex; height: 100%; overflow: hidden; }
-  #clients-list-panel { width: 280px; min-width: 280px; border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-  #clients-detail-panel { flex: 1; overflow-y: auto; }
-
-  /* TABLE */
   .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .data-table th { background: var(--surface2); color: var(--text2); font-weight: 600; padding: 10px 14px; text-align: left; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
   [dir="rtl"] .data-table th { text-align: right; }
@@ -218,28 +166,15 @@
   .data-table tr:last-child td { border-bottom: none; }
   .data-table tr:hover td { background: var(--surface2); }
 
-  /* FILE ITEM */
-  .file-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  .file-item:last-child { border-bottom: none; }
-  .file-item:hover { background: var(--surface2); }
-  .file-icon { width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-
-  /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
   .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
   .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .modal-body { padding: 24px; }
   .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
 
-  /* PROGRESS BAR */
   .progress-bar { background: var(--bg); border-radius: 99px; overflow: hidden; height: 6px; }
   .progress-fill { height: 100%; border-radius: 99px; background: var(--gold); transition: width 0.3s ease; }
 
-  /* UPLOAD PROGRESS */
-  #upload-bar-container { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; z-index: 300; min-width: 240px; display: none; }
-  [dir="rtl"] #upload-bar-container { right: auto; left: 20px; }
-
-  /* TOAST */
   #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 8px; align-items: center; }
   .toast { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; white-space: nowrap; }
   .toast-success { border-left: 3px solid var(--green); }
@@ -247,46 +182,41 @@
   .toast-info { border-left: 3px solid var(--blue); }
   @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* AI PANEL */
   .ai-panel { background: linear-gradient(135deg, rgba(106,61,232,0.1), rgba(201,150,12,0.08)); border: 1px solid rgba(106,61,232,0.25); border-radius: 10px; padding: 14px; }
 
-  /* EMPTY STATE */
   .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; gap: 12px; }
   .empty-icon { font-size: 40px; opacity: 0.3; }
   .empty-title { font-size: 16px; font-weight: 600; color: var(--text2); }
   .empty-desc { font-size: 13px; color: var(--text3); max-width: 280px; }
 
-  /* DIVIDER */
   .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-  /* FINANCE SUMMARY */
   .finance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .summary-card { padding: 16px; border-radius: 10px; text-align: center; }
   .summary-value { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; }
   .summary-label { font-size: 11px; margin-top: 2px; }
 
-  /* MOBILE */
   @media (max-width: 768px) {
     #sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
     [dir="rtl"] #sidebar { left: auto; right: 0; transform: translateX(100%); }
     #sidebar.open { transform: translateX(0); }
-    #clients-list-panel { width: 100%; }
-    #clients-view { flex-direction: column; }
-    .kanban-grid { grid-template-columns: 1fr; }
     .finance-summary { grid-template-columns: 1fr; }
   }
 
-  /* MISC */
   .text-gold { color: var(--gold); }
   .text-muted { color: var(--text2); }
   .text-faint { color: var(--text3); }
   .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  input[type="date"].field-input::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
+  
+  /* Quote items styling */
+  .quote-item-row { display: grid; grid-template-columns: 80px 1fr 100px 120px 140px 50px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .quote-item-row input, .quote-item-row textarea { font-size: 13px; }
+  .quote-item-row textarea { min-height: 60px; }
 </style>
 </head>
 <body>
 
-<!-- ========== AUTH SCREEN ========== -->
+<!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
@@ -303,41 +233,39 @@
     </div>
     <div id="auth-form-new">
       <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="hubIdLabel">Hub ID (auto-generated)</label>
-        <input id="new-hub-id" class="field-input" readonly style="opacity:0.6;" placeholder="Will be generated...">
+        <label class="field-label" data-t="hubIdLabel">Hub ID</label>
+        <input id="new-hub-id" class="field-input" readonly style="opacity:0.6;">
       </div>
       <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="passwordLabel">Set Password</label>
-        <input id="new-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder" placeholder="Enter a password">
+        <label class="field-label" data-t="passwordLabel">Password</label>
+        <input id="new-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder">
       </div>
       <div style="margin-bottom:20px;">
         <label class="field-label" data-t="confirmPasswordLabel">Confirm Password</label>
-        <input id="new-hub-pwd2" class="field-input" type="password" data-t-placeholder="confirmPasswordPlaceholder" placeholder="Confirm password">
+        <input id="new-hub-pwd2" class="field-input" type="password" data-t-placeholder="confirmPasswordPlaceholder">
       </div>
       <button class="btn btn-gold" style="width:100%;" id="create-hub-btn" onclick="handleCreateHub()" data-t="createHubBtn">Create Hub</button>
     </div>
     <div id="auth-form-existing" style="display:none;">
       <div style="margin-bottom:14px;">
         <label class="field-label" data-t="hubIdLabel">Hub ID</label>
-        <input id="existing-hub-id" class="field-input" data-t-placeholder="hubIdPlaceholder" placeholder="Enter Hub ID (e.g. AB12CD34)">
+        <input id="existing-hub-id" class="field-input" data-t-placeholder="hubIdPlaceholder">
       </div>
       <div style="margin-bottom:20px;">
         <label class="field-label" data-t="passwordLabel">Password</label>
-        <input id="existing-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder" placeholder="Enter your password">
+        <input id="existing-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder">
       </div>
-      <button class="btn btn-gold" style="width:100%;" id="login-hub-btn" onclick="handleLoginHub()" data-t="loginBtn">Login to Hub</button>
+      <button class="btn btn-gold" style="width:100%;" id="login-hub-btn" onclick="handleLoginHub()" data-t="loginBtn">Login</button>
     </div>
   </div>
 </div>
 
-<!-- ========== MAIN APP ========== -->
+<!-- MAIN APP -->
 <div id="app" style="display:none;">
-
-  <!-- SIDEBAR -->
   <nav id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-rp">✦ RATTAN PALACE</div>
-      <div class="logo-sub" id="hub-name-label">Hub Pro</div>
+      <div class="logo-sub">Hub Pro</div>
     </div>
     <div class="nav-section">
       <div class="nav-label" data-t="navigation">Navigation</div>
@@ -348,6 +276,10 @@
       <div class="nav-item" data-module="clients" onclick="navigate('clients')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         <span data-t="clients">Clients</span>
+      </div>
+      <div class="nav-item" data-module="quotes" onclick="navigate('quotes')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span data-t="quotes">Quotes</span>
       </div>
       <div class="nav-item" data-module="projects" onclick="navigate('projects')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -360,8 +292,8 @@
     </div>
     <div class="sidebar-bottom">
       <div class="hub-id-badge">
-        <span id="sidebar-hub-id" style="font-size:11px; color:var(--text3);">HUB: ···</span>
-        <button onclick="copyHubId()" title="Copy Hub ID" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:2px;">
+        <span id="sidebar-hub-id">HUB: ···</span>
+        <button onclick="copyHubId()" title="Copy" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:2px;">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
       </div>
@@ -380,9 +312,7 @@
     </div>
   </nav>
 
-  <!-- MAIN CONTENT -->
   <div id="main-content">
-    <!-- TOP BAR -->
     <div id="topbar">
       <div style="display:flex;align-items:center;gap:12px;">
         <button id="mobile-menu-btn" style="display:none;background:none;border:none;cursor:pointer;color:var(--text2);" onclick="toggleSidebar()">
@@ -392,14 +322,73 @@
       </div>
       <div class="topbar-actions" id="topbar-actions"></div>
     </div>
-    <!-- VIEW AREA -->
     <div id="view-area"></div>
   </div>
 </div>
 
-<!-- ========== MODALS ========== -->
+<!-- MODALS -->
 
-<!-- Client Modal -->
+<!-- Quote Modal -->
+<div class="modal-overlay" id="quote-modal" style="display:none;">
+  <div class="modal-box" style="max-width:900px;">
+    <div class="modal-header">
+      <h3 id="quote-modal-title" data-t="newQuote">New Quote</h3>
+      <button onclick="closeModal('quote-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="qm-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div>
+          <label class="field-label" data-t="quoteNumber">Quote #</label>
+          <input id="qm-number" class="field-input" placeholder="S962">
+        </div>
+        <div>
+          <label class="field-label" data-t="clientLabel">Client *</label>
+          <select id="qm-client" class="field-input"><option value="">— Select —</option></select>
+        </div>
+        <div>
+          <label class="field-label" data-t="dateLabel">Date</label>
+          <input id="qm-date" class="field-input" type="date">
+        </div>
+        <div>
+          <label class="field-label" data-t="validUntil">Valid Until</label>
+          <input id="qm-valid" class="field-input" type="date">
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="field-label" data-t="projectDescription">Project Description</label>
+        <textarea id="qm-desc" class="field-input" rows="2" placeholder="تصنیع وتورید وتركیب غرفة اجتماعات..."></textarea>
+      </div>
+      
+      <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <label class="field-label" style="margin:0;" data-t="items">Items</label>
+        <button class="btn btn-xs btn-gold" onclick="addQuoteItem()">+ <span data-t="addItem">Add Item</span></button>
+      </div>
+      <div id="quote-items-container" style="margin-bottom:16px;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div>
+          <label class="field-label" data-t="deliveryDays">Delivery (days)</label>
+          <input id="qm-delivery" class="field-input" type="number" value="25" placeholder="25-30">
+        </div>
+        <div>
+          <label class="field-label" data-t="warrantyYears">Warranty (years)</label>
+          <input id="qm-warranty" class="field-input" type="number" value="3">
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="field-label" data-t="specialNotes">Special Notes</label>
+        <textarea id="qm-notes" class="field-input" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('quote-modal')" data-t="cancel">Cancel</button>
+      <button class="btn btn-gold" id="save-quote-btn" onclick="saveQuote()" data-t="saveQuote">Save Quote</button>
+    </div>
+  </div>
+</div>
+
+<!-- Client Modal (simplifié) -->
 <div class="modal-overlay" id="client-modal" style="display:none;">
   <div class="modal-box" style="max-width:520px;">
     <div class="modal-header">
@@ -411,210 +400,29 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
         <div>
           <label class="field-label" data-t="clientName">Client Name *</label>
-          <input id="cm-name" class="field-input" data-t-placeholder="clientNamePh" placeholder="Full Name">
+          <input id="cm-name" class="field-input">
         </div>
         <div>
           <label class="field-label" data-t="company">Company</label>
-          <input id="cm-company" class="field-input" data-t-placeholder="companyPh" placeholder="Company Name">
+          <input id="cm-company" class="field-input">
         </div>
         <div>
           <label class="field-label" data-t="emailLabel">Email</label>
-          <input id="cm-email" class="field-input" type="email" placeholder="email@example.com">
+          <input id="cm-email" class="field-input" type="email">
         </div>
         <div>
           <label class="field-label" data-t="phoneLabel">Phone</label>
-          <input id="cm-phone" class="field-input" type="tel" placeholder="+212 6XX XXXXXX">
-        </div>
-        <div>
-          <label class="field-label" data-t="statusLabel">Status</label>
-          <select id="cm-status" class="field-input">
-            <option value="active" data-t="statusActive">Active</option>
-            <option value="lead" data-t="statusLead">Lead</option>
-            <option value="vip" data-t="statusVIP">VIP</option>
-            <option value="inactive" data-t="statusInactive">Inactive</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label" data-t="tagsLabel">Tags</label>
-          <input id="cm-tags" class="field-input" placeholder="design, furniture...">
+          <input id="cm-phone" class="field-input" type="tel">
         </div>
       </div>
       <div>
         <label class="field-label" data-t="notesLabel">Notes</label>
-        <textarea id="cm-notes" class="field-input" rows="3" placeholder="Internal notes..."></textarea>
+        <textarea id="cm-notes" class="field-input" rows="3"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('client-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-client-btn" onclick="saveClient()" data-t="saveClient">Save Client</button>
-    </div>
-  </div>
-</div>
-
-<!-- Project Modal -->
-<div class="modal-overlay" id="project-modal" style="display:none;">
-  <div class="modal-box" style="max-width:520px;">
-    <div class="modal-header">
-      <h3 id="project-modal-title" data-t="addProject">Add Project</h3>
-      <button onclick="closeModal('project-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="pm-id">
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="projectName">Project Name *</label>
-        <input id="pm-name" class="field-input" placeholder="Project Name">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div>
-          <label class="field-label" data-t="clientLabel">Client</label>
-          <select id="pm-client" class="field-input"><option value="">— Select —</option></select>
-        </div>
-        <div>
-          <label class="field-label" data-t="projectStatus">Status</label>
-          <select id="pm-status" class="field-input">
-            <option value="planning" data-t="planning">Planning</option>
-            <option value="active" data-t="active">Active</option>
-            <option value="paused" data-t="paused">Paused</option>
-            <option value="completed" data-t="completed">Completed</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label" data-t="budget">Budget (MAD)</label>
-          <input id="pm-budget" class="field-input" type="number" min="0" placeholder="0">
-        </div>
-        <div>
-          <label class="field-label" data-t="deadline">Deadline</label>
-          <input id="pm-deadline" class="field-input" type="date">
-        </div>
-      </div>
-      <div>
-        <label class="field-label" data-t="description">Description</label>
-        <textarea id="pm-desc" class="field-input" rows="3" placeholder="Project description..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('project-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-project-btn" onclick="saveProject()" data-t="saveProject">Save Project</button>
-    </div>
-  </div>
-</div>
-
-<!-- Task Modal -->
-<div class="modal-overlay" id="task-modal" style="display:none;">
-  <div class="modal-box" style="max-width:440px;">
-    <div class="modal-header">
-      <h3 data-t="addTask">Add Task</h3>
-      <button onclick="closeModal('task-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="tm-context">
-      <input type="hidden" id="tm-context-id">
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="taskText">Task Description *</label>
-        <input id="tm-text" class="field-input" placeholder="Describe the task...">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div>
-          <label class="field-label" data-t="priority">Priority</label>
-          <select id="tm-priority" class="field-input">
-            <option value="low" data-t="low">Low</option>
-            <option value="medium" selected data-t="medium">Medium</option>
-            <option value="high" data-t="high">High</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label" data-t="dueDate">Due Date</label>
-          <input id="tm-due" class="field-input" type="date">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('task-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-task-btn" onclick="saveTask()" data-t="saveTask">Add Task</button>
-    </div>
-  </div>
-</div>
-
-<!-- Transaction Modal -->
-<div class="modal-overlay" id="txn-modal" style="display:none;">
-  <div class="modal-box" style="max-width:480px;">
-    <div class="modal-header">
-      <h3 data-t="addTransaction">Add Transaction</h3>
-      <button onclick="closeModal('txn-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="txm-id">
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <button class="btn btn-green" style="flex:1;font-size:13px;" id="txm-type-income" onclick="setTxType('income')" data-t="income">📈 Income</button>
-        <button class="btn btn-ghost" style="flex:1;font-size:13px;" id="txm-type-expense" onclick="setTxType('expense')" data-t="expense">📉 Expense</button>
-      </div>
-      <input type="hidden" id="txm-type" value="income">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div>
-          <label class="field-label" data-t="amount">Amount (MAD) *</label>
-          <input id="txm-amount" class="field-input" type="number" min="0" step="0.01" placeholder="0.00">
-        </div>
-        <div>
-          <label class="field-label" data-t="dateLabel">Date</label>
-          <input id="txm-date" class="field-input" type="date">
-        </div>
-        <div>
-          <label class="field-label" data-t="category">Category</label>
-          <select id="txm-category" class="field-input">
-            <optgroup label="Income" data-t="income">
-              <option value="sale" data-t="sale">Sale</option>
-              <option value="service" data-t="service">Service</option>
-              <option value="deposit" data-t="deposit">Deposit</option>
-            </optgroup>
-            <optgroup label="Expense" data-t="expense">
-              <option value="salary" data-t="salary">Salary</option>
-              <option value="material" data-t="material">Material</option>
-              <option value="transport" data-t="transport">Transport</option>
-              <option value="marketing" data-t="marketing">Marketing</option>
-              <option value="utilities" data-t="utilities">Utilities</option>
-              <option value="other" data-t="other">Other</option>
-            </optgroup>
-          </select>
-        </div>
-        <div>
-          <label class="field-label" data-t="clientLabel">Client (optional)</label>
-          <select id="txm-client" class="field-input"><option value="">— None —</option></select>
-        </div>
-      </div>
-      <div>
-        <label class="field-label" data-t="description">Description</label>
-        <input id="txm-desc" class="field-input" placeholder="Transaction details...">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('txn-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-txn-btn" onclick="saveTransaction()" data-t="saveTransaction">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- AI Email Modal -->
-<div class="modal-overlay" id="ai-email-modal" style="display:none;">
-  <div class="modal-box" style="max-width:540px;">
-    <div class="modal-header">
-      <h3>✨ <span data-t="aiEmailTitle">AI Email Draft</span></h3>
-      <button onclick="closeModal('ai-email-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="emailPromptLabel">What is the email about?</label>
-        <textarea id="ai-email-prompt" class="field-input" rows="3" placeholder="e.g. Follow up on the rattan bedroom set quote, offer 10% discount..."></textarea>
-      </div>
-      <div style="margin-bottom:16px;">
-        <button class="btn btn-ai" style="width:100%;" id="generate-email-btn" onclick="generateAIEmail()">✨ <span data-t="generateEmail">Generate Email</span></button>
-      </div>
-      <div id="ai-email-result" style="display:none;">
-        <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
-          <label class="field-label" style="margin:0;" data-t="generatedEmail">Generated Email</label>
-          <button class="btn btn-xs btn-ghost" onclick="copyAIEmail()" data-t="copy">Copy</button>
-        </div>
-        <textarea id="ai-email-output" class="field-input" rows="10" style="font-size:13px;line-height:1.6;"></textarea>
-      </div>
+      <button class="btn btn-gold" id="save-client-btn" onclick="saveClient()" data-t="saveClient">Save</button>
     </div>
   </div>
 </div>
@@ -643,49 +451,29 @@
     </div>
     <div class="modal-body">
       <div style="margin-bottom:20px;">
-        <label class="field-label" data-t="geminiApiKey">Gemini API Key (for AI features)</label>
-        <input id="settings-api-key" class="field-input" type="password" placeholder="AIza...">
-        <p style="font-size:11px;color:var(--text3);margin-top:6px;" data-t="apiKeyInfo">Stored in session only — never in the code or database.</p>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px;color:var(--gold);" data-t="getApiKey">Get a free API key →</a>
+        <label class="field-label" data-t="geminiApiKey">Gemini API Key</label>
+        <input id="settings-api-key" class="field-input" type="password">
+        <p style="font-size:11px;color:var(--text3);margin-top:6px;" data-t="apiKeyInfo">Session only</p>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px;color:var(--gold);" data-t="getApiKey">Get key →</a>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('settings-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" onclick="saveSettings()" data-t="saveKey">Save Key</button>
+      <button class="btn btn-gold" onclick="saveSettings()" data-t="saveKey">Save</button>
     </div>
   </div>
 </div>
 
-<!-- Upload Progress -->
-<div id="upload-bar-container">
-  <div style="font-size:13px;margin-bottom:8px;" data-t="uploading">Uploading…</div>
-  <div class="progress-bar" style="height:8px;">
-    <div class="progress-fill" id="upload-fill" style="width:0%;"></div>
-  </div>
-  <div id="upload-pct" style="font-size:12px;color:var(--text2);margin-top:4px;text-align:right;">0%</div>
-</div>
-
-<!-- Toast Container -->
 <div id="toast-container"></div>
 
-<!-- ========== SCRIPTS ========== -->
 <script type="module">
-// ==========================================================
-// FIREBASE IMPORTS
-// ==========================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc,
-  onSnapshot, serverTimestamp, query, orderBy
+  onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import {
-  getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-// ==========================================================
-// FIREBASE CONFIG (from existing Rattan Palace project)
-// ==========================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBd-qKC_YUO9F3-Oh1WzgPi2osFaLO8G8Y",
   authDomain: "cliet-hub-mjm.firebaseapp.com",
@@ -695,179 +483,107 @@ const FIREBASE_CONFIG = {
   appId: "1:416845101627:web:6259b28c1632554d7dba1e"
 };
 const APP_ID = FIREBASE_CONFIG.appId;
-const DB_BASE = `artifacts/${APP_ID}/public/data`;
+const DB_BASE = \`artifacts/\${APP_ID}/public/data\`;
 
-// ==========================================================
-// APP STATE
-// ==========================================================
 const APP = {
   lang: 'en',
   module: 'dashboard',
   hubId: null,
   clients: [],
+  quotes: [],
   projects: [],
   transactions: [],
-  selectedClientId: null,
-  selectedProjectId: null,
-  clientTab: 'overview',
-  projectTab: 'overview',
-  db: null, auth: null, storage: null,
+  selectedQuoteId: null,
+  db: null, auth: null,
   unsubs: [],
   confirmCb: null,
   geminiKey: null,
-  draggingTask: null,
-  draggingContext: null
+  quoteItemCounter: 0
 };
 
-// ==========================================================
-// TRANSLATIONS
-// ==========================================================
 const T = {
   en: {
     appTitle:'Rattan Palace Hub', navigation:'Navigation', dashboard:'Dashboard',
-    clients:'Clients', projects:'Projects', finance:'Finance', settings:'Settings', logout:'Logout',
+    clients:'Clients', quotes:'Quotes', projects:'Projects', finance:'Finance',
+    settings:'Settings', logout:'Logout',
     createNewHub:'Create New Hub', joinExistingHub:'Join Existing Hub',
     hubIdLabel:'Hub ID', passwordLabel:'Password', confirmPasswordLabel:'Confirm Password',
     createHubBtn:'Create Hub', loginBtn:'Login', hubIdPlaceholder:'Enter Hub ID',
     passwordPlaceholder:'Enter password', confirmPasswordPlaceholder:'Confirm password',
-    addClient:'Add Client', editClient:'Edit Client', saveClient:'Save Client',
-    clientName:'Client Name', clientNamePh:'Full Name',
-    company:'Company', companyPh:'Company Name',
-    emailLabel:'Email', phoneLabel:'Phone', statusLabel:'Status', tagsLabel:'Tags', notesLabel:'Notes',
-    statusActive:'Active', statusLead:'Lead', statusVIP:'VIP', statusInactive:'Inactive',
-    overview:'Overview', tasks:'Tasks', files:'Files', financeTab:'Finance',
-    addTask:'Add Task', saveTask:'Add Task', taskText:'Task Description',
-    priority:'Priority', dueDate:'Due Date', low:'Low', medium:'Medium', high:'High',
-    todo:'To Do', inprogress:'In Progress', done:'Done',
-    addProject:'Add Project', editProject:'Edit Project', saveProject:'Save Project',
-    projectName:'Project Name', clientLabel:'Client', projectStatus:'Status',
-    budget:'Budget', deadline:'Deadline', description:'Description',
-    planning:'Planning', active:'Active', paused:'Paused', completed:'Completed',
-    addTransaction:'Add Transaction', saveTransaction:'Save',
-    income:'Income', expense:'Expense', amount:'Amount (MAD)', dateLabel:'Date',
-    category:'Category', sale:'Sale', service:'Service', deposit:'Deposit',
-    salary:'Salary', material:'Material', transport:'Transport',
-    marketing:'Marketing', utilities:'Utilities', other:'Other',
-    totalIncome:'Total Income', totalExpenses:'Total Expenses', netBalance:'Net Balance',
-    thisMonth:'This Month', allTime:'All Time',
-    uploadFile:'Upload File', uploading:'Uploading…',
-    exportPDF:'Export PDF', exportExcel:'Export Excel',
-    cancel:'Cancel', save:'Save', delete:'Delete', edit:'Edit', copy:'Copy',
-    confirmDelete:'Are you sure?', cannotUndo:'This action cannot be undone.',
-    geminiApiKey:'Gemini API Key', apiKeyInfo:'Stored in session only — never in code or database.',
-    getApiKey:'Get a free API key →', saveKey:'Save Key',
-    setupWithAI:'✨ Setup with AI', aiTaskBreakdown:'✨ AI Task Breakdown',
-    aiEmailTitle:'AI Email Draft', emailPromptLabel:'What is this email about?',
-    generateEmail:'Generate Email', generatedEmail:'Generated Email',
-    pasteClientInfo:'Paste client info (email signature, etc.) to auto-fill…',
-    enterGoal:'Enter a project goal to break into tasks…',
-    success:'Success', error:'Error occurred',
-    clientSaved:'Client saved.', clientDeleted:'Client deleted.',
-    projectSaved:'Project saved.', projectDeleted:'Project deleted.',
-    taskAdded:'Task added.', taskDeleted:'Task deleted.', taskMoved:'Task moved.',
-    transactionSaved:'Transaction saved.', transactionDeleted:'Transaction deleted.',
-    fileUploaded:'File uploaded.', fileDeleted:'File deleted.',
-    hubCreated:'Hub created successfully!', loginSuccess:'Welcome back!',
-    hubNotFound:'Hub not found. Check the ID.', wrongPassword:'Incorrect password.',
-    passwordMismatch:'Passwords do not match.',
-    apiKeySaved:'API key saved for this session.',
-    apiKeyNeeded:'Please set your Gemini API key in Settings.',
-    linkCopied:'Hub ID copied!',
-    noClients:'No clients yet. Add your first client!',
-    noProjects:'No projects yet.',
-    noTasks:'No tasks yet. Add one above.',
-    noFiles:'No files uploaded.',
-    noTransactions:'No transactions recorded.',
-    recentClients:'Recent Clients', recentTransactions:'Recent Transactions',
-    totalClients:'Total Clients', activeProjects:'Active Projects',
-    monthlyRevenue:'Monthly Revenue', tasksDue:'Tasks Due',
-    selectClient:'← Select a client', selectProject:'← Select a project',
-    addNote:'Add Note', saveNote:'Save Note', noteSaved:'Note saved.',
-    contactInfo:'Contact Info', projectInfo:'Project Info',
-    aiEmailGenerated:'Email generated!',
-    deleteClientConfirm:'Delete this client and all their data?',
-    deleteProjectConfirm:'Delete this project and all tasks?',
-    deleteTaskConfirm:'Delete this task?',
-    deleteTxConfirm:'Delete this transaction?',
-    deleteFileConfirm:'Delete this file permanently?',
-    madCurrency:'MAD',
+    addClient:'Add Client', saveClient:'Save', clientName:'Client Name', company:'Company',
+    emailLabel:'Email', phoneLabel:'Phone', notesLabel:'Notes', cancel:'Cancel', save:'Save',
+    newQuote:'New Quote', editQuote:'Edit Quote', saveQuote:'Save Quote',
+    quoteNumber:'Quote #', clientLabel:'Client', dateLabel:'Date', validUntil:'Valid Until',
+    projectDescription:'Project Description', items:'Items', addItem:'Add Item',
+    deliveryDays:'Delivery (days)', warrantyYears:'Warranty (years)', specialNotes:'Special Notes',
+    no:'No.', description:'Description', quantity:'Qty', unitPrice:'Unit Price', total:'Total',
+    subtotal:'Subtotal', vat:'VAT 15%', totalAmount:'TOTAL', delete:'Delete',
+    quoteSaved:'Quote saved successfully', quoteDeleted:'Quote deleted',
+    clientSaved:'Client saved', error:'Error occurred', success:'Success',
+    confirmDelete:'Are you sure?', cannotUndo:'Cannot be undone.',
+    hubCreated:'Hub created!', loginSuccess:'Welcome back!', wrongPassword:'Wrong password',
+    apiKeySaved:'API key saved', geminiApiKey:'Gemini API Key', apiKeyInfo:'Session only',
+    getApiKey:'Get key →', saveKey:'Save', passwordMismatch:'Passwords do not match',
+    hubNotFound:'Hub not found', linkCopied:'Hub ID copied!',
+    noQuotes:'No quotes yet. Create your first quote!',
+    noClients:'No clients yet.', totalQuotes:'Total Quotes', monthlyRevenue:'Monthly Revenue',
+    recentQuotes:'Recent Quotes', viewPDF:'View PDF', exportPDF:'Export PDF',
+    quotation:'Quotation', customer:'Customer', quoteProjectDesc:'Quote/Project Description',
+    specialNotesInstructions:'Special Notes and Instructions', installments:'Installments',
+    downPayment:'Down payment 50%', payment2nd:'2nd payment 50% at delivery',
+    deliveryTime:'Delivery within {{days}} days from down payment',
+    warrantyText:'{{years}} years warranty on manufacturing defects',
+    bankName:'Bank Name', ibanDetails:'IBAN DETAILS', footerNote:'Above information is not an invoice and only an estimate',
+    signature:'Signature', printName:'Print Name', date:'Date', thankYou:'Thank you for your business!',
+    rattanPalaceCR:'Rattan Palace CR: 7050562888', vatNo:'Vat No. : 313099850500003',
+    address:'Short Address: RFKB2501. ALQods st,Alkhaleej, P.O.Box: 2401 RIYADH 13223, Kingdom of Saudi Arabia',
+    customerId:'Customer ID',
   },
   ar: {
     appTitle:'منصة راتان بالاس', navigation:'التنقل', dashboard:'لوحة التحكم',
-    clients:'العملاء', projects:'المشاريع', finance:'المالية', settings:'الإعدادات', logout:'تسجيل الخروج',
-    createNewHub:'إنشاء مركز جديد', joinExistingHub:'الدخول لمركز موجود',
+    clients:'العملاء', quotes:'العروض', projects:'المشاريع', finance:'المالية',
+    settings:'الإعدادات', logout:'تسجيل الخروج',
+    createNewHub:'إنشاء مركز جديد', joinExistingHub:'الانضمام لمركز',
     hubIdLabel:'رقم المركز', passwordLabel:'كلمة المرور', confirmPasswordLabel:'تأكيد كلمة المرور',
-    createHubBtn:'إنشاء المركز', loginBtn:'تسجيل الدخول', hubIdPlaceholder:'أدخل رقم المركز',
+    createHubBtn:'إنشاء', loginBtn:'دخول', hubIdPlaceholder:'أدخل رقم المركز',
     passwordPlaceholder:'أدخل كلمة المرور', confirmPasswordPlaceholder:'تأكيد كلمة المرور',
-    addClient:'إضافة عميل', editClient:'تعديل العميل', saveClient:'حفظ العميل',
-    clientName:'اسم العميل', clientNamePh:'الاسم الكامل',
-    company:'الشركة', companyPh:'اسم الشركة',
-    emailLabel:'البريد الإلكتروني', phoneLabel:'الهاتف', statusLabel:'الحالة', tagsLabel:'العلامات', notesLabel:'ملاحظات',
-    statusActive:'نشط', statusLead:'عميل محتمل', statusVIP:'VIP', statusInactive:'غير نشط',
-    overview:'نظرة عامة', tasks:'المهام', files:'الملفات', financeTab:'المالية',
-    addTask:'إضافة مهمة', saveTask:'إضافة المهمة', taskText:'وصف المهمة',
-    priority:'الأولوية', dueDate:'تاريخ التسليم', low:'منخفضة', medium:'متوسطة', high:'عالية',
-    todo:'للتنفيذ', inprogress:'قيد التنفيذ', done:'مكتملة',
-    addProject:'إضافة مشروع', editProject:'تعديل المشروع', saveProject:'حفظ المشروع',
-    projectName:'اسم المشروع', clientLabel:'العميل', projectStatus:'الحالة',
-    budget:'الميزانية', deadline:'الموعد النهائي', description:'الوصف',
-    planning:'تخطيط', active:'نشط', paused:'متوقف', completed:'مكتمل',
-    addTransaction:'إضافة معاملة', saveTransaction:'حفظ',
-    income:'دخل', expense:'مصروف', amount:'المبلغ (درهم)', dateLabel:'التاريخ',
-    category:'الفئة', sale:'بيع', service:'خدمة', deposit:'دفعة مقدمة',
-    salary:'الرواتب', material:'المواد', transport:'النقل',
-    marketing:'التسويق', utilities:'المرافق', other:'أخرى',
-    totalIncome:'إجمالي الدخل', totalExpenses:'إجمالي المصروفات', netBalance:'الرصيد الصافي',
-    thisMonth:'هذا الشهر', allTime:'الكل',
-    uploadFile:'رفع ملف', uploading:'جاري الرفع…',
-    exportPDF:'تصدير PDF', exportExcel:'تصدير Excel',
-    cancel:'إلغاء', save:'حفظ', delete:'حذف', edit:'تعديل', copy:'نسخ',
-    confirmDelete:'هل أنت متأكد؟', cannotUndo:'لا يمكن التراجع عن هذا الإجراء.',
-    geminiApiKey:'مفتاح Gemini API', apiKeyInfo:'يُخزَّن في الجلسة فقط — لا يُحفظ في الكود أو قاعدة البيانات.',
-    getApiKey:'الحصول على مفتاح مجاني ←', saveKey:'حفظ المفتاح',
-    setupWithAI:'✨ إعداد بالذكاء الاصطناعي', aiTaskBreakdown:'✨ تحليل المهام بالذكاء الاصطناعي',
-    aiEmailTitle:'مسودة بريد إلكتروني بالذكاء الاصطناعي', emailPromptLabel:'عن ماذا يدور هذا البريد الإلكتروني؟',
-    generateEmail:'إنشاء البريد', generatedEmail:'البريد المُنشأ',
-    pasteClientInfo:'الصق معلومات العميل (توقيع البريد الإلكتروني...) للملء التلقائي…',
-    enterGoal:'أدخل هدف المشروع لتقسيمه إلى مهام…',
-    success:'تم بنجاح', error:'حدث خطأ',
-    clientSaved:'تم حفظ العميل.', clientDeleted:'تم حذف العميل.',
-    projectSaved:'تم حفظ المشروع.', projectDeleted:'تم حذف المشروع.',
-    taskAdded:'تمت إضافة المهمة.', taskDeleted:'تم حذف المهمة.', taskMoved:'تم نقل المهمة.',
-    transactionSaved:'تم حفظ المعاملة.', transactionDeleted:'تم حذف المعاملة.',
-    fileUploaded:'تم رفع الملف.', fileDeleted:'تم حذف الملف.',
-    hubCreated:'تم إنشاء المركز بنجاح!', loginSuccess:'مرحباً بعودتك!',
-    hubNotFound:'المركز غير موجود. تحقق من الرقم.', wrongPassword:'كلمة المرور غير صحيحة.',
-    passwordMismatch:'كلمتا المرور غير متطابقتين.',
-    apiKeySaved:'تم حفظ مفتاح API لهذه الجلسة.',
-    apiKeyNeeded:'يرجى تعيين مفتاح Gemini API في الإعدادات.',
-    linkCopied:'تم نسخ رقم المركز!',
-    noClients:'لا يوجد عملاء. أضف عميلك الأول!',
-    noProjects:'لا توجد مشاريع بعد.',
-    noTasks:'لا توجد مهام. أضف مهمة.',
-    noFiles:'لا توجد ملفات مرفوعة.',
-    noTransactions:'لا توجد معاملات مسجلة.',
-    recentClients:'أحدث العملاء', recentTransactions:'أحدث المعاملات',
-    totalClients:'إجمالي العملاء', activeProjects:'المشاريع النشطة',
-    monthlyRevenue:'إيرادات الشهر', tasksDue:'مهام متأخرة',
-    selectClient:'← اختر عميلاً', selectProject:'← اختر مشروعاً',
-    addNote:'إضافة ملاحظة', saveNote:'حفظ الملاحظة', noteSaved:'تم حفظ الملاحظة.',
-    contactInfo:'معلومات الاتصال', projectInfo:'معلومات المشروع',
-    aiEmailGenerated:'تم إنشاء البريد!',
-    deleteClientConfirm:'حذف هذا العميل وجميع بياناته؟',
-    deleteProjectConfirm:'حذف هذا المشروع وجميع مهامه؟',
-    deleteTaskConfirm:'حذف هذه المهمة؟',
-    deleteTxConfirm:'حذف هذه المعاملة؟',
-    deleteFileConfirm:'حذف هذا الملف نهائياً؟',
-    madCurrency:'درهم',
+    addClient:'إضافة عميل', saveClient:'حفظ', clientName:'اسم العميل', company:'الشركة',
+    emailLabel:'البريد', phoneLabel:'الهاتف', notesLabel:'ملاحظات', cancel:'إلغاء', save:'حفظ',
+    newQuote:'عرض سعر جديد', editQuote:'تعديل العرض', saveQuote:'حفظ العرض',
+    quoteNumber:'رقم العرض', clientLabel:'العميل', dateLabel:'التاريخ', validUntil:'صالح حتى',
+    projectDescription:'وصف المشروع', items:'البنود', addItem:'إضافة بند',
+    deliveryDays:'التسليم (أيام)', warrantyYears:'الضمان (سنوات)', specialNotes:'ملاحظات خاصة',
+    no:'رقم', description:'الوصف', quantity:'الكمية', unitPrice:'السعر', total:'المجموع',
+    subtotal:'المجموع الفرعي', vat:'ضريبة 15%', totalAmount:'المجموع الكلي', delete:'حذف',
+    quoteSaved:'تم حفظ العرض', quoteDeleted:'تم حذف العرض',
+    clientSaved:'تم حفظ العميل', error:'حدث خطأ', success:'نجح',
+    confirmDelete:'هل أنت متأكد؟', cannotUndo:'لا يمكن التراجع',
+    hubCreated:'تم إنشاء المركز!', loginSuccess:'مرحباً بك!', wrongPassword:'كلمة مرور خاطئة',
+    apiKeySaved:'تم حفظ المفتاح', geminiApiKey:'مفتاح Gemini', apiKeyInfo:'للجلسة فقط',
+    getApiKey:'احصل على مفتاح ←', saveKey:'حفظ', passwordMismatch:'كلمتا المرور غير متطابقتين',
+    hubNotFound:'المركز غير موجود', linkCopied:'تم نسخ رقم المركز!',
+    noQuotes:'لا توجد عروض. أنشئ عرضك الأول!',
+    noClients:'لا يوجد عملاء', totalQuotes:'إجمالي العروض', monthlyRevenue:'الإيرادات الشهرية',
+    recentQuotes:'أحدث العروض', viewPDF:'عرض PDF', exportPDF:'تصدير PDF',
+    quotation:'عرض سعر', customer:'العميل', quoteProjectDesc:'وصف المشروع',
+    specialNotesInstructions:'ملاحظات خاصة', installments:'الدفعات',
+    downPayment:'دفعة مقدمة 50%', payment2nd:'دفعة ثانية 50% عند التسليم',
+    deliveryTime:'التسليم خلال {{days}} يوم من الدفعة المقدمة',
+    warrantyText:'ضمان {{years}} سنوات على عيوب التصنيع',
+    bankName:'اسم البنك', ibanDetails:'رقم الآيبان', footerNote:'المعلومات أعلاه ليست فاتورة بل تقدير فقط',
+    signature:'التوقيع', printName:'الاسم', date:'التاريخ', thankYou:'شكراً لتعاملكم معنا!',
+    rattanPalaceCR:'راتان بالاس س.ت: 7050562888', vatNo:'الرقم الضريبي: 313099850500003',
+    address:'العنوان: RFKB2501. شارع القدس، الخليج، ص.ب: 2401 الرياض 13223، المملكة العربية السعودية',
+    customerId:'رقم العميل',
   }
 };
 
-const t = (key) => T[APP.lang][key] || key;
+const t = (key, vars={}) => {
+  let str = T[APP.lang][key] || key;
+  Object.keys(vars).forEach(k => str = str.replace(\`{{\${k}}}\`, vars[k]));
+  return str;
+};
 
-// ==========================================================
-// HELPERS
-// ==========================================================
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
 
@@ -878,24 +594,14 @@ function el(tag, cls='', text='') {
   return e;
 }
 
-function svgIcon(paths, size=16) {
-  const ns = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('width', size); svg.setAttribute('height', size);
-  svg.setAttribute('fill', 'none'); svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2');
-  svg.innerHTML = paths;
-  return svg;
-}
-
 function formatMoney(n) {
   if (isNaN(n) || n === undefined) return '0';
-  return Number(n).toLocaleString('fr-MA', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function formatDate(d) {
   if (!d) return '—';
-  try { return new Date(d).toLocaleDateString(APP.lang === 'ar' ? 'ar-MA' : 'fr-FR'); } catch { return d; }
+  try { return new Date(d).toLocaleDateString(APP.lang === 'ar' ? 'ar-SA' : 'en-US'); } catch { return d; }
 }
 
 function getInitials(name='') {
@@ -916,25 +622,18 @@ function genHubId() {
 
 function showToast(msg, type='success') {
   const c = $('toast-container');
-  const t = el('div', `toast toast-${type}`);
+  const toast = el('div', \`toast toast-\${type}\`);
   const icon = type==='success'?'✓':type==='error'?'✕':'ℹ';
   const iconEl = el('span', '', icon);
-  iconEl.style.cssText = `font-weight:700;color:${type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--blue)'}`;
-  t.appendChild(iconEl);
-  t.appendChild(el('span','',msg));
-  c.appendChild(t);
-  setTimeout(() => { if(c.contains(t)) c.removeChild(t); }, 3500);
+  iconEl.style.cssText = \`font-weight:700;color:\${type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--blue)'}\`;
+  toast.appendChild(iconEl);
+  toast.appendChild(el('span','',msg));
+  c.appendChild(toast);
+  setTimeout(() => { if(c.contains(toast)) c.removeChild(toast); }, 3500);
 }
 
-function closeModal(id) {
-  const m = $(id);
-  if (m) m.style.display = 'none';
-}
-
-function openModal(id) {
-  const m = $(id);
-  if (m) m.style.display = 'flex';
-}
+function closeModal(id) { const m = $(id); if (m) m.style.display = 'none'; }
+function openModal(id) { const m = $(id); if (m) m.style.display = 'flex'; }
 
 function confirmAction(title, text, cb) {
   $('confirm-title').textContent = title;
@@ -950,46 +649,9 @@ function setLoading(btn, on) {
 }
 
 function dbPath(...parts) {
-  return `${DB_BASE}/hubs/${APP.hubId}/${parts.join('/')}`;
+  return \`\${DB_BASE}/hubs/\${APP.hubId}/\${parts.join('/')}\`;
 }
 
-function getFileTypeIcon(name='') {
-  const ext = name.split('.').pop().toLowerCase();
-  const map = {
-    pdf:'🔴',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',webp:'🖼️',
-    xlsx:'🟢',xls:'🟢',csv:'🟢',
-    docx:'🔵',doc:'🔵',
-    pptx:'🟠',ppt:'🟠',
-    mp4:'🎬',mov:'🎬',avi:'🎬',
-    mp3:'🎵',wav:'🎵',
-    zip:'📦',rar:'📦',
-  };
-  return map[ext] || '📄';
-}
-
-function formatBytes(b) {
-  if (!b || b === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B','KB','MB','GB'];
-  const i = Math.floor(Math.log(b)/Math.log(k));
-  return parseFloat((b/Math.pow(k,i)).toFixed(1)) + ' ' + sizes[i];
-}
-
-function statusBadge(status) {
-  const map = {
-    active:'badge-green',lead:'badge-orange',vip:'badge-gold',inactive:'badge-gray',
-    planning:'badge-blue',paused:'badge-orange',completed:'badge-green',
-  };
-  return map[status] || 'badge-gray';
-}
-
-function priorityColor(p) {
-  return p==='high'?'var(--red)':p==='medium'?'var(--orange)':'var(--text3)';
-}
-
-// ==========================================================
-// LANGUAGE
-// ==========================================================
 window.setLang = function(lang) {
   APP.lang = lang;
   localStorage.setItem('rp_lang', lang);
@@ -998,7 +660,7 @@ window.setLang = function(lang) {
   root.dir = lang === 'ar' ? 'rtl' : 'ltr';
   ['lang-en','lang-ar'].forEach(id => {
     const b = $(id);
-    if (b) b.classList.toggle('active', id === `lang-${lang}`);
+    if (b) b.classList.toggle('active', id === \`lang-\${lang}\`);
   });
   applyTranslations();
   if (APP.hubId) refreshCurrentView();
@@ -1010,7 +672,7 @@ window.setAuthLang = function(lang) {
   root.lang = lang; root.dir = lang === 'ar' ? 'rtl' : 'ltr';
   ['auth-lang-en','auth-lang-ar'].forEach(id => {
     const b = $(id);
-    if (b) b.classList.toggle('active', id === `auth-lang-${lang}`);
+    if (b) b.classList.toggle('active', id === \`auth-lang-\${lang}\`);
   });
   applyTranslations();
 }
@@ -1028,18 +690,14 @@ function applyTranslations() {
   });
 }
 
-// ==========================================================
-// FIREBASE INIT
-// ==========================================================
-let fbApp, db, auth, storage;
+let fbApp, db, auth;
 
 async function initFirebase() {
   try {
     fbApp = initializeApp(FIREBASE_CONFIG);
     db = getFirestore(fbApp);
     auth = getAuth(fbApp);
-    storage = getStorage(fbApp);
-    APP.db = db; APP.auth = auth; APP.storage = storage;
+    APP.db = db; APP.auth = auth;
     await signInAnonymously(auth);
   } catch(e) {
     console.error('Firebase init error:', e);
@@ -1047,9 +705,6 @@ async function initFirebase() {
   }
 }
 
-// ==========================================================
-// HUB LISTENERS
-// ==========================================================
 function clearListeners() {
   APP.unsubs.forEach(u => u());
   APP.unsubs = [];
@@ -1057,35 +712,33 @@ function clearListeners() {
 
 function setupHubListeners() {
   clearListeners();
-  const base = `${DB_BASE}/hubs/${APP.hubId}`;
+  const base = \`\${DB_BASE}/hubs/\${APP.hubId}\`;
 
-  // Clients
-  const clientsUnsub = onSnapshot(collection(db, `${base}/clients`), snap => {
+  const clientsUnsub = onSnapshot(collection(db, \`\${base}/clients\`), snap => {
     APP.clients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     APP.clients.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
     refreshCurrentView();
-  }, err => console.error('Clients listener:', err));
+  });
 
-  // Projects
-  const projectsUnsub = onSnapshot(collection(db, `${base}/projects`), snap => {
+  const quotesUnsub = onSnapshot(collection(db, \`\${base}/quotes\`), snap => {
+    APP.quotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    APP.quotes.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
+    refreshCurrentView();
+  });
+
+  const projectsUnsub = onSnapshot(collection(db, \`\${base}/projects\`), snap => {
     APP.projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    APP.projects.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
     refreshCurrentView();
-  }, err => console.error('Projects listener:', err));
+  });
 
-  // Transactions
-  const txUnsub = onSnapshot(collection(db, `${base}/transactions`), snap => {
+  const txUnsub = onSnapshot(collection(db, \`\${base}/transactions\`), snap => {
     APP.transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    APP.transactions.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
     refreshCurrentView();
-  }, err => console.error('Transactions listener:', err));
+  });
 
-  APP.unsubs = [clientsUnsub, projectsUnsub, txUnsub];
+  APP.unsubs = [clientsUnsub, quotesUnsub, projectsUnsub, txUnsub];
 }
 
-// ==========================================================
-// AUTH — Hub Create / Login
-// ==========================================================
 window.switchAuthTab = function(tab) {
   $('auth-form-new').style.display = tab === 'new' ? 'block' : 'none';
   $('auth-form-existing').style.display = tab === 'existing' ? 'block' : 'none';
@@ -1104,9 +757,9 @@ window.handleCreateHub = async function() {
   setLoading(btn, true);
   try {
     const hash = await hashPwd(pwd);
-    const hubDoc = doc(db, `${DB_BASE}/hubs/${id}`);
+    const hubDoc = doc(db, \`\${DB_BASE}/hubs/\${id}\`);
     const existing = await getDoc(hubDoc);
-    if (existing.exists()) { setLoading(btn,false); return showToast('Hub ID already taken. Try another.','error'); }
+    if (existing.exists()) { setLoading(btn,false); return showToast('Hub ID taken','error'); }
     await setDoc(hubDoc, { passwordHash: hash, createdAt: serverTimestamp() });
     APP.hubId = id;
     localStorage.setItem('rp_hubId', id);
@@ -1127,7 +780,7 @@ window.handleLoginHub = async function() {
   setLoading(btn, true);
   try {
     const hash = await hashPwd(pwd);
-    const hubDoc = doc(db, `${DB_BASE}/hubs/${id}`);
+    const hubDoc = doc(db, \`\${DB_BASE}/hubs/\${id}\`);
     const snap = await getDoc(hubDoc);
     if (!snap.exists()) { setLoading(btn,false); return showToast(t('hubNotFound'), 'error'); }
     if (snap.data().passwordHash !== hash) { setLoading(btn,false); return showToast(t('wrongPassword'), 'error'); }
@@ -1145,18 +798,18 @@ window.handleLoginHub = async function() {
 function enterApp() {
   $('auth-screen').style.display = 'none';
   $('app').style.display = 'flex';
-  $('sidebar-hub-id').textContent = `HUB: ${APP.hubId}`;
+  $('sidebar-hub-id').textContent = \`HUB: \${APP.hubId}\`;
   setupHubListeners();
   navigate('dashboard');
   applyTranslations();
 }
 
 window.handleLogout = function() {
-  confirmAction(t('logout'), 'You will need your Hub ID and password to log back in.', () => {
+  confirmAction(t('logout'), 'You will need Hub ID and password to log back in.', () => {
     clearListeners();
     sessionStorage.removeItem('rp_auth');
     APP.hubId = null;
-    APP.clients = []; APP.projects = []; APP.transactions = [];
+    APP.clients = []; APP.quotes = []; APP.projects = []; APP.transactions = [];
     $('app').style.display = 'none';
     $('auth-screen').style.display = 'flex';
     closeModal('confirm-modal');
@@ -1167,13 +820,10 @@ window.copyHubId = function() {
   navigator.clipboard.writeText(APP.hubId).then(() => showToast(t('linkCopied'), 'success')).catch(()=>{});
 }
 
-// ==========================================================
-// NAVIGATION
-// ==========================================================
 window.navigate = function(module) {
   APP.module = module;
   $$('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.module === module));
-  const titles = { dashboard: t('dashboard'), clients: t('clients'), projects: t('projects'), finance: t('finance'), settings: t('settings') };
+  const titles = { dashboard: t('dashboard'), clients: t('clients'), quotes: t('quotes'), projects: t('projects'), finance: t('finance'), settings: t('settings') };
   $('topbar-title').textContent = titles[module] || module;
   renderModule(module);
 }
@@ -1186,49 +836,38 @@ function renderModule(m) {
   switch(m) {
     case 'dashboard': renderDashboard(); break;
     case 'clients':   renderClients();   break;
+    case 'quotes':    renderQuotes();    break;
     case 'projects':  renderProjects();  break;
     case 'finance':   renderFinance();   break;
     case 'settings':  renderSettings();  break;
   }
 }
 
-// ==========================================================
-// RENDER: DASHBOARD
-// ==========================================================
 function renderDashboard() {
   const area = $('view-area');
   const topbar = $('topbar-actions');
   topbar.innerHTML = '';
   area.innerHTML = '';
 
-  const now = new Date();
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const monthTx = APP.transactions.filter(tx => (tx.date||'').startsWith(thisMonth));
-  const monthIncome = monthTx.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  const activeProjects = APP.projects.filter(p=>p.status==='active').length;
-  const overdueTasks = [];
-  const today = new Date().toISOString().split('T')[0];
-  APP.clients.forEach(c => (c.tasks||[]).forEach(t => { if (t.status!=='done' && t.dueDate && t.dueDate < today) overdueTasks.push(t); }));
-  APP.projects.forEach(p => (p.tasks||[]).forEach(t => { if (t.status!=='done' && t.dueDate && t.dueDate < today) overdueTasks.push(t); }));
-
+  const totalIncome = APP.transactions.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
+  
   const wrap = el('div','');
   wrap.style.padding = '24px';
 
-  // KPI Grid
   const kpiGrid = el('div','');
   kpiGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;';
 
   const kpis = [
-    { label:t('totalClients'), value:APP.clients.length, icon:'👥', cls:'kpi-gold', color:'var(--gold)' },
-    { label:t('activeProjects'), value:activeProjects, icon:'📋', cls:'kpi-blue', color:'var(--blue)' },
-    { label:t('monthlyRevenue'), value:formatMoney(monthIncome)+' '+t('madCurrency'), icon:'💰', cls:'kpi-green', color:'var(--green)' },
-    { label:t('tasksDue'), value:overdueTasks.length, icon:'⏰', cls:'kpi-red', color:'var(--red)' },
+    { label:t('totalQuotes'), value:APP.quotes.length, icon:'📄', cls:'kpi-purple', color:'var(--purple)' },
+    { label:t('clients'), value:APP.clients.length, icon:'👥', cls:'kpi-gold', color:'var(--gold)' },
+    { label:t('projects'), value:APP.projects.length, icon:'📋', cls:'kpi-blue', color:'var(--blue)' },
+    { label:t('monthlyRevenue'), value:formatMoney(totalIncome)+' SAR', icon:'💰', cls:'kpi-green', color:'var(--green)' },
   ];
 
   kpis.forEach(k => {
-    const card = el('div', `card kpi-card ${k.cls}`);
+    const card = el('div', \`card kpi-card \${k.cls}\`);
     const iconEl = el('div', '');
-    iconEl.style.cssText = `font-size:28px;margin-bottom:8px;`;
+    iconEl.style.cssText = \`font-size:28px;margin-bottom:8px;\`;
     iconEl.textContent = k.icon;
     const val = el('div', 'kpi-value');
     val.style.color = k.color;
@@ -1238,1022 +877,171 @@ function renderDashboard() {
     kpiGrid.appendChild(card);
   });
 
-  // Two columns
-  const cols = el('div','');
-  cols.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:16px;';
-
-  // Recent Clients
-  const rcCard = el('div','card');
-  const rcHeader = el('div','');
-  rcHeader.style.cssText = 'padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;';
-  const rcTitle = el('h3', '', t('recentClients'));
-  rcTitle.style.fontSize = '16px';
-  const rcBtn = el('button', 'btn btn-xs btn-ghost', t('clients')+' →');
-  rcBtn.onclick = () => navigate('clients');
-  rcHeader.append(rcTitle, rcBtn);
-  rcCard.appendChild(rcHeader);
-  const rcList = el('div','');
-  const recClients = APP.clients.slice(0,5);
-  if (recClients.length === 0) {
-    rcList.appendChild(emptyState(t('noClients')));
+  const qCard = el('div','card');
+  const qHeader = el('div','');
+  qHeader.style.cssText = 'padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;';
+  const qTitle = el('h3', '', t('recentQuotes'));
+  qTitle.style.fontSize = '16px';
+  const qBtn = el('button', 'btn btn-xs btn-ghost', t('quotes')+' →');
+  qBtn.onclick = () => navigate('quotes');
+  qHeader.append(qTitle, qBtn);
+  qCard.appendChild(qHeader);
+  const qList = el('div','');
+  const recQuotes = APP.quotes.slice(0,5);
+  if (recQuotes.length === 0) {
+    qList.appendChild(emptyState(t('noQuotes')));
   } else {
-    recClients.forEach(c => {
+    recQuotes.forEach(q => {
+      const client = APP.clients.find(c=>c.id===q.clientId);
       const item = el('div','list-item');
       item.style.cursor = 'pointer';
-      item.onclick = () => { navigate('clients'); setTimeout(()=>selectClient(c.id),100); };
-      const av = el('div','avatar', getInitials(c.name));
-      const info = el('div','');
-      info.style.overflow = 'hidden';
-      const nm = el('div','truncate', c.name);
-      nm.style.cssText = 'font-size:13px;font-weight:600;';
-      const co = el('div','truncate text-muted', c.company||c.email||'—');
-      co.style.fontSize = '12px';
-      const badge = el('span', `badge ${statusBadge(c.status)}`, t(c.status||'active'));
-      badge.style.marginLeft = 'auto';
-      info.append(nm, co);
-      item.append(av, info, badge);
-      rcList.appendChild(item);
-    });
-  }
-  rcCard.appendChild(rcList);
-
-  // Recent Transactions
-  const rtCard = el('div','card');
-  const rtHeader = el('div','');
-  rtHeader.style.cssText = 'padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;';
-  const rtTitle = el('h3','', t('recentTransactions'));
-  rtTitle.style.fontSize = '16px';
-  const rtBtn = el('button', 'btn btn-xs btn-ghost', t('finance')+' →');
-  rtBtn.onclick = () => navigate('finance');
-  rtHeader.append(rtTitle, rtBtn);
-  rtCard.appendChild(rtHeader);
-  const rtList = el('div','');
-  const recTx = APP.transactions.slice(0,6);
-  if (recTx.length === 0) {
-    rtList.appendChild(emptyState(t('noTransactions')));
-  } else {
-    recTx.forEach(tx => {
-      const item = el('div','list-item');
-      const iconEl = el('div','');
-      iconEl.style.cssText = `width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:${tx.type==='income'?'var(--green-bg)':'var(--red-bg)'}`;
-      iconEl.textContent = tx.type==='income'?'📈':'📉';
+      item.onclick = () => { navigate('quotes'); setTimeout(()=>viewQuote(q.id),100); };
       const info = el('div','');
       info.style.flex = '1';
-      info.style.overflow = 'hidden';
-      const desc = el('div','truncate', tx.description||t(tx.category)||'—');
-      desc.style.cssText = 'font-size:13px;font-weight:500;';
-      const date = el('div','', formatDate(tx.date));
-      date.style.cssText = 'font-size:11px;color:var(--text3);';
-      info.append(desc, date);
-      const amtEl = el('div','');
-      amtEl.style.cssText = `font-size:14px;font-weight:700;color:${tx.type==='income'?'var(--green)':'var(--red)'};white-space:nowrap;`;
-      amtEl.textContent = `${tx.type==='income'?'+':'-'}${formatMoney(tx.amount)}`;
-      item.append(iconEl, info, amtEl);
-      rtList.appendChild(item);
+      const nm = el('div','', \`#\${q.number || q.id.substring(0,6)}\`);
+      nm.style.cssText = 'font-size:13px;font-weight:600;';
+      const clientNm = el('div','text-muted', client?.name || '—');
+      clientNm.style.fontSize = '12px';
+      const date = el('div','text-faint', formatDate(q.date));
+      date.style.fontSize = '11px';
+      info.append(nm, clientNm, date);
+      const total = el('div','');
+      total.style.cssText = 'font-size:14px;font-weight:700;color:var(--green);';
+      const subT = (q.items||[]).reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
+      const vat = subT * 0.15;
+      total.textContent = formatMoney(subT+vat)+' SAR';
+      item.append(info, total);
+      qList.appendChild(item);
     });
   }
-  rtCard.appendChild(rtList);
+  qCard.appendChild(qList);
 
-  cols.append(rcCard, rtCard);
-  wrap.append(kpiGrid, cols);
+  wrap.append(kpiGrid, qCard);
   area.appendChild(wrap);
 }
 
-// ==========================================================
-// RENDER: CLIENTS
-// ==========================================================
 function renderClients() {
   const area = $('view-area');
   const topbar = $('topbar-actions');
   topbar.innerHTML = '';
 
-  const addBtn = el('button','btn btn-gold btn-sm');
-  addBtn.innerHTML = `<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M12 4v16m8-8H4"/></svg>`;
-  addBtn.appendChild(el('span','', t('addClient')));
+  const addBtn = el('button','btn btn-gold btn-sm',\`+ \${t('addClient')}\`);
   addBtn.onclick = () => openClientModal();
   topbar.appendChild(addBtn);
 
   area.innerHTML = '';
-  const view = el('div','');
-  view.id = 'clients-view';
-  view.style.cssText = 'display:flex;height:100%;overflow:hidden;';
-
-  // LEFT PANEL
-  const leftPanel = el('div','');
-  leftPanel.id = 'clients-list-panel';
-  leftPanel.style.cssText = 'width:280px;min-width:280px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--sidebar);';
-
-  // AI Setup area
-  const aiPanel = el('div','ai-panel');
-  aiPanel.style.cssText = 'margin:12px;padding:12px;border-radius:10px;background:linear-gradient(135deg,rgba(106,61,232,0.1),rgba(201,150,12,0.08));border:1px solid rgba(106,61,232,0.25);';
-  const aiTa = el('textarea','field-input');
-  aiTa.id = 'ai-client-input';
-  aiTa.rows = 2;
-  aiTa.style.cssText = 'font-size:12px;margin-bottom:8px;';
-  aiTa.placeholder = t('pasteClientInfo');
-  const aiBtn = el('button','btn btn-ai btn-sm');
-  aiBtn.style.width = '100%';
-  aiBtn.id = 'ai-client-btn';
-  aiBtn.textContent = t('setupWithAI');
-  aiBtn.onclick = handleAIClientSetup;
-  aiPanel.append(aiTa, aiBtn);
-
-  // Search
-  const searchWrap = el('div','');
-  searchWrap.style.cssText = 'padding:8px 12px;border-bottom:1px solid var(--border);';
-  const searchInput = el('input','field-input');
-  searchInput.id = 'client-search';
-  searchInput.placeholder = '🔍 '+t('clients')+'...';
-  searchInput.style.cssText = 'font-size:13px;padding:8px 12px;';
-  searchInput.oninput = () => renderClientList(searchInput.value);
-  searchWrap.appendChild(searchInput);
-
-  const clientListDiv = el('div','');
-  clientListDiv.id = 'client-list-inner';
-  clientListDiv.style.cssText = 'flex:1;overflow-y:auto;';
-
-  leftPanel.append(aiPanel, searchWrap, clientListDiv);
-
-  // RIGHT PANEL
-  const rightPanel = el('div','');
-  rightPanel.id = 'clients-detail-panel';
-  rightPanel.style.cssText = 'flex:1;overflow-y:auto;background:var(--bg);';
-
-  view.append(leftPanel, rightPanel);
-  area.appendChild(view);
-
-  renderClientList('');
-
-  if (APP.selectedClientId) {
-    renderClientDetail(APP.selectedClientId);
-  } else {
-    rightPanel.appendChild(emptyStateCenter(t('selectClient')));
-  }
-}
-
-function renderClientList(filter='') {
-  const container = $('client-list-inner');
-  if (!container) return;
-  container.innerHTML = '';
-  const filtered = APP.clients.filter(c =>
-    c.name?.toLowerCase().includes(filter.toLowerCase()) ||
-    c.company?.toLowerCase().includes(filter.toLowerCase()) ||
-    c.email?.toLowerCase().includes(filter.toLowerCase())
-  );
-  if (filtered.length === 0) {
-    container.appendChild(emptyState(filter ? 'No results' : t('noClients')));
-    return;
-  }
-  filtered.forEach(c => {
-    const item = el('div', `list-item${c.id===APP.selectedClientId?' selected':''}`);
-    item.style.cursor = 'pointer';
-    item.onclick = () => selectClient(c.id);
-    const av = el('div','avatar', getInitials(c.name));
-    const info = el('div','');
-    info.style.cssText = 'flex:1;overflow:hidden;';
-    const nm = el('div','truncate', c.name);
-    nm.style.cssText = 'font-size:13px;font-weight:600;';
-    const co = el('div','truncate text-muted', c.company||c.email||'—');
-    co.style.fontSize = '12px';
-    const badge = el('span',`badge ${statusBadge(c.status)}`, t(c.status||'active'));
-    badge.style.cssText = 'margin-left:auto;flex-shrink:0;';
-    info.append(nm, co);
-    item.append(av, info, badge);
-    container.appendChild(item);
-  });
-}
-
-function selectClient(id) {
-  APP.selectedClientId = id;
-  APP.clientTab = 'overview';
-  renderClientList($('client-search')?.value||'');
-  renderClientDetail(id);
-}
-
-function renderClientDetail(clientId) {
-  const panel = $('clients-detail-panel');
-  if (!panel) return;
-  panel.innerHTML = '';
-  const client = APP.clients.find(c=>c.id===clientId);
-  if (!client) { panel.appendChild(emptyStateCenter(t('selectClient'))); return; }
-
-  // HEADER
-  const header = el('div','');
-  header.style.cssText = 'background:var(--surface);border-bottom:1px solid var(--border);padding:20px 24px;';
-  const hFlex = el('div','');
-  hFlex.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;';
-  const hLeft = el('div','');
-  hLeft.style.cssText = 'display:flex;align-items:center;gap:14px;';
-  const av = el('div','avatar avatar-lg', getInitials(client.name));
-  const info = el('div','');
-  const nm = el('h2', '', client.name);
-  nm.style.fontSize = '22px';
-  const co = el('div','text-muted', client.company||'');
-  co.style.fontSize = '14px';
-  const contacts = el('div','');
-  contacts.style.cssText = 'display:flex;flex-wrap:wrap;gap:12px;margin-top:4px;';
-  if (client.email) {
-    const emailEl = el('div','');
-    emailEl.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text2);';
-    emailEl.textContent = '✉ '+client.email;
-    contacts.appendChild(emailEl);
-  }
-  if (client.phone) {
-    const phoneEl = el('div','');
-    phoneEl.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text2);';
-    phoneEl.textContent = '📞 '+client.phone;
-    contacts.appendChild(phoneEl);
-  }
-  info.append(nm, co, contacts);
-  hLeft.append(av, info);
-
-  const hRight = el('div','');
-  hRight.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
-  const emailBtn = el('button','btn btn-xs btn-blue', '✉ Email AI');
-  if (client.email) emailBtn.onclick = () => openAIEmailModal(client);
-  const editBtn = el('button','btn btn-xs btn-ghost', '✏ '+t('edit'));
-  editBtn.onclick = () => openClientModal(client);
-  const delBtn = el('button','btn btn-xs btn-red', '🗑');
-  delBtn.onclick = () => confirmAction(t('confirmDelete'), t('deleteClientConfirm'), () => deleteClient(client.id));
-  hRight.append(emailBtn, editBtn, delBtn);
-  hFlex.append(hLeft, hRight);
-
-  // TABS
-  const tabBar = el('div','tab-bar');
-  const tabs = [
-    { id:'overview', label:t('overview') },
-    { id:'tasks', label:t('tasks')+` (${(client.tasks||[]).length})` },
-    { id:'files', label:t('files')+` (${(client.files||[]).length})` },
-    { id:'financeTab', label:t('financeTab') },
-  ];
-  tabs.forEach(tab => {
-    const btn = el('button','tab-btn', tab.label);
-    if (APP.clientTab === tab.id) btn.classList.add('active');
-    btn.onclick = () => { APP.clientTab = tab.id; renderClientDetail(clientId); };
-    tabBar.appendChild(btn);
-  });
-
-  header.append(hFlex, tabBar);
-  panel.appendChild(header);
-
-  // TAB CONTENT
-  const content = el('div','');
-  content.style.padding = '24px';
-  switch(APP.clientTab) {
-    case 'overview':  content.appendChild(renderClientOverview(client)); break;
-    case 'tasks':     content.appendChild(renderKanban(client.tasks||[], 'client', client.id)); break;
-    case 'files':     content.appendChild(renderFiles(client.files||[], 'client', client.id)); break;
-    case 'financeTab': content.appendChild(renderClientFinance(client)); break;
-  }
-  panel.appendChild(content);
-}
-
-function renderClientOverview(client) {
   const wrap = el('div','');
-
-  // Notes
-  const notesCard = el('div','card');
-  notesCard.style.marginBottom = '16px';
-  const notesHeader = el('div','');
-  notesHeader.style.cssText = 'padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;';
-  const notesTitle = el('h3','', t('notesLabel'));
-  notesTitle.style.fontSize = '15px';
-  const editNoteBtn = el('button','btn btn-xs btn-ghost', '✏ '+t('edit'));
-  let notesEditing = false;
-  notesHeader.append(notesTitle, editNoteBtn);
-  notesCard.appendChild(notesHeader);
-  const notesBody = el('div','');
-  notesBody.style.padding = '16px';
-  const notesDisplay = el('div','');
-  notesDisplay.style.cssText = 'font-size:14px;line-height:1.7;color:var(--text2);white-space:pre-wrap;min-height:60px;';
-  notesDisplay.textContent = client.notes || '—';
-  const notesTa = el('textarea','field-input');
-  notesTa.style.display = 'none';
-  notesTa.value = client.notes || '';
-  notesTa.rows = 5;
-  const notesSaveBtn = el('button','btn btn-gold btn-sm');
-  notesSaveBtn.textContent = t('saveNote');
-  notesSaveBtn.style.cssText = 'display:none;margin-top:8px;';
-  notesSaveBtn.onclick = async () => {
-    setLoading(notesSaveBtn, true);
-    try {
-      await updateDoc(doc(db, `${DB_BASE}/hubs/${APP.hubId}/clients`, client.id), { notes: notesTa.value });
-      showToast(t('noteSaved'), 'success');
-    } catch(e) { showToast(t('error'),'error'); }
-    setLoading(notesSaveBtn, false);
-  };
-  editNoteBtn.onclick = () => {
-    notesEditing = !notesEditing;
-    notesDisplay.style.display = notesEditing ? 'none' : 'block';
-    notesTa.style.display = notesEditing ? 'block' : 'none';
-    notesSaveBtn.style.display = notesEditing ? 'inline-flex' : 'none';
-    editNoteBtn.textContent = notesEditing ? '✕' : '✏ '+t('edit');
-  };
-  notesBody.append(notesDisplay, notesTa, notesSaveBtn);
-  notesCard.appendChild(notesBody);
-
-  // Tags
-  if (client.tags) {
-    const tagsEl = el('div','');
-    tagsEl.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 16px;';
-    client.tags.split(',').map(t=>t.trim()).filter(Boolean).forEach(tag => {
-      const b = el('span','badge badge-gold', tag);
-      tagsEl.appendChild(b);
-    });
-    notesCard.appendChild(tagsEl);
-  }
-
-  // Stats
-  const statsGrid = el('div','');
-  statsGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;';
-  const clientTx = APP.transactions.filter(tx=>tx.clientId===client.id);
-  const totalIncome = clientTx.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  const clientProjects = APP.projects.filter(p=>p.clientId===client.id);
-  const stats = [
-    { label:t('projects'), value:clientProjects.length, color:'var(--blue)' },
-    { label:t('tasks'), value:(client.tasks||[]).length, color:'var(--gold)' },
-    { label:t('totalIncome'), value:formatMoney(totalIncome)+' '+t('madCurrency'), color:'var(--green)' },
-  ];
-  stats.forEach(s => {
-    const card = el('div','card-sm');
-    card.style.padding = '14px';
-    const val = el('div','');
-    val.style.cssText = `font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:${s.color};`;
-    val.textContent = s.value;
-    const lbl = el('div','text-faint', s.label);
-    lbl.style.fontSize = '12px';
-    card.append(val, lbl);
-    statsGrid.appendChild(card);
-  });
-
-  wrap.append(statsGrid, notesCard);
-
-  // Linked Projects
-  if (clientProjects.length > 0) {
-    const projCard = el('div','card');
-    const projHeader = el('div','');
-    projHeader.style.cssText = 'padding:14px 16px;border-bottom:1px solid var(--border);';
-    projHeader.appendChild(el('h3','', t('projects')));
-    projCard.appendChild(projHeader);
-    clientProjects.forEach(p => {
-      const item = el('div','list-item');
-      item.style.cursor = 'pointer';
-      item.onclick = () => { navigate('projects'); setTimeout(()=>selectProject(p.id),100); };
-      const nm = el('div','truncate', p.name);
-      nm.style.cssText = 'font-size:13px;font-weight:600;flex:1;';
-      const badge = el('span',`badge ${statusBadge(p.status)}`, t(p.status||'active'));
-      const budget = el('div','');
-      budget.style.cssText = 'font-size:13px;color:var(--gold);font-weight:600;margin-left:12px;white-space:nowrap;';
-      budget.textContent = p.budget ? formatMoney(p.budget)+' '+t('madCurrency') : '—';
-      item.append(nm, badge, budget);
-      projCard.appendChild(item);
-    });
-    wrap.appendChild(projCard);
-  }
-
-  return wrap;
-}
-
-function renderClientFinance(client) {
-  const clientTx = APP.transactions.filter(tx=>tx.clientId===client.id);
-  const totalIn = clientTx.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  const totalOut = clientTx.filter(tx=>tx.type==='expense').reduce((s,tx)=>s+Number(tx.amount||0),0);
-
-  const wrap = el('div','');
-
-  // Summary
-  const sumGrid = el('div','finance-summary');
-  sumGrid.style.marginBottom = '20px';
-  const sums = [
-    { label:t('totalIncome'), value:formatMoney(totalIn)+' '+t('madCurrency'), color:'var(--green)', bg:'var(--green-bg)' },
-    { label:t('totalExpenses'), value:formatMoney(totalOut)+' '+t('madCurrency'), color:'var(--red)', bg:'var(--red-bg)' },
-    { label:t('netBalance'), value:formatMoney(totalIn-totalOut)+' '+t('madCurrency'), color:'var(--gold)', bg:'var(--gold-faint)' },
-  ];
-  sums.forEach(s => {
-    const card = el('div','summary-card');
-    card.style.background = s.bg;
-    const val = el('div','summary-value');
-    val.style.color = s.color;
-    val.textContent = s.value;
-    const lbl = el('div','summary-label text-muted', s.label);
-    card.append(val, lbl);
-    sumGrid.appendChild(card);
-  });
-
-  const addBtn = el('button','btn btn-gold btn-sm');
-  addBtn.textContent = '+ '+t('addTransaction');
-  addBtn.style.marginBottom = '16px';
-  addBtn.onclick = () => openTxnModal(null, client.id);
+  wrap.style.padding = '24px';
 
   const card = el('div','card');
   const tbl = el('table','data-table');
-  tbl.style.width = '100%';
   const thead = el('thead','');
   const hRow = el('tr','');
-  [t('dateLabel'), t('description'), t('category'), t('amount')].forEach(h => hRow.appendChild(el('th','',h)));
-  hRow.appendChild(el('th','',''));
+  [t('clientName'), t('company'), t('emailLabel'), t('phoneLabel'), ''].forEach(h => hRow.appendChild(el('th','',h)));
   thead.appendChild(hRow); tbl.appendChild(thead);
   const tbody = el('tbody','');
-  if (clientTx.length === 0) {
-    const row = el('tr','');
-    const td = el('td','');
-    td.colSpan = 5;
-    td.appendChild(emptyState(t('noTransactions')));
+  if (APP.clients.length === 0) {
+    const row = el('tr',''); const td = el('td',''); td.colSpan = 5;
+    td.appendChild(emptyState(t('noClients')));
     row.appendChild(td); tbody.appendChild(row);
   } else {
-    clientTx.forEach(tx => {
+    APP.clients.forEach(c => {
       const row = el('tr','');
-      row.appendChild(el('td','', formatDate(tx.date)));
-      row.appendChild(el('td','', tx.description||'—'));
-      row.appendChild(el('td','', t(tx.category)||tx.category));
-      const amtTd = el('td','');
-      const amt = el('span','');
-      amt.style.cssText = `font-weight:700;color:${tx.type==='income'?'var(--green)':'var(--red)'}`;
-      amt.textContent = `${tx.type==='income'?'+':'-'}${formatMoney(tx.amount)}`;
-      amtTd.appendChild(amt);
-      row.appendChild(amtTd);
+      row.appendChild(el('td','', c.name));
+      row.appendChild(el('td','', c.company||'—'));
+      row.appendChild(el('td','', c.email||'—'));
+      row.appendChild(el('td','', c.phone||'—'));
       const actTd = el('td','');
+      const editBtn = el('button','btn btn-xs btn-ghost','✏');
+      editBtn.onclick = () => openClientModal(c);
       const delBtn = el('button','btn btn-xs btn-red','🗑');
-      delBtn.onclick = () => confirmAction(t('confirmDelete'), t('deleteTxConfirm'), ()=>deleteTransaction(tx.id));
-      actTd.appendChild(delBtn);
+      delBtn.onclick = () => confirmAction(t('confirmDelete'), t('cannotUndo'), () => deleteClient(c.id));
+      actTd.append(editBtn, delBtn);
       row.appendChild(actTd);
       tbody.appendChild(row);
     });
   }
   tbl.appendChild(tbody);
   card.appendChild(tbl);
-  wrap.append(sumGrid, addBtn, card);
-  return wrap;
-}
-
-// ==========================================================
-// KANBAN (shared for clients and projects)
-// ==========================================================
-function renderKanban(tasks, context, contextId) {
-  const wrap = el('div','');
-
-  // AI Breakdown panel
-  const aiPanel = el('div','ai-panel');
-  aiPanel.style.marginBottom = '16px';
-  const aiRow = el('div','');
-  aiRow.style.cssText = 'display:flex;gap:8px;';
-  const aiInput = el('input','field-input');
-  aiInput.id = `ai-goal-input-${context}`;
-  aiInput.placeholder = t('enterGoal');
-  aiInput.style.cssText = 'flex:1;font-size:13px;';
-  const aiBtnK = el('button','btn btn-ai btn-sm');
-  aiBtnK.id = `ai-goal-btn-${context}`;
-  aiBtnK.textContent = t('aiTaskBreakdown');
-  aiBtnK.onclick = () => handleAITaskBreakdown(context, contextId, aiInput.id, aiBtnK.id);
-  const addTaskBtn = el('button','btn btn-gold btn-sm',`+ ${t('addTask')}`);
-  addTaskBtn.onclick = () => openTaskModal(context, contextId);
-  aiRow.append(aiInput, aiBtnK, addTaskBtn);
-  aiPanel.appendChild(aiRow);
-
-  // Kanban columns
-  const grid = el('div','kanban-grid');
-  const cols = [
-    { status:'todo', label:t('todo'), color:'var(--text3)' },
-    { status:'inprogress', label:t('inprogress'), color:'var(--blue)' },
-    { status:'done', label:t('done'), color:'var(--green)' },
-  ];
-  cols.forEach(col => {
-    const colEl = el('div','kanban-col');
-    colEl.dataset.status = col.status;
-    colEl.dataset.context = context;
-    colEl.dataset.contextId = contextId;
-
-    const colHeader = el('div','kanban-col-header');
-    const dot = el('span','');
-    dot.style.cssText = `width:8px;height:8px;border-radius:50%;background:${col.color};display:inline-block;margin-right:6px;`;
-    const colTasks = tasks.filter(t=>t.status===col.status);
-    const titleEl = el('span','kanban-col-title', col.label);
-    const countEl = el('span','kanban-col-count', colTasks.length);
-    colHeader.append(dot, titleEl, countEl);
-
-    const tasksDiv = el('div','kanban-tasks');
-    tasksDiv.dataset.dropzone = col.status;
-
-    if (colTasks.length === 0) {
-      const empty = el('div','task-empty', '⋯');
-      tasksDiv.appendChild(empty);
-    } else {
-      colTasks.forEach(task => {
-        tasksDiv.appendChild(renderTaskCard(task, context, contextId));
-      });
-    }
-
-    // Drag & drop events on column
-    colEl.addEventListener('dragover', e => { e.preventDefault(); colEl.classList.add('drag-over'); });
-    colEl.addEventListener('dragleave', () => colEl.classList.remove('drag-over'));
-    colEl.addEventListener('drop', async e => {
-      e.preventDefault();
-      colEl.classList.remove('drag-over');
-      if (!APP.draggingTask || APP.draggingContext?.id !== contextId) return;
-      const newStatus = col.status;
-      if (APP.draggingTask.status === newStatus) return;
-      await moveTask(APP.draggingTask, newStatus, context, contextId);
-    });
-
-    colEl.append(colHeader, tasksDiv);
-    grid.appendChild(colEl);
-  });
-
-  wrap.append(aiPanel, grid);
-  return wrap;
-}
-
-function renderTaskCard(task, context, contextId) {
-  const card = el('div','task-card');
-  card.draggable = true;
-  card.dataset.taskId = task.id;
-  card.dataset.status = task.status;
-
-  card.addEventListener('dragstart', () => {
-    APP.draggingTask = task;
-    APP.draggingContext = { type: context, id: contextId };
-    setTimeout(()=>card.classList.add('dragging'),0);
-  });
-  card.addEventListener('dragend', () => card.classList.remove('dragging'));
-
-  const txt = el('div','task-text', task.text||'');
-  const meta = el('div','task-meta');
-  if (task.priority) {
-    const p = el('span','badge badge-gray', t(task.priority));
-    p.style.color = priorityColor(task.priority);
-    meta.appendChild(p);
-  }
-  if (task.dueDate) {
-    const due = el('span','');
-    due.style.cssText = 'font-size:11px;color:var(--text3);';
-    const overdue = task.dueDate < new Date().toISOString().split('T')[0];
-    if (overdue) due.style.color = 'var(--red)';
-    due.textContent = '📅 '+formatDate(task.dueDate);
-    meta.appendChild(due);
-  }
-
-  // Actions dropdown
-  const actContainer = el('div','task-actions-btn');
-  actContainer.style.cssText = 'position:absolute;top:8px;right:8px;';
-  const actBtn = el('button','btn btn-xs btn-ghost','⋯');
-  actBtn.style.cssText = 'padding:2px 6px;line-height:1;';
-  const dropdown = el('div','task-dropdown');
-  dropdown.style.display = 'none';
-  actBtn.onclick = (e) => {
-    e.stopPropagation();
-    const isOpen = dropdown.style.display !== 'none';
-    $$('.task-dropdown').forEach(d=>d.style.display='none');
-    dropdown.style.display = isOpen ? 'none' : 'block';
-  };
-
-  // Status options
-  const statuses = ['todo','inprogress','done'].filter(s=>s!==task.status);
-  statuses.forEach(s => {
-    const opt = el('button','task-dropdown-item', {todo:'📋 '+t('todo'),inprogress:'🔄 '+t('inprogress'),done:'✅ '+t('done')}[s]);
-    opt.onclick = (e) => { e.stopPropagation(); dropdown.style.display='none'; moveTask(task,s,context,contextId); };
-    dropdown.appendChild(opt);
-  });
-  const sep = el('div','');
-  sep.style.cssText = 'height:1px;background:var(--border);margin:2px 0;';
-  dropdown.appendChild(sep);
-  const delOpt = el('button','task-dropdown-item','🗑 '+t('delete'));
-  delOpt.style.color = 'var(--red)';
-  delOpt.onclick = (e) => { e.stopPropagation(); dropdown.style.display='none'; confirmAction(t('confirmDelete'),t('deleteTaskConfirm'),()=>deleteTask(task.id,context,contextId)); };
-  dropdown.appendChild(delOpt);
-
-  actContainer.append(actBtn, dropdown);
-  card.append(txt, meta, actContainer);
-  return card;
-}
-
-async function moveTask(task, newStatus, context, contextId) {
-  try {
-    const col = context === 'client' ? 'clients' : 'projects';
-    const docRef = doc(db, `${DB_BASE}/hubs/${APP.hubId}/${col}`, contextId);
-    const snap = await getDoc(docRef);
-    const tasks = (snap.data()?.tasks||[]).map(t => t.id===task.id ? {...t,status:newStatus} : t);
-    await updateDoc(docRef, { tasks });
-    showToast(t('taskMoved'), 'success');
-  } catch(e) { console.error(e); showToast(t('error'),'error'); }
-}
-
-async function deleteTask(taskId, context, contextId) {
-  closeModal('confirm-modal');
-  try {
-    const col = context === 'client' ? 'clients' : 'projects';
-    const docRef = doc(db, `${DB_BASE}/hubs/${APP.hubId}/${col}`, contextId);
-    const snap = await getDoc(docRef);
-    const tasks = (snap.data()?.tasks||[]).filter(t=>t.id!==taskId);
-    await updateDoc(docRef, { tasks });
-    showToast(t('taskDeleted'), 'success');
-  } catch(e) { console.error(e); showToast(t('error'),'error'); }
-}
-
-// ==========================================================
-// FILES
-// ==========================================================
-function renderFiles(files, context, contextId) {
-  const wrap = el('div','');
-
-  const uploadBtn = el('label','btn btn-gold btn-sm');
-  uploadBtn.style.cssText = 'cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:16px;';
-  uploadBtn.textContent = '↑ '+t('uploadFile');
-  const fileInput = el('input','');
-  fileInput.type = 'file';
-  fileInput.style.display = 'none';
-  fileInput.multiple = true;
-  fileInput.onchange = () => handleFileUpload(fileInput.files, context, contextId);
-  uploadBtn.appendChild(fileInput);
-
-  const card = el('div','card');
-  if (files.length === 0) {
-    card.appendChild(emptyState(t('noFiles')));
-  } else {
-    files.forEach(file => {
-      const item = el('div','file-item');
-      const iconEl = el('div','file-icon');
-      iconEl.style.background = 'var(--surface2)';
-      iconEl.textContent = getFileTypeIcon(file.name);
-      const info = el('div','');
-      info.style.cssText = 'flex:1;overflow:hidden;';
-      const nm = el('div','truncate', file.name);
-      nm.style.cssText = 'font-size:13px;font-weight:500;';
-      const sz = el('div','', formatBytes(file.size));
-      sz.style.cssText = 'font-size:11px;color:var(--text3);';
-      info.append(nm, sz);
-      const actions = el('div','');
-      actions.style.cssText = 'display:flex;gap:6px;';
-      const dlBtn = el('a','btn btn-xs btn-ghost', '↓');
-      dlBtn.href = file.url; dlBtn.target = '_blank';
-      const delBtn = el('button','btn btn-xs btn-red','🗑');
-      delBtn.onclick = () => confirmAction(t('confirmDelete'),t('deleteFileConfirm'),()=>deleteFile(file,context,contextId));
-      actions.append(dlBtn, delBtn);
-      item.append(iconEl, info, actions);
-      card.appendChild(item);
-    });
-  }
-  wrap.append(uploadBtn, card);
-  return wrap;
-}
-
-async function handleFileUpload(fileList, context, contextId) {
-  const files = Array.from(fileList);
-  for (const file of files) {
-    const path = `hubs/${APP.hubId}/${context}/${contextId}/${Date.now()}_${file.name}`;
-    const storageRef = ref(storage, path);
-    const task = uploadBytesResumable(storageRef, file);
-    const bar = $('upload-bar-container');
-    const fill = $('upload-fill');
-    const pct = $('upload-pct');
-    bar.style.display = 'block';
-    await new Promise((resolve, reject) => {
-      task.on('state_changed',
-        snap => {
-          const p = Math.round(snap.bytesTransferred/snap.totalBytes*100);
-          fill.style.width = p+'%';
-          pct.textContent = p+'%';
-        },
-        err => { bar.style.display='none'; reject(err); },
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref);
-          const fileData = { id: crypto.randomUUID(), name: file.name, size: file.size, url, storagePath: path, uploadedAt: new Date().toISOString() };
-          const col = context==='client'?'clients':'projects';
-          const docRef = doc(db, `${DB_BASE}/hubs/${APP.hubId}/${col}`, contextId);
-          const snap = await getDoc(docRef);
-          const existing = snap.data()?.files||[];
-          await updateDoc(docRef, { files: [...existing, fileData] });
-          bar.style.display='none'; fill.style.width='0%';
-          showToast(t('fileUploaded'),'success');
-          resolve();
-        }
-      );
-    }).catch(e => { console.error(e); showToast(t('error'),'error'); });
-  }
-}
-
-async function deleteFile(file, context, contextId) {
-  closeModal('confirm-modal');
-  try {
-    await deleteObject(ref(storage, file.storagePath)).catch(()=>{});
-    const col = context==='client'?'clients':'projects';
-    const docRef = doc(db, `${DB_BASE}/hubs/${APP.hubId}/${col}`, contextId);
-    const snap = await getDoc(docRef);
-    const files = (snap.data()?.files||[]).filter(f=>f.id!==file.id);
-    await updateDoc(docRef, { files });
-    showToast(t('fileDeleted'),'success');
-  } catch(e) { console.error(e); showToast(t('error'),'error'); }
-}
-
-// ==========================================================
-// RENDER: PROJECTS
-// ==========================================================
-function renderProjects() {
-  const area = $('view-area');
-  const topbar = $('topbar-actions');
-  topbar.innerHTML = '';
-  const addBtn = el('button','btn btn-gold btn-sm',`+ ${t('addProject')}`);
-  addBtn.onclick = () => openProjectModal();
-  topbar.appendChild(addBtn);
-
-  area.innerHTML = '';
-  const wrap = el('div','');
-  wrap.style.cssText = 'display:flex;height:100%;overflow:hidden;';
-
-  // Left: Project List
-  const leftPanel = el('div','');
-  leftPanel.style.cssText = 'width:300px;min-width:300px;border-right:1px solid var(--border);overflow-y:auto;background:var(--sidebar);';
-
-  // Filter buttons
-  const filterBar = el('div','');
-  filterBar.style.cssText = 'padding:12px;border-bottom:1px solid var(--border);display:flex;gap:4px;flex-wrap:wrap;';
-  const statuses = ['all','planning','active','paused','completed'];
-  let activeFilter = 'all';
-  const filterBtns = {};
-  statuses.forEach(s => {
-    const btn = el('button','btn btn-xs btn-ghost', s==='all'?'All':t(s));
-    if (s==='all') btn.classList.add('active');
-    btn.onclick = () => {
-      activeFilter = s;
-      Object.values(filterBtns).forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderProjList();
-    };
-    filterBtns[s] = btn;
-    filterBar.appendChild(btn);
-  });
-  leftPanel.appendChild(filterBar);
-
-  const projListDiv = el('div','');
-  projListDiv.id = 'proj-list-inner';
-
-  function renderProjList() {
-    projListDiv.innerHTML = '';
-    const filtered = activeFilter==='all' ? APP.projects : APP.projects.filter(p=>p.status===activeFilter);
-    if (filtered.length===0) { projListDiv.appendChild(emptyState(t('noProjects'))); return; }
-    filtered.forEach(p => {
-      const client = APP.clients.find(c=>c.id===p.clientId);
-      const item = el('div',`list-item${p.id===APP.selectedProjectId?' selected':''}`);
-      item.style.cursor='pointer';
-      item.onclick = ()=>selectProject(p.id);
-      const info = el('div','');
-      info.style.cssText='flex:1;overflow:hidden;';
-      const nm = el('div','truncate',p.name);
-      nm.style.cssText='font-size:13px;font-weight:600;';
-      const clientNm = el('div','truncate text-muted', client?.name||'—');
-      clientNm.style.fontSize='12px';
-      const badge = el('span',`badge ${statusBadge(p.status)}`, t(p.status||'active'));
-      info.append(nm, clientNm);
-      item.append(info, badge);
-      projListDiv.appendChild(item);
-    });
-  }
-
-  renderProjList();
-  leftPanel.appendChild(projListDiv);
-
-  // Right: Project Detail
-  const rightPanel = el('div','');
-  rightPanel.id = 'project-detail-panel';
-  rightPanel.style.cssText='flex:1;overflow-y:auto;background:var(--bg);';
-
-  if (APP.selectedProjectId) {
-    renderProjectDetail(APP.selectedProjectId, rightPanel);
-  } else {
-    rightPanel.appendChild(emptyStateCenter(t('selectProject')));
-  }
-
-  wrap.append(leftPanel, rightPanel);
+  wrap.appendChild(card);
   area.appendChild(wrap);
 }
 
-function selectProject(id) {
-  APP.selectedProjectId = id;
-  APP.projectTab = 'overview';
-  renderProjects();
-}
-
-function renderProjectDetail(projectId, panel) {
-  const p = APP.projects.find(pr=>pr.id===projectId);
-  if (!p) { if(panel) panel.appendChild(emptyStateCenter(t('selectProject'))); return; }
-  const targetPanel = panel || $('project-detail-panel');
-  if (!targetPanel) return;
-  targetPanel.innerHTML = '';
-
-  const client = APP.clients.find(c=>c.id===p.clientId);
-  const doneTasks = (p.tasks||[]).filter(t=>t.status==='done').length;
-  const totalTasks = (p.tasks||[]).length;
-  const progress = totalTasks > 0 ? Math.round(doneTasks/totalTasks*100) : 0;
-
-  // Header
-  const header = el('div','');
-  header.style.cssText='background:var(--surface);border-bottom:1px solid var(--border);padding:20px 24px;';
-  const hFlex = el('div','');
-  hFlex.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;';
-  const hInfo = el('div','');
-  const nm = el('h2','',p.name);
-  nm.style.fontSize='20px';
-  const clientEl = el('div','text-muted', client ? `👤 ${client.name}` : '—');
-  clientEl.style.cssText='font-size:14px;margin-top:4px;';
-  const badge = el('span',`badge ${statusBadge(p.status)}`, t(p.status||'active'));
-  badge.style.marginTop='6px';
-  hInfo.append(nm, clientEl, badge);
-
-  const hActions = el('div','');
-  hActions.style.cssText='display:flex;gap:6px;flex-shrink:0;';
-  const editBtn = el('button','btn btn-xs btn-ghost','✏ '+t('edit'));
-  editBtn.onclick = ()=>openProjectModal(p);
-  const delBtn = el('button','btn btn-xs btn-red','🗑');
-  delBtn.onclick = ()=>confirmAction(t('confirmDelete'),t('deleteProjectConfirm'),()=>deleteProject(p.id));
-  hActions.append(editBtn, delBtn);
-  hFlex.append(hInfo, hActions);
-
-  // Progress
-  const progWrap = el('div','');
-  progWrap.style.marginBottom='8px';
-  const progLabel = el('div','');
-  progLabel.style.cssText='display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px;';
-  const progText = el('span','',`${doneTasks}/${totalTasks} tasks`);
-  const progPct = el('span','',`${progress}%`);
-  progLabel.append(progText, progPct);
-  const progBar = el('div','progress-bar');
-  const progFill = el('div','progress-fill');
-  progFill.style.width = progress+'%';
-  progBar.appendChild(progFill);
-  progWrap.append(progLabel, progBar);
-
-  // Meta
-  const meta = el('div','');
-  meta.style.cssText='display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin-bottom:16px;';
-  if(p.budget){ const b=el('span','',`💰 ${formatMoney(p.budget)} ${t('madCurrency')}`); meta.appendChild(b); }
-  if(p.deadline){ const d=el('span','',`📅 ${formatDate(p.deadline)}`); meta.appendChild(d); }
-  if(p.description){ const desc=el('span','',`📝 ${p.description}`); meta.appendChild(desc); }
-
-  // Tabs
-  const tabBar = el('div','tab-bar');
-  const tabs = [
-    {id:'overview',label:t('overview')},
-    {id:'tasks',label:t('tasks')+` (${totalTasks})`},
-    {id:'files',label:t('files')+` (${(p.files||[]).length})`},
-  ];
-  tabs.forEach(tab => {
-    const btn = el('button','tab-btn',tab.label);
-    if(APP.projectTab===tab.id) btn.classList.add('active');
-    btn.onclick = ()=>{ APP.projectTab=tab.id; renderProjectDetail(projectId,null); };
-    tabBar.appendChild(btn);
-  });
-
-  header.append(hFlex, meta, progWrap, tabBar);
-  targetPanel.appendChild(header);
-
-  const content = el('div','');
-  content.style.padding='24px';
-  switch(APP.projectTab){
-    case 'overview':
-      const oWrap=el('div','');
-      if(p.description){const dc=el('div','card');dc.style.padding='16px';const dt=el('div','');dt.style.cssText='font-size:14px;line-height:1.7;color:var(--text2);';dt.textContent=p.description;dc.appendChild(dt);oWrap.appendChild(dc);}
-      content.appendChild(oWrap);
-      break;
-    case 'tasks': content.appendChild(renderKanban(p.tasks||[],'project',p.id)); break;
-    case 'files': content.appendChild(renderFiles(p.files||[],'project',p.id)); break;
-  }
-  targetPanel.appendChild(content);
-}
-
-// ==========================================================
-// RENDER: FINANCE
-// ==========================================================
-function renderFinance() {
+function renderQuotes() {
   const area = $('view-area');
   const topbar = $('topbar-actions');
   topbar.innerHTML = '';
 
-  const addBtn = el('button','btn btn-gold btn-sm',`+ ${t('addTransaction')}`);
-  addBtn.onclick = ()=>openTxnModal();
-  const expBtn = el('button','btn btn-ghost btn-sm',`📊 ${t('exportExcel')}`);
-  expBtn.onclick = exportFinanceExcel;
-  const pdfBtn = el('button','btn btn-ghost btn-sm',`📄 ${t('exportPDF')}`);
-  pdfBtn.onclick = exportFinancePDF;
-  topbar.append(addBtn, expBtn, pdfBtn);
+  const addBtn = el('button','btn btn-gold btn-sm',\`+ \${t('newQuote')}\`);
+  addBtn.onclick = () => openQuoteModal();
+  topbar.appendChild(addBtn);
 
   area.innerHTML = '';
   const wrap = el('div','');
   wrap.style.padding = '24px';
 
-  // Period filter
-  let period = 'all';
-  const periodBar = el('div','');
-  periodBar.style.cssText='display:flex;gap:6px;margin-bottom:20px;';
-  const periods = [
-    {id:'all',label:t('allTime')},
-    {id:'month',label:t('thisMonth')},
-  ];
-  const periodBtns = {};
-  periods.forEach(p => {
-    const btn = el('button','btn btn-sm btn-ghost', p.label);
-    if(p.id==='all') btn.style.background='var(--surface2)';
-    btn.onclick = ()=>{
-      period=p.id;
-      Object.values(periodBtns).forEach(b=>b.style.background='');
-      btn.style.background='var(--surface2)';
-      rebuildTable();
-    };
-    periodBtns[p.id]=btn;
-    periodBar.appendChild(btn);
-  });
-
-  // Type filter
-  let typeFilter = 'all';
-  const typeBar = el('div','');
-  typeBar.style.cssText='display:flex;gap:6px;margin-bottom:16px;';
-  ['all','income','expense'].forEach(type => {
-    const btn = el('button','btn btn-xs btn-ghost', type==='all'?'All':t(type));
-    if(type==='all') btn.style.background='var(--surface2)';
-    btn.onclick = ()=>{
-      typeFilter=type;
-      $$('#finance-type-filter .btn').forEach(b=>b.style.background='');
-      btn.style.background='var(--surface2)';
-      rebuildTable();
-    };
-    typeBar.appendChild(btn);
-  });
-  typeBar.id='finance-type-filter';
-
-  // Summary
-  const sumGrid = el('div','finance-summary');
-  sumGrid.id='finance-summary';
-  sumGrid.style.marginBottom='20px';
-
-  // Table container
-  const tableCard = el('div','card');
-  tableCard.id='finance-table';
-
-  function rebuildTable() {
-    const now = new Date();
-    const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    let filtered = [...APP.transactions];
-    if(period==='month') filtered=filtered.filter(tx=>(tx.date||'').startsWith(thisMonth));
-    if(typeFilter!=='all') filtered=filtered.filter(tx=>tx.type===typeFilter);
-
-    const totalIn=filtered.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-    const totalOut=filtered.filter(tx=>tx.type==='expense').reduce((s,tx)=>s+Number(tx.amount||0),0);
-    const net=totalIn-totalOut;
-    sumGrid.innerHTML='';
-    [
-      {label:t('totalIncome'),value:formatMoney(totalIn)+' '+t('madCurrency'),color:'var(--green)',bg:'var(--green-bg)'},
-      {label:t('totalExpenses'),value:formatMoney(totalOut)+' '+t('madCurrency'),color:'var(--red)',bg:'var(--red-bg)'},
-      {label:t('netBalance'),value:formatMoney(net)+' '+t('madCurrency'),color:'var(--gold)',bg:'var(--gold-faint)'},
-    ].forEach(s => {
-      const c=el('div','summary-card');c.style.background=s.bg;
-      const v=el('div','summary-value');v.style.color=s.color;v.textContent=s.value;
-      const l=el('div','summary-label text-muted',s.label);
-      c.append(v,l);sumGrid.appendChild(c);
+  const card = el('div','card');
+  const tbl = el('table','data-table');
+  const thead = el('thead','');
+  const hRow = el('tr','');
+  [t('quoteNumber'), t('dateLabel'), t('clientLabel'), t('totalAmount'), ''].forEach(h => hRow.appendChild(el('th','',h)));
+  thead.appendChild(hRow); tbl.appendChild(thead);
+  const tbody = el('tbody','');
+  if (APP.quotes.length === 0) {
+    const row = el('tr',''); const td = el('td',''); td.colSpan = 5;
+    td.appendChild(emptyState(t('noQuotes')));
+    row.appendChild(td); tbody.appendChild(row);
+  } else {
+    APP.quotes.forEach(q => {
+      const client = APP.clients.find(c=>c.id===q.clientId);
+      const row = el('tr','');
+      row.appendChild(el('td','', q.number||q.id.substring(0,8)));
+      row.appendChild(el('td','', formatDate(q.date)));
+      row.appendChild(el('td','', client?.name||'—'));
+      const subT = (q.items||[]).reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
+      const vat = subT * 0.15;
+      const totalTd = el('td','');
+      const totalSpan = el('span','');
+      totalSpan.style.cssText = 'font-weight:700;color:var(--green);';
+      totalSpan.textContent = formatMoney(subT+vat)+' SAR';
+      totalTd.appendChild(totalSpan);
+      row.appendChild(totalTd);
+      const actTd = el('td','');
+      const pdfBtn = el('button','btn btn-xs btn-purple',\`📄 \${t('viewPDF')}\`);
+      pdfBtn.onclick = () => generateQuotePDF(q);
+      const editBtn = el('button','btn btn-xs btn-ghost','✏');
+      editBtn.onclick = () => openQuoteModal(q);
+      const delBtn = el('button','btn btn-xs btn-red','🗑');
+      delBtn.onclick = () => confirmAction(t('confirmDelete'), t('cannotUndo'), () => deleteQuote(q.id));
+      actTd.append(pdfBtn, editBtn, delBtn);
+      row.appendChild(actTd);
+      tbody.appendChild(row);
     });
-
-    tableCard.innerHTML='';
-    const tbl=el('table','data-table');
-    const thead=el('thead','');
-    const hRow=el('tr','');
-    [t('dateLabel'),t('description'),t('category'),t('clientLabel'),t('income'),t('expense'),''].forEach(h=>hRow.appendChild(el('th','',h)));
-    thead.appendChild(hRow);tbl.appendChild(thead);
-    const tbody=el('tbody','');
-    if(filtered.length===0){
-      const row=el('tr','');const td=el('td','');td.colSpan=7;td.appendChild(emptyState(t('noTransactions')));row.appendChild(td);tbody.appendChild(row);
-    } else {
-      filtered.forEach(tx => {
-        const row=el('tr','');
-        row.appendChild(el('td','',formatDate(tx.date)));
-        row.appendChild(el('td','',tx.description||'—'));
-        row.appendChild(el('td','',t(tx.category)||tx.category));
-        const client=APP.clients.find(c=>c.id===tx.clientId);
-        row.appendChild(el('td','',client?.name||'—'));
-        const inTd=el('td','');
-        if(tx.type==='income'){const s=el('span','');s.style.cssText='font-weight:700;color:var(--green);';s.textContent=formatMoney(tx.amount);inTd.appendChild(s);}
-        else inTd.textContent='—';
-        row.appendChild(inTd);
-        const outTd=el('td','');
-        if(tx.type==='expense'){const s=el('span','');s.style.cssText='font-weight:700;color:var(--red);';s.textContent=formatMoney(tx.amount);outTd.appendChild(s);}
-        else outTd.textContent='—';
-        row.appendChild(outTd);
-        const actTd=el('td','');
-        const delBtn=el('button','btn btn-xs btn-red','🗑');
-        delBtn.onclick=()=>confirmAction(t('confirmDelete'),t('deleteTxConfirm'),()=>deleteTransaction(tx.id));
-        actTd.appendChild(delBtn);
-        row.appendChild(actTd);
-        tbody.appendChild(row);
-      });
-    }
-    tbl.appendChild(tbody);
-    tableCard.appendChild(tbl);
   }
-
-  rebuildTable();
-  wrap.append(periodBar, typeBar, sumGrid, tableCard);
+  tbl.appendChild(tbody);
+  card.appendChild(tbl);
+  wrap.appendChild(card);
   area.appendChild(wrap);
 }
 
-// ==========================================================
-// RENDER: SETTINGS
-// ==========================================================
+function renderProjects() {
+  const area = $('view-area');
+  $('topbar-actions').innerHTML = '';
+  area.innerHTML = '';
+  const wrap = el('div',''); wrap.style.padding='24px';
+  wrap.appendChild(emptyState('Projects module — Coming soon'));
+  area.appendChild(wrap);
+}
+
+function renderFinance() {
+  const area = $('view-area');
+  $('topbar-actions').innerHTML = '';
+  area.innerHTML = '';
+  const wrap = el('div',''); wrap.style.padding='24px';
+  wrap.appendChild(emptyState('Finance module — Coming soon'));
+  area.appendChild(wrap);
+}
+
 function renderSettings() {
   const area = $('view-area');
   $('topbar-actions').innerHTML='';
@@ -2265,7 +1053,7 @@ function renderSettings() {
   const body=el('div','');body.style.padding='24px';
   const lbl=el('label','field-label',t('geminiApiKey'));
   const input=el('input','field-input');input.type='password';input.id='settings-api-key-inline';
-  input.value=APP.geminiKey||'';input.placeholder='AIza...';
+  input.value=APP.geminiKey||'';
   const info=el('p','');info.style.cssText='font-size:11px;color:var(--text3);margin-top:6px;';info.textContent=t('apiKeyInfo');
   const link=el('a','');link.href='https://aistudio.google.com/app/apikey';link.target='_blank';
   link.style.cssText='font-size:11px;color:var(--gold);display:block;margin-top:4px;';link.textContent=t('getApiKey');
@@ -2282,80 +1070,100 @@ function renderSettings() {
   area.appendChild(wrap);
 }
 
-// ==========================================================
-// MODAL OPENERS
-// ==========================================================
 function openClientModal(client=null) {
   $('cm-id').value = client?.id||'';
   $('cm-name').value = client?.name||'';
   $('cm-company').value = client?.company||'';
   $('cm-email').value = client?.email||'';
   $('cm-phone').value = client?.phone||'';
-  $('cm-status').value = client?.status||'active';
-  $('cm-tags').value = client?.tags||'';
   $('cm-notes').value = client?.notes||'';
   $('client-modal-title').textContent = client ? t('editClient') : t('addClient');
   openModal('client-modal');
 }
 
-function openProjectModal(proj=null) {
-  $('pm-id').value = proj?.id||'';
-  $('pm-name').value = proj?.name||'';
-  $('pm-status').value = proj?.status||'planning';
-  $('pm-budget').value = proj?.budget||'';
-  $('pm-deadline').value = proj?.deadline||'';
-  $('pm-desc').value = proj?.description||'';
-  const sel = $('pm-client');
-  sel.innerHTML = '<option value="">— None —</option>';
-  APP.clients.forEach(c=>{const o=el('option','',c.name);o.value=c.id;if(c.id===proj?.clientId)o.selected=true;sel.appendChild(o);});
-  $('project-modal-title').textContent = proj ? t('editProject') : t('addProject');
-  openModal('project-modal');
-}
-
-function openTaskModal(context, contextId) {
-  $('tm-context').value = context;
-  $('tm-context-id').value = contextId;
-  $('tm-text').value = '';
-  $('tm-priority').value = 'medium';
-  $('tm-due').value = '';
-  openModal('task-modal');
-}
-
-function openTxnModal(tx=null, clientId=null) {
-  $('txm-id').value = tx?.id||'';
-  setTxType(tx?.type||'income');
-  $('txm-amount').value = tx?.amount||'';
-  $('txm-date').value = tx?.date||new Date().toISOString().split('T')[0];
-  $('txm-category').value = tx?.category||'sale';
-  $('txm-desc').value = tx?.description||'';
-  const sel = $('txm-client');
-  sel.innerHTML = '<option value="">— None —</option>';
-  APP.clients.forEach(c=>{const o=el('option','',c.name);o.value=c.id;if(c.id===(tx?.clientId||clientId))o.selected=true;sel.appendChild(o);});
-  openModal('txn-modal');
-}
-
-function openAIEmailModal(client) {
-  APP._emailClient = client;
-  $('ai-email-prompt').value = '';
-  $('ai-email-result').style.display='none';
-  $('ai-email-output').value='';
-  openModal('ai-email-modal');
-}
-
-window.setTxType = function(type) {
-  $('txm-type').value = type;
-  const incBtn = $('txm-type-income');
-  const expBtn = $('txm-type-expense');
-  if(type==='income'){
-    incBtn.className='btn btn-green'; expBtn.className='btn btn-ghost';
+function openQuoteModal(quote=null) {
+  $('qm-id').value = quote?.id||'';
+  $('qm-number').value = quote?.number||'';
+  $('qm-date').value = quote?.date||new Date().toISOString().split('T')[0];
+  const validDate = new Date();
+  validDate.setDate(validDate.getDate() + 18);
+  $('qm-valid').value = quote?.validUntil||validDate.toISOString().split('T')[0];
+  $('qm-desc').value = quote?.description||'';
+  $('qm-delivery').value = quote?.deliveryDays||25;
+  $('qm-warranty').value = quote?.warrantyYears||3;
+  $('qm-notes').value = quote?.specialNotes||'';
+  
+  const sel = $('qm-client');
+  sel.innerHTML = '<option value="">— Select —</option>';
+  APP.clients.forEach(c=>{const o=el('option','',c.name);o.value=c.id;if(c.id===quote?.clientId)o.selected=true;sel.appendChild(o);});
+  
+  APP.quoteItemCounter = 0;
+  $('quote-items-container').innerHTML = '';
+  if (quote && quote.items && quote.items.length > 0) {
+    quote.items.forEach(item => addQuoteItem(item));
   } else {
-    expBtn.className='btn btn-red'; incBtn.className='btn btn-ghost';
+    addQuoteItem();
   }
+  
+  $('quote-modal-title').textContent = quote ? t('editQuote') : t('newQuote');
+  openModal('quote-modal');
 }
 
-// ==========================================================
-// CRUD OPERATIONS
-// ==========================================================
+window.addQuoteItem = function(item=null) {
+  const container = $('quote-items-container');
+  const id = ++APP.quoteItemCounter;
+  
+  const row = el('div','quote-item-row');
+  row.dataset.itemId = id;
+  
+  const noInput = el('input','field-input');
+  noInput.type = 'number';
+  noInput.placeholder = '#';
+  noInput.value = item?.no || id;
+  noInput.dataset.field = 'no';
+  
+  const descTa = el('textarea','field-input');
+  descTa.placeholder = t('description');
+  descTa.value = item?.description || '';
+  descTa.dataset.field = 'description';
+  
+  const qtyInput = el('input','field-input');
+  qtyInput.type = 'number';
+  qtyInput.placeholder = t('quantity');
+  qtyInput.value = item?.quantity || 1;
+  qtyInput.dataset.field = 'quantity';
+  qtyInput.step = '0.01';
+  
+  const priceInput = el('input','field-input');
+  priceInput.type = 'number';
+  priceInput.placeholder = t('unitPrice');
+  priceInput.value = item?.unitPrice || 0;
+  priceInput.dataset.field = 'unitPrice';
+  priceInput.step = '0.01';
+  
+  const totalInput = el('input','field-input');
+  totalInput.readOnly = true;
+  totalInput.placeholder = t('total');
+  totalInput.style.background = 'var(--surface2)';
+  totalInput.dataset.field = 'total';
+  
+  const calcTotal = () => {
+    const qty = Number(qtyInput.value) || 0;
+    const price = Number(priceInput.value) || 0;
+    totalInput.value = formatMoney(qty * price);
+  };
+  
+  qtyInput.oninput = calcTotal;
+  priceInput.oninput = calcTotal;
+  calcTotal();
+  
+  const delBtn = el('button','btn btn-xs btn-red','🗑');
+  delBtn.onclick = () => { if(container.children.length > 1) container.removeChild(row); };
+  
+  row.append(noInput, descTa, qtyInput, priceInput, totalInput, delBtn);
+  container.appendChild(row);
+}
+
 window.saveClient = async function() {
   const name = $('cm-name').value.trim();
   if(!name) return showToast('Name required','error');
@@ -2364,15 +1172,14 @@ window.saveClient = async function() {
   try {
     const data = {
       name, company:$('cm-company').value.trim(), email:$('cm-email').value.trim(),
-      phone:$('cm-phone').value.trim(), status:$('cm-status').value,
-      tags:$('cm-tags').value.trim(), notes:$('cm-notes').value.trim(),
+      phone:$('cm-phone').value.trim(), notes:$('cm-notes').value.trim(),
     };
     const id = $('cm-id').value;
     if(id) {
-      await updateDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/clients`,id), data);
+      await updateDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`,id), data);
     } else {
-      data.createdAt=serverTimestamp(); data.tasks=[]; data.files=[];
-      await addDoc(collection(db,`${DB_BASE}/hubs/${APP.hubId}/clients`), data);
+      data.createdAt=serverTimestamp();
+      await addDoc(collection(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`), data);
     }
     closeModal('client-modal');
     showToast(t('clientSaved'),'success');
@@ -2383,306 +1190,237 @@ window.saveClient = async function() {
 async function deleteClient(id) {
   closeModal('confirm-modal');
   try {
-    await deleteDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/clients`,id));
-    if(APP.selectedClientId===id){ APP.selectedClientId=null; }
-    showToast(t('clientDeleted'),'success');
+    await deleteDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`,id));
+    showToast(t('clientSaved'),'success');
   } catch(e){console.error(e);showToast(t('error'),'error');}
 }
 
-window.saveProject = async function() {
-  const name = $('pm-name').value.trim();
-  if(!name) return showToast('Name required','error');
-  const btn = $('save-project-btn');
+window.saveQuote = async function() {
+  const clientId = $('qm-client').value;
+  if(!clientId) return showToast('Client required','error');
+  
+  const itemRows = $$('#quote-items-container .quote-item-row');
+  const items = Array.from(itemRows).map(row => ({
+    no: Number(row.querySelector('[data-field="no"]').value) || 1,
+    description: row.querySelector('[data-field="description"]').value.trim(),
+    quantity: Number(row.querySelector('[data-field="quantity"]').value) || 1,
+    unitPrice: Number(row.querySelector('[data-field="unitPrice"]').value) || 0,
+  }));
+  
+  if (items.length === 0 || !items[0].description) return showToast('At least one item required','error');
+  
+  const btn = $('save-quote-btn');
   setLoading(btn,true);
   try {
-    const data={
-      name, clientId:$('pm-client').value, status:$('pm-status').value,
-      budget:Number($('pm-budget').value)||0, deadline:$('pm-deadline').value,
-      description:$('pm-desc').value.trim(),
+    const data = {
+      number: $('qm-number').value.trim(),
+      clientId,
+      date: $('qm-date').value,
+      validUntil: $('qm-valid').value,
+      description: $('qm-desc').value.trim(),
+      items,
+      deliveryDays: Number($('qm-delivery').value) || 25,
+      warrantyYears: Number($('qm-warranty').value) || 3,
+      specialNotes: $('qm-notes').value.trim(),
     };
-    const id=$('pm-id').value;
-    if(id){
-      await updateDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/projects`,id),data);
-    } else {
-      data.createdAt=serverTimestamp();data.tasks=[];data.files=[];
-      await addDoc(collection(db,`${DB_BASE}/hubs/${APP.hubId}/projects`),data);
-    }
-    closeModal('project-modal');
-    showToast(t('projectSaved'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
-}
-
-async function deleteProject(id) {
-  closeModal('confirm-modal');
-  try {
-    await deleteDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/projects`,id));
-    if(APP.selectedProjectId===id) APP.selectedProjectId=null;
-    showToast(t('projectDeleted'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-}
-
-window.saveTask = async function() {
-  const text=$('tm-text').value.trim();
-  if(!text) return showToast('Task description required','error');
-  const btn=$('save-task-btn');
-  setLoading(btn,true);
-  try {
-    const context=$('tm-context').value;
-    const contextId=$('tm-context-id').value;
-    const col=context==='client'?'clients':'projects';
-    const docRef=doc(db,`${DB_BASE}/hubs/${APP.hubId}/${col}`,contextId);
-    const snap=await getDoc(docRef);
-    const tasks=snap.data()?.tasks||[];
-    const newTask={id:crypto.randomUUID(),text,status:'todo',priority:$('tm-priority').value,dueDate:$('tm-due').value||null};
-    await updateDoc(docRef,{tasks:[...tasks,newTask]});
-    closeModal('task-modal');
-    showToast(t('taskAdded'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
-}
-
-window.saveTransaction = async function() {
-  const amount=Number($('txm-amount').value);
-  if(!amount||amount<=0) return showToast('Valid amount required','error');
-  const btn=$('save-txn-btn');
-  setLoading(btn,true);
-  try {
-    const data={
-      type:$('txm-type').value, amount,
-      date:$('txm-date').value, category:$('txm-category').value,
-      description:$('txm-desc').value.trim(), clientId:$('txm-client').value||null,
-    };
-    const id=$('txm-id').value;
-    if(id){
-      await updateDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/transactions`,id),data);
+    const id = $('qm-id').value;
+    if(id) {
+      await updateDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`,id), data);
     } else {
       data.createdAt=serverTimestamp();
-      await addDoc(collection(db,`${DB_BASE}/hubs/${APP.hubId}/transactions`),data);
+      await addDoc(collection(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`), data);
     }
-    closeModal('txn-modal');
-    showToast(t('transactionSaved'),'success');
+    closeModal('quote-modal');
+    showToast(t('quoteSaved'),'success');
   } catch(e){console.error(e);showToast(t('error'),'error');}
   setLoading(btn,false);
 }
 
-async function deleteTransaction(id) {
+async function deleteQuote(id) {
   closeModal('confirm-modal');
   try {
-    await deleteDoc(doc(db,`${DB_BASE}/hubs/${APP.hubId}/transactions`,id));
-    showToast(t('transactionDeleted'),'success');
+    await deleteDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`,id));
+    showToast(t('quoteDeleted'),'success');
   } catch(e){console.error(e);showToast(t('error'),'error');}
 }
 
-// ==========================================================
-// AI FUNCTIONS
-// ==========================================================
-function getApiKey() {
-  const key = APP.geminiKey || sessionStorage.getItem('rp_gemini');
-  if(!key) { showToast(t('apiKeyNeeded'),'error'); navigate('settings'); return null; }
-  APP.geminiKey = key;
-  return key;
-}
-
-const GEMINI_URL = key => `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`;
-
-async function callGemini(apiKey, systemPrompt, userPrompt, jsonSchema=null) {
-  const payload = {
-    contents:[{parts:[{text:userPrompt}]}],
-    systemInstruction:{parts:[{text:systemPrompt}]},
-    generationConfig: jsonSchema ? {responseMimeType:'application/json',responseSchema:jsonSchema} : {},
-  };
-  const res = await fetch(GEMINI_URL(apiKey), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  if(!res.ok) throw new Error(`API error ${res.status}`);
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-}
-
-async function handleAIClientSetup() {
-  const key=getApiKey(); if(!key) return;
-  const text=$('ai-client-input')?.value?.trim(); if(!text) return;
-  const btn=$('ai-client-btn'); setLoading(btn,true);
-  try {
-    const schema={type:'OBJECT',properties:{name:{type:'STRING'},company:{type:'STRING'},email:{type:'STRING'},phone:{type:'STRING'},notes:{type:'STRING'}}};
-    const raw=await callGemini(key,
-      'Extract client contact info from the given text. Return a JSON object with fields: name, company, email, phone, notes. Empty string if not found.',
-      text, schema
-    );
-    const data=JSON.parse(raw);
-    openClientModal();
-    if(data.name) $('cm-name').value=data.name;
-    if(data.company) $('cm-company').value=data.company;
-    if(data.email) $('cm-email').value=data.email;
-    if(data.phone) $('cm-phone').value=data.phone;
-    if(data.notes) $('cm-notes').value=data.notes;
-    if($('ai-client-input')) $('ai-client-input').value='';
-    showToast('✨ Client info extracted!','success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
-}
-
-async function handleAITaskBreakdown(context, contextId, inputId, btnId) {
-  const key=getApiKey(); if(!key) return;
-  const goal=$(inputId)?.value?.trim(); if(!goal) return;
-  const btn=$(btnId); setLoading(btn,true);
-  try {
-    const schema={type:'ARRAY',items:{type:'STRING'}};
-    const raw=await callGemini(key,
-      'You are a project manager. Break the given goal into 3-6 clear, actionable tasks. Start each with a verb. Return only a JSON array of strings.',
-      goal, schema
-    );
-    const tasks=JSON.parse(raw);
-    const col=context==='client'?'clients':'projects';
-    const docRef=doc(db,`${DB_BASE}/hubs/${APP.hubId}/${col}`,contextId);
-    const snap=await getDoc(docRef);
-    const existing=snap.data()?.tasks||[];
-    const newTasks=tasks.map(text=>({id:crypto.randomUUID(),text,status:'todo',priority:'medium',dueDate:null}));
-    await updateDoc(docRef,{tasks:[...existing,...newTasks]});
-    if($(inputId)) $(inputId).value='';
-    showToast('✨ '+tasks.length+' tasks generated!','success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
-}
-
-window.generateAIEmail = async function() {
-  const key=getApiKey(); if(!key) return;
-  const client=APP._emailClient; if(!client) return;
-  const prompt=$('ai-email-prompt').value.trim(); if(!prompt) return;
-  const btn=$('generate-email-btn'); setLoading(btn,true);
-  try {
-    const sysPrompt=`You are a professional business email writer for Rattan Palace, a premium furniture company. Write a professional, warm email on behalf of the Rattan Palace team. Keep it concise (3-4 paragraphs). In the language matching the client's name or explicitly requested language. Sign off as "The Rattan Palace Team".`;
-    const userPrompt=`Client name: ${client.name}${client.company?', '+client.company:''}\nEmail purpose: ${prompt}`;
-    const result=await callGemini(key,sysPrompt,userPrompt);
-    $('ai-email-output').value=result;
-    $('ai-email-result').style.display='block';
-    showToast(t('aiEmailGenerated'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
-}
-
-window.copyAIEmail = function() {
-  const text=$('ai-email-output').value;
-  navigator.clipboard.writeText(text).then(()=>showToast(t('linkCopied'),'success')).catch(()=>{});
-}
-
-// ==========================================================
-// EXPORT
-// ==========================================================
-function exportFinancePDF() {
+function generateQuotePDF(quote) {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
+  const client = APP.clients.find(c=>c.id===quote.clientId);
+  
+  // LOGO / HEADER
+  pdf.setFontSize(24);
+  pdf.setFont('helvetica','bold');
+  pdf.text('RP', 14, 20);
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica','normal');
+  pdf.text('RATTAN PALACE', 14, 26);
+  
+  // QUOTATION TITLE
   pdf.setFontSize(18);
-  pdf.text('Rattan Palace — Finance Report', 14, 20);
-  pdf.setFontSize(11);
-  pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
-  const totalIn=APP.transactions.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  const totalOut=APP.transactions.filter(tx=>tx.type==='expense').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  pdf.text(`Total Income: ${formatMoney(totalIn)} MAD`, 14, 38);
-  pdf.text(`Total Expenses: ${formatMoney(totalOut)} MAD`, 14, 45);
-  pdf.text(`Net Balance: ${formatMoney(totalIn-totalOut)} MAD`, 14, 52);
-  const rows=APP.transactions.map(tx=>[formatDate(tx.date),tx.description||'—',tx.category,tx.type==='income'?formatMoney(tx.amount):'',tx.type==='expense'?formatMoney(tx.amount):'']);
-  pdf.autoTable({ startY:60, head:[['Date','Description','Category','Income','Expense']], body:rows, theme:'grid', styles:{fontSize:9} });
-  pdf.save('rattan-palace-finance.pdf');
-}
-
-function exportFinanceExcel() {
-  const data=[['Date','Description','Category','Type','Amount (MAD)','Client']];
-  APP.transactions.forEach(tx=>{
-    const client=APP.clients.find(c=>c.id===tx.clientId);
-    data.push([formatDate(tx.date),tx.description||'',tx.category,tx.type,tx.amount,client?.name||'']);
+  pdf.setFont('helvetica','bold');
+  pdf.setTextColor(128, 0, 128);
+  pdf.text(t('quotation'), 105, 20, { align: 'center' });
+  
+  // DATE BOX (top right)
+  pdf.setFontSize(9);
+  pdf.setTextColor(0);
+  pdf.setFont('helvetica','normal');
+  let yPos = 35;
+  pdf.text(\`Date: \${formatDate(quote.date)}\`, 140, yPos);
+  yPos += 5;
+  pdf.text(\`Valid Until: \${formatDate(quote.validUntil)}\`, 140, yPos);
+  yPos += 5;
+  pdf.text(\`Quote #: \${quote.number || quote.id.substring(0,8)}\`, 140, yPos);
+  yPos += 5;
+  pdf.text(\`Customer ID: \${client?.id?.substring(0,6) || 'N/A'}\`, 140, yPos);
+  
+  // CUSTOMER INFO
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('customer')+':', 14, 50);
+  pdf.setFont('helvetica','normal');
+  pdf.text(client?.name || '—', 14, 56);
+  if (client?.company) pdf.text(client.company, 14, 61);
+  
+  // PROJECT DESCRIPTION
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('quoteProjectDesc')+':', 100, 50);
+  pdf.setFont('helvetica','normal');
+  const descLines = pdf.splitTextToSize(quote.description || '', 90);
+  pdf.text(descLines, 100, 56);
+  
+  // TABLE
+  const tableData = quote.items.map(item => [
+    item.no,
+    item.description,
+    item.quantity,
+    formatMoney(item.unitPrice),
+    formatMoney(item.quantity * item.unitPrice)
+  ]);
+  
+  const subtotal = quote.items.reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+  
+  pdf.autoTable({
+    startY: 75,
+    head: [[t('no'), t('description'), t('quantity'), t('unitPrice'), t('total')]],
+    body: tableData,
+    theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 3 },
+    headStyles: { fillColor: [128, 0, 128], textColor: 255 },
+    columnStyles: {
+      0: { cellWidth: 15 },
+      1: { cellWidth: 85 },
+      2: { cellWidth: 20, halign: 'center' },
+      3: { cellWidth: 30, halign: 'right' },
+      4: { cellWidth: 35, halign: 'right' }
+    }
   });
-  const ws=XLSX.utils.aoa_to_sheet(data);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Finance');
-  XLSX.writeFile(wb,'rattan-palace-finance.xlsx');
+  
+  const finalY = pdf.lastAutoTable.finalY + 5;
+  
+  // TOTALS
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('subtotal'), 130, finalY);
+  pdf.text(formatMoney(subtotal), 190, finalY, { align: 'right' });
+  
+  pdf.text(t('vat'), 130, finalY + 6);
+  pdf.text(formatMoney(vat), 190, finalY + 6, { align: 'right' });
+  
+  pdf.setFontSize(11);
+  pdf.text(t('totalAmount'), 130, finalY + 13);
+  pdf.text(formatMoney(total), 190, finalY + 13, { align: 'right' });
+  
+  // SPECIAL NOTES
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('specialNotesInstructions'), 14, finalY + 25);
+  
+  // INSTALLMENTS
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('installments'), 14, finalY + 35);
+  pdf.setFont('helvetica','normal');
+  pdf.setFontSize(9);
+  pdf.text(t('downPayment'), 14, finalY + 41);
+  pdf.text(t('payment2nd'), 14, finalY + 46);
+  pdf.text(formatMoney(total), 190, finalY + 50, { align: 'right' });
+  
+  pdf.text(t('deliveryTime', {days: quote.deliveryDays || 25}), 14, finalY + 56);
+  pdf.text(t('warrantyText', {years: quote.warrantyYears || 3}), 14, finalY + 61);
+  
+  // BANK INFO
+  pdf.setFont('helvetica','bold');
+  pdf.text(t('bankName')+': Al Riyadh BANK', 14, finalY + 70);
+  pdf.setFont('helvetica','normal');
+  pdf.text(t('ibanDetails')+': SA3020000002126072249940', 14, finalY + 75);
+  
+  // FOOTER NOTE
+  pdf.setFontSize(8);
+  pdf.text(t('footerNote'), 14, finalY + 85);
+  
+  // SIGNATURE
+  pdf.text(t('signature')+':', 14, finalY + 95);
+  pdf.text(t('printName')+':', 70, finalY + 95);
+  pdf.text(t('date')+':', 130, finalY + 95);
+  
+  pdf.line(14, finalY + 105, 60, finalY + 105);
+  pdf.line(70, finalY + 105, 120, finalY + 105);
+  pdf.line(130, finalY + 105, 180, finalY + 105);
+  
+  // COMPANY FOOTER
+  pdf.setFontSize(7);
+  pdf.text(t('thankYou'), 105, finalY + 115, { align: 'center' });
+  pdf.text(t('rattanPalaceCR'), 105, finalY + 120, { align: 'center' });
+  pdf.text(t('vatNo'), 105, finalY + 124, { align: 'center' });
+  pdf.text(t('address'), 105, finalY + 128, { align: 'center' });
+  
+  pdf.save(\`Quote_\${quote.number || quote.id.substring(0,6)}.pdf\`);
 }
 
-// ==========================================================
-// GLOBAL EVENT DELEGATION
-// ==========================================================
+function emptyState(text) {
+  const wrap=el('div','empty-state');
+  wrap.style.padding='24px';
+  const icon=el('div','empty-icon','📭');
+  const txt=el('div','empty-desc',text);
+  wrap.append(icon,txt);
+  return wrap;
+}
+
 document.addEventListener('click', e => {
-  // Close task dropdowns when clicking outside
-  if(!e.target.closest('.task-actions-btn')) {
-    $$('.task-dropdown').forEach(d=>d.style.display='none');
-  }
-  // Confirm modal OK
   if(e.target.id==='confirm-ok-btn' && APP.confirmCb) {
     APP.confirmCb();
-  }
-  // Mobile sidebar overlay
-  if(e.target.id==='sidebar-overlay') {
-    $('sidebar').classList.remove('open');
-    $('sidebar-overlay').remove();
   }
 });
 
 document.addEventListener('keydown', e => {
   if(e.key==='Escape') {
-    ['client-modal','project-modal','task-modal','txn-modal','confirm-modal','ai-email-modal','settings-modal'].forEach(id=>{
+    ['client-modal','quote-modal','confirm-modal','settings-modal'].forEach(id=>{
       closeModal(id);
     });
   }
 });
 
-// Mobile sidebar toggle
 window.toggleSidebar = function() {
   const sb=$('sidebar');
-  const isOpen=sb.classList.toggle('open');
-  if(isOpen){
-    const overlay=el('div','');
-    overlay.id='sidebar-overlay';
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:29;';
-    document.body.appendChild(overlay);
-  } else {
-    const ov=$('sidebar-overlay');
-    if(ov) ov.remove();
-  }
+  sb.classList.toggle('open');
 }
 
-// ==========================================================
-// UTILITY RENDERS
-// ==========================================================
-function emptyState(text) {
-  const wrap=el('div','empty-state');
-  wrap.style.padding='24px';
-  const icon=el('div','empty-icon','📭');
-  const t=el('div','empty-desc',text);
-  wrap.append(icon,t);
-  return wrap;
-}
-
-function emptyStateCenter(text) {
-  const wrap=el('div','');
-  wrap.style.cssText='height:100%;display:flex;align-items:center;justify-content:center;';
-  const inner=el('div','empty-state');
-  inner.appendChild(el('div','empty-icon','←'));
-  inner.appendChild(el('div','empty-title',text));
-  wrap.appendChild(inner);
-  return wrap;
-}
-
-// ==========================================================
-// RESPONSIVE
-// ==========================================================
 function checkMobile() {
   const mobileBtn=$('mobile-menu-btn');
   if(mobileBtn) mobileBtn.style.display=window.innerWidth<768?'flex':'none';
 }
 window.addEventListener('resize', checkMobile);
 
-// ==========================================================
-// INIT
-// ==========================================================
 async function init() {
-  // Load language
   APP.lang = localStorage.getItem('rp_lang') || (navigator.language.startsWith('ar')?'ar':'en');
   setLang(APP.lang);
 
-  // Load API key from session
   const savedKey=sessionStorage.getItem('rp_gemini');
   if(savedKey) APP.geminiKey=savedKey;
 
-  // Generate new hub ID for new hub form
   if($('new-hub-id')) $('new-hub-id').value=genHubId();
 
   await initFirebase();
@@ -2694,7 +1432,6 @@ async function init() {
     APP.hubId=savedHubId;
     enterApp();
   } else if(savedHubId) {
-    // Pre-fill hub ID for returning users
     switchAuthTab('existing');
     $('existing-hub-id').value=savedHubId;
   }
@@ -2703,26 +1440,10 @@ async function init() {
   applyTranslations();
 }
 
-// Make functions globally accessible
 window.closeModal = closeModal;
 window.openModal = openModal;
 window.navigate = navigate;
 window.confirmAction = confirmAction;
-window.handleAIClientSetup = handleAIClientSetup;
-window.handleAITaskBreakdown = handleAITaskBreakdown;
-window.selectClient = selectClient;
-window.selectProject = selectProject;
-window.renderProjectDetail = renderProjectDetail;
-window.openClientModal = openClientModal;
-window.openProjectModal = openProjectModal;
-window.openTaskModal = openTaskModal;
-window.openTxnModal = openTxnModal;
-window.openAIEmailModal = openAIEmailModal;
-window.deleteClient = deleteClient;
-window.deleteProject = deleteProject;
-window.deleteTransaction = deleteTransaction;
-window.exportFinancePDF = exportFinancePDF;
-window.exportFinanceExcel = exportFinanceExcel;
 window.saveSettings = function() {
   const key=$('settings-api-key-inline')?.value.trim()||$('settings-api-key')?.value.trim();
   if(key){ APP.geminiKey=key; sessionStorage.setItem('rp_gemini',key); showToast(t('apiKeySaved'),'success'); }
