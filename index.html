@@ -3,478 +3,361 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rattan Palace — Professional Hub</title>
+<title>Rattan Palace Hub</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Tajawal:wght@400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0e0a;
-    --sidebar: #0a0804;
-    --surface: #1a1610;
-    --surface2: #241e14;
-    --border: #3a2e1a;
-    --gold: #c9960c;
-    --gold-light: #f0c040;
-    --gold-faint: rgba(201,150,12,0.10);
-    --gold-border: rgba(201,150,12,0.25);
-    --text: #f0e6d2;
-    --text2: #9a8a72;
-    --text3: #5a5040;
-    --green: #4d9e6a;
-    --green-bg: rgba(77,158,106,0.12);
-    --red: #c45252;
-    --red-bg: rgba(196,82,82,0.12);
-    --blue: #4a7ab5;
-    --blue-bg: rgba(74,122,181,0.12);
-    --orange: #c47a2c;
-    --orange-bg: rgba(196,122,44,0.12);
-    --purple: #8b5cf6;
-    --purple-bg: rgba(139,92,246,0.12);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; }
-  html, body { height: 100%; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow: hidden; }
-  [dir="rtl"] body, [dir="rtl"] * { font-family: 'Tajawal', sans-serif; }
-  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; letter-spacing: 0.02em; }
-  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: 'Amiri', serif; }
+:root{--bg:#0f0e0a;--sidebar:#080602;--surface:#1a1610;--surface2:#221c12;--border:#3a2e1a;--gold:#c9960c;--gold2:#f0c040;--goldfaint:rgba(201,150,12,.10);--goldborder:rgba(201,150,12,.25);--text:#f0e6d2;--t2:#9a8a72;--t3:#5a5040;--green:#4d9e6a;--greenbg:rgba(77,158,106,.12);--red:#c45252;--redbg:rgba(196,82,82,.12);--blue:#4a7ab5;--bluebg:rgba(74,122,181,.12);--purple:#8b5cf6;--purplebg:rgba(139,92,246,.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow:hidden;}
+[dir=rtl] *{font-family:"Tajawal",sans-serif;}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;font-weight:600;}
+[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3{font-family:"Tajawal",sans-serif;font-weight:700;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold);}
 
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+/* LAYOUT */
+#app{display:flex;height:100vh;}
+#sidebar{width:240px;min-width:240px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;transition:transform .3s;}
+#main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+#view-area{flex:1;overflow-y:auto;}
 
-  #app { display: flex; height: 100vh; }
-  #sidebar {
-    width: 240px; min-width: 240px; background: var(--sidebar); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 30;
-  }
-  #main-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
-  #view-area { flex: 1; overflow-y: auto; }
+/* SIDEBAR */
+.s-logo{padding:24px 20px 18px;border-bottom:1px solid var(--border);text-align:center;}
+.logo-big{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:700;color:var(--gold);}
+.logo-small{font-size:9px;color:var(--t2);letter-spacing:.15em;text-transform:uppercase;margin-top:3px;}
+.s-section{padding:14px 12px;}
+.s-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.15em;padding:0 8px;margin-bottom:6px;}
+.s-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--t2);font-size:13px;font-weight:500;transition:all .15s;margin-bottom:2px;border:1px solid transparent;user-select:none;}
+.s-item:hover{background:var(--surface);color:var(--text);}
+.s-item.active{background:var(--goldfaint);color:var(--gold);border-color:var(--goldborder);}
+.s-item svg{width:15px;height:15px;flex-shrink:0;}
+.s-bottom{margin-top:auto;padding:14px 12px;border-top:1px solid var(--border);}
+.hub-badge{font-size:10px;color:var(--t3);padding:5px 8px;background:var(--surface);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.lang-row{display:flex;gap:4px;margin-bottom:8px;}
+.lang-btn{flex:1;padding:6px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--t2);transition:all .15s;font-family:inherit;}
+.lang-btn.on{background:var(--gold);color:#000;border-color:var(--gold);}
 
-  .sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid var(--border); text-align: center; }
-  .logo-rp { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--gold); line-height:1; }
-  .logo-sub { font-size: 10px; color: var(--text2); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
-  .nav-section { padding: 16px 12px; }
-  .nav-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.15em; padding: 0 8px; margin-bottom: 6px; }
-  .nav-item {
-    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px;
-    cursor: pointer; color: var(--text2); font-size: 14px; font-weight: 500;
-    transition: all 0.15s ease; user-select: none; margin-bottom: 2px;
-    border: 1px solid transparent;
-  }
-  .nav-item:hover { background: var(--surface); color: var(--text); }
-  .nav-item.active { background: var(--gold-faint); color: var(--gold); border-color: var(--gold-border); }
-  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .sidebar-bottom { margin-top: auto; padding: 16px 12px; border-top: 1px solid var(--border); }
-  .lang-toggle { display: flex; gap: 4px; }
-  .lang-btn { flex:1; padding: 6px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text2); transition: all 0.15s; }
-  .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
-  .hub-id-badge { font-size: 11px; color: var(--text3); padding: 6px 8px; background: var(--surface); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+/* TOPBAR */
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-title{font-size:19px;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
 
-  #topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
-  .topbar-title { font-size: 20px; color: var(--text); }
-  .topbar-actions { display: flex; gap: 8px; }
+/* AUTH */
+#auth{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;width:100%;max-width:420px;}
+.auth-logo{text-align:center;margin-bottom:28px;}
+.auth-tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:22px;}
+.auth-tab{flex:1;padding:8px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:var(--t2);transition:all .15s;font-family:inherit;}
+.auth-tab.on{background:var(--gold);color:#000;}
 
-  #auth-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; }
-  .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 440px; }
-  .auth-logo { text-align: center; margin-bottom: 32px; }
-  .auth-logo .logo-rp { font-size: 36px; display: block; }
-  .auth-logo .logo-sub { display: block; font-size: 11px; }
-  .auth-tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 10px; margin-bottom: 24px; }
-  .auth-tab { flex:1; padding: 8px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); transition: all 0.15s; }
-  .auth-tab.active { background: var(--gold); color: #000; }
+/* FORM */
+.flabel{display:block;font-size:11px;color:var(--t2);margin-bottom:5px;letter-spacing:.04em;}
+.finput{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 13px;font-size:13px;outline:none;transition:border-color .15s;font-family:inherit;}
+.finput:focus{border-color:var(--gold);}
+.finput::placeholder{color:var(--t3);}
+select.finput option{background:var(--surface);}
+textarea.finput{resize:vertical;min-height:70px;}
 
-  .field-label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.05em; }
-  .field-input {
-    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); padding: 10px 14px; font-size: 14px; outline: none; transition: border-color 0.15s;
-    font-family: inherit;
-  }
-  .field-input:focus { border-color: var(--gold); }
-  .field-input::placeholder { color: var(--text3); }
-  select.field-input option { background: var(--surface); }
-  textarea.field-input { resize: vertical; min-height: 80px; }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap;font-family:inherit;}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:6px;}
+.btn-xs{padding:4px 8px;font-size:11px;border-radius:5px;}
+.btn-gold{background:var(--gold);color:#000;border-color:var(--gold);}
+.btn-gold:hover{background:var(--gold2);border-color:var(--gold2);}
+.btn-ghost{background:transparent;color:var(--t2);border-color:var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+.btn-red{background:var(--redbg);color:var(--red);border-color:var(--red);}
+.btn-red:hover{background:var(--red);color:#fff;}
+.btn-purple{background:var(--purplebg);color:var(--purple);border-color:var(--purple);}
+.btn-green{background:var(--greenbg);color:var(--green);border-color:var(--green);}
+.btn:disabled{opacity:.5;pointer-events:none;}
+.btn-loading{position:relative;color:transparent!important;pointer-events:none;}
+.btn-loading::after{content:"";position:absolute;inset:0;margin:auto;width:15px;height:15px;border-radius:50%;border:2px solid #fff;border-top-color:transparent;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; white-space: nowrap; font-family: inherit; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
-  .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 5px; }
-  .btn-gold { background: var(--gold); color: #000; border-color: var(--gold); }
-  .btn-gold:hover { background: var(--gold-light); border-color: var(--gold-light); }
-  .btn-ghost { background: transparent; color: var(--text2); border-color: var(--border); }
-  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
-  .btn-red { background: var(--red-bg); color: var(--red); border-color: var(--red); }
-  .btn-red:hover { background: var(--red); color: white; }
-  .btn-green { background: var(--green-bg); color: var(--green); border-color: var(--green); }
-  .btn-blue { background: var(--blue-bg); color: var(--blue); border-color: var(--blue); }
-  .btn-purple { background: var(--purple-bg); color: var(--purple); border-color: var(--purple); }
-  .btn-ai { background: linear-gradient(135deg, #6a3de8, #c9960c); color: white; border-color: transparent; }
-  .btn-ai:hover { opacity: 0.9; }
-  .btn:disabled { opacity: 0.5; pointer-events: none; }
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 
-  .btn-loading { position: relative; color: transparent !important; pointer-events: none; }
-  .btn-loading::after {
-    content: ''; position: absolute; inset: 0; margin: auto;
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid currentColor; border-color: white transparent white transparent;
-    animation: spin 0.7s linear infinite; color: white;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* KPI */
+.kpi{padding:18px;position:relative;overflow:hidden;}
+.kpi::before{content:"";position:absolute;top:-16px;right:-16px;width:70px;height:70px;border-radius:50%;opacity:.08;}
+.kpi-val{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:700;line-height:1;}
+.kpi-lbl{font-size:11px;color:var(--t2);margin-top:4px;}
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
-  .card-sm { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
+/* TABLE */
+.dtable{width:100%;border-collapse:collapse;font-size:13px;}
+.dtable th{background:var(--surface2);color:var(--t2);font-weight:600;padding:9px 13px;text-align:left;font-size:10px;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+[dir=rtl] .dtable th{text-align:right;}
+.dtable td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--surface2);}
 
-  .kpi-card { padding: 20px; position: relative; overflow: hidden; }
-  .kpi-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; opacity: 0.08; }
-  .kpi-gold::before { background: var(--gold); }
-  .kpi-green::before { background: var(--green); }
-  .kpi-blue::before { background: var(--blue); }
-  .kpi-red::before { background: var(--red); }
-  .kpi-purple::before { background: var(--purple); }
-  .kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; line-height: 1; }
-  .kpi-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;}
+.mbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.mhead{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mbody{padding:22px;}
+.mfoot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.mclose{background:none;border:none;cursor:pointer;color:var(--t2);font-size:20px;line-height:1;padding:2px;}
 
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-  .badge-green { background: var(--green-bg); color: var(--green); }
-  .badge-red { background: var(--red-bg); color: var(--red); }
-  .badge-blue { background: var(--blue-bg); color: var(--blue); }
-  .badge-orange { background: var(--orange-bg); color: var(--orange); }
-  .badge-gold { background: var(--gold-faint); color: var(--gold); }
-  .badge-purple { background: var(--purple-bg); color: var(--purple); }
-  .badge-gray { background: rgba(90,80,64,0.3); color: var(--text2); }
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;}
+.b-green{background:var(--greenbg);color:var(--green);}
+.b-red{background:var(--redbg);color:var(--red);}
+.b-blue{background:var(--bluebg);color:var(--blue);}
+.b-gold{background:var(--goldfaint);color:var(--gold);}
 
-  .tab-bar { display: flex; gap: 2px; padding: 4px; background: var(--bg); border-radius: 10px; }
-  .tab-btn { padding: 8px 16px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); transition: all 0.15s; font-family: inherit; }
-  .tab-btn.active { background: var(--surface); color: var(--gold); }
+/* LIST ITEM */
+.litem{display:flex;align-items:center;gap:12px;padding:11px 15px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;}
+.litem:last-child{border-bottom:none;}
+.litem:hover{background:var(--surface2);}
 
-  .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  .list-item:last-child { border-bottom: none; }
-  .list-item:hover { background: var(--surface2); }
-  .list-item.selected { background: var(--gold-faint); border-right: 2px solid var(--gold); }
-  [dir="rtl"] .list-item.selected { border-right: none; border-left: 2px solid var(--gold); }
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;gap:10px;}
+.empty-icon{font-size:36px;opacity:.25;}
+.empty-txt{font-size:13px;color:var(--t2);max-width:240px;}
 
-  .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--gold); flex-shrink: 0; font-family: 'Cormorant Garamond', serif; }
-  .avatar-lg { width: 52px; height: 52px; font-size: 18px; }
+/* TOAST */
+#toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 18px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:tin .3s ease;white-space:nowrap;}
+.t-ok{border-left:3px solid var(--green);}
+.t-err{border-left:3px solid var(--red);}
+@keyframes tin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .data-table th { background: var(--surface2); color: var(--text2); font-weight: 600; padding: 10px 14px; text-align: left; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-  [dir="rtl"] .data-table th { text-align: right; }
-  .data-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tr:hover td { background: var(--surface2); }
+/* QUOTE ITEMS */
+.qi-row{display:grid;grid-template-columns:55px 1fr 70px 100px 110px 36px;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--border);}
+.qi-row:last-child{border-bottom:none;}
+.qi-row .finput{font-size:12px;padding:7px 9px;}
+.qi-row textarea.finput{min-height:56px;}
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
-  .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
-  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-body { padding: 24px; }
-  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+/* UPLOAD */
+#upload-prog{position:fixed;bottom:18px;right:18px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;z-index:300;min-width:220px;display:none;}
+.progbar{background:var(--bg);border-radius:99px;height:5px;overflow:hidden;margin-top:8px;}
+.progfill{height:100%;background:var(--gold);transition:width .3s;}
 
-  .progress-bar { background: var(--bg); border-radius: 99px; overflow: hidden; height: 6px; }
-  .progress-fill { height: 100%; border-radius: 99px; background: var(--gold); transition: width 0.3s ease; }
-
-  #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-  .toast { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; white-space: nowrap; }
-  .toast-success { border-left: 3px solid var(--green); }
-  .toast-error { border-left: 3px solid var(--red); }
-  .toast-info { border-left: 3px solid var(--blue); }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  .ai-panel { background: linear-gradient(135deg, rgba(106,61,232,0.1), rgba(201,150,12,0.08)); border: 1px solid rgba(106,61,232,0.25); border-radius: 10px; padding: 14px; }
-
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; gap: 12px; }
-  .empty-icon { font-size: 40px; opacity: 0.3; }
-  .empty-title { font-size: 16px; font-weight: 600; color: var(--text2); }
-  .empty-desc { font-size: 13px; color: var(--text3); max-width: 280px; }
-
-  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-
-  .finance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .summary-card { padding: 16px; border-radius: 10px; text-align: center; }
-  .summary-value { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; }
-  .summary-label { font-size: 11px; margin-top: 2px; }
-
-  @media (max-width: 768px) {
-    #sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
-    [dir="rtl"] #sidebar { left: auto; right: 0; transform: translateX(100%); }
-    #sidebar.open { transform: translateX(0); }
-    .finance-summary { grid-template-columns: 1fr; }
-  }
-
-  .text-gold { color: var(--gold); }
-  .text-muted { color: var(--text2); }
-  .text-faint { color: var(--text3); }
-  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  
-  /* Quote items styling */
-  .quote-item-row { display: grid; grid-template-columns: 80px 1fr 100px 120px 140px 50px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
-  .quote-item-row input, .quote-item-row textarea { font-size: 13px; }
-  .quote-item-row textarea { min-height: 60px; }
+@media(max-width:768px){
+  #sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);}
+  [dir=rtl] #sidebar{left:auto;right:0;transform:translateX(100%);}
+  #sidebar.open{transform:translateX(0);}
+}
 </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
-<div id="auth-screen">
+<!-- ====== AUTH ====== -->
+<div id="auth">
   <div class="auth-card">
     <div class="auth-logo">
-      <span class="logo-rp">✦ RATTAN PALACE</span>
-      <span class="logo-sub" style="color:var(--text2);margin-top:4px;">Professional Management Hub</span>
-      <div style="margin-top:12px; display:flex; gap:4px; justify-content:center;">
-        <button class="lang-btn active" id="auth-lang-en" onclick="setAuthLang('en')">EN</button>
-        <button class="lang-btn" id="auth-lang-ar" onclick="setAuthLang('ar')">AR</button>
+      <div class="logo-big">&#10022; RATTAN PALACE</div>
+      <div class="logo-small" style="color:var(--t2);margin-top:4px;">Professional Hub</div>
+      <div style="display:flex;gap:4px;justify-content:center;margin-top:12px;">
+        <button class="lang-btn on" id="alang-en" onclick="setAuthLang('en')">EN</button>
+        <button class="lang-btn" id="alang-ar" onclick="setAuthLang('ar')">AR</button>
       </div>
     </div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-new" onclick="switchAuthTab('new')" data-t="createNewHub">Create New Hub</button>
-      <button class="auth-tab" id="tab-existing" onclick="switchAuthTab('existing')" data-t="joinExistingHub">Join Existing Hub</button>
+      <button class="auth-tab on" id="atab-new" onclick="switchTab('new')" id="tab-new">Create New Hub</button>
+      <button class="auth-tab" id="atab-exist" onclick="switchTab('exist')">Join Existing Hub</button>
     </div>
-    <div id="auth-form-new">
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="hubIdLabel">Hub ID</label>
-        <input id="new-hub-id" class="field-input" readonly style="opacity:0.6;">
-      </div>
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="passwordLabel">Password</label>
-        <input id="new-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder">
-      </div>
-      <div style="margin-bottom:20px;">
-        <label class="field-label" data-t="confirmPasswordLabel">Confirm Password</label>
-        <input id="new-hub-pwd2" class="field-input" type="password" data-t-placeholder="confirmPasswordPlaceholder">
-      </div>
-      <button class="btn btn-gold" style="width:100%;" id="create-hub-btn" onclick="handleCreateHub()" data-t="createHubBtn">Create Hub</button>
+    <div id="aform-new">
+      <div style="margin-bottom:13px;"><label class="flabel">Hub ID (auto)</label><input id="a-new-id" class="finput" readonly style="opacity:.6;"></div>
+      <div style="margin-bottom:13px;"><label class="flabel">Password</label><input id="a-new-pwd" class="finput" type="password" placeholder="Enter password"></div>
+      <div style="margin-bottom:18px;"><label class="flabel">Confirm Password</label><input id="a-new-pwd2" class="finput" type="password" placeholder="Confirm password"></div>
+      <button class="btn btn-gold" style="width:100%;" id="btn-create" onclick="doCreate()">Create Hub</button>
     </div>
-    <div id="auth-form-existing" style="display:none;">
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="hubIdLabel">Hub ID</label>
-        <input id="existing-hub-id" class="field-input" data-t-placeholder="hubIdPlaceholder">
-      </div>
-      <div style="margin-bottom:20px;">
-        <label class="field-label" data-t="passwordLabel">Password</label>
-        <input id="existing-hub-pwd" class="field-input" type="password" data-t-placeholder="passwordPlaceholder">
-      </div>
-      <button class="btn btn-gold" style="width:100%;" id="login-hub-btn" onclick="handleLoginHub()" data-t="loginBtn">Login</button>
+    <div id="aform-exist" style="display:none;">
+      <div style="margin-bottom:13px;"><label class="flabel">Hub ID</label><input id="a-ex-id" class="finput" placeholder="e.g. AB12CD34" style="text-transform:uppercase;"></div>
+      <div style="margin-bottom:18px;"><label class="flabel">Password</label><input id="a-ex-pwd" class="finput" type="password" placeholder="Enter password"></div>
+      <button class="btn btn-gold" style="width:100%;" id="btn-login" onclick="doLogin()">Login to Hub</button>
     </div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- ====== APP ====== -->
 <div id="app" style="display:none;">
   <nav id="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-rp">✦ RATTAN PALACE</div>
-      <div class="logo-sub">Hub Pro</div>
+    <div class="s-logo">
+      <div class="logo-big">&#10022; RATTAN PALACE</div>
+      <div class="logo-small">Hub Pro</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-label" data-t="navigation">Navigation</div>
-      <div class="nav-item active" data-module="dashboard" onclick="navigate('dashboard')">
+    <div class="s-section">
+      <div class="s-label">Menu</div>
+      <div class="s-item active" data-m="dash" onclick="go('dash')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span data-t="dashboard">Dashboard</span>
+        <span id="nav-dash">Dashboard</span>
       </div>
-      <div class="nav-item" data-module="clients" onclick="navigate('clients')">
+      <div class="s-item" data-m="clients" onclick="go('clients')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        <span data-t="clients">Clients</span>
+        <span id="nav-clients">Clients</span>
       </div>
-      <div class="nav-item" data-module="quotes" onclick="navigate('quotes')">
+      <div class="s-item" data-m="quotes" onclick="go('quotes')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span data-t="quotes">Quotes</span>
+        <span id="nav-quotes">Quotes / Devis</span>
       </div>
-      <div class="nav-item" data-module="projects" onclick="navigate('projects')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span data-t="projects">Projects</span>
-      </div>
-      <div class="nav-item" data-module="finance" onclick="navigate('finance')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span data-t="finance">Finance</span>
+      <div class="s-item" data-m="finance" onclick="go('finance')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 0v1"/><circle cx="12" cy="12" r="9"/></svg>
+        <span id="nav-finance">Finance</span>
       </div>
     </div>
-    <div class="sidebar-bottom">
-      <div class="hub-id-badge">
-        <span id="sidebar-hub-id">HUB: ···</span>
-        <button onclick="copyHubId()" title="Copy" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:2px;">
+    <div class="s-bottom">
+      <div class="hub-badge">
+        <span id="hub-id-show">HUB: ---</span>
+        <button onclick="copyHub()" title="Copy" style="background:none;border:none;cursor:pointer;color:var(--t3);">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
       </div>
-      <div class="lang-toggle" style="margin-bottom:8px;">
-        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+      <div class="lang-row">
+        <button class="lang-btn on" id="lang-en" onclick="setLang('en')">EN</button>
         <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">AR</button>
       </div>
-      <button class="nav-item" style="width:100%;justify-content:flex-start;" onclick="navigate('settings')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span data-t="settings">Settings</span>
-      </button>
-      <button class="nav-item" style="width:100%;justify-content:flex-start;margin-top:2px;" onclick="handleLogout()">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        <span data-t="logout">Logout</span>
-      </button>
+      <div class="s-item" style="width:100%;" onclick="doLogout()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span id="nav-logout">Logout</span>
+      </div>
     </div>
   </nav>
 
-  <div id="main-content">
+  <div id="main">
     <div id="topbar">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button id="mobile-menu-btn" style="display:none;background:none;border:none;cursor:pointer;color:var(--text2);" onclick="toggleSidebar()">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="menu-btn" style="display:none;background:none;border:none;cursor:pointer;color:var(--t2);" onclick="toggleSidebar()">
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <h2 class="topbar-title" id="topbar-title">Dashboard</h2>
+        <h2 class="topbar-title" id="page-title">Dashboard</h2>
       </div>
-      <div class="topbar-actions" id="topbar-actions"></div>
+      <div class="topbar-actions" id="top-actions"></div>
     </div>
     <div id="view-area"></div>
   </div>
 </div>
 
-<!-- MODALS -->
+<!-- ====== MODALS ====== -->
 
-<!-- Quote Modal -->
-<div class="modal-overlay" id="quote-modal" style="display:none;">
-  <div class="modal-box" style="max-width:900px;">
-    <div class="modal-header">
-      <h3 id="quote-modal-title" data-t="newQuote">New Quote</h3>
-      <button onclick="closeModal('quote-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="qm-id">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
-        <div>
-          <label class="field-label" data-t="quoteNumber">Quote #</label>
-          <input id="qm-number" class="field-input" placeholder="S962">
-        </div>
-        <div>
-          <label class="field-label" data-t="clientLabel">Client *</label>
-          <select id="qm-client" class="field-input"><option value="">— Select —</option></select>
-        </div>
-        <div>
-          <label class="field-label" data-t="dateLabel">Date</label>
-          <input id="qm-date" class="field-input" type="date">
-        </div>
-        <div>
-          <label class="field-label" data-t="validUntil">Valid Until</label>
-          <input id="qm-valid" class="field-input" type="date">
-        </div>
+<!-- CLIENT MODAL -->
+<div class="overlay" id="m-client" style="display:none;">
+  <div class="mbox" style="max-width:500px;">
+    <div class="mhead"><h3 id="m-client-title">Add Client</h3><button class="mclose" onclick="closeM('m-client')">&#10005;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="c-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div><label class="flabel" id="lbl-name">Name *</label><input id="c-name" class="finput" placeholder="Full name"></div>
+        <div><label class="flabel" id="lbl-company">Company</label><input id="c-company" class="finput" placeholder="Company"></div>
+        <div><label class="flabel" id="lbl-email">Email</label><input id="c-email" class="finput" type="email" placeholder="email@..."></div>
+        <div><label class="flabel" id="lbl-phone">Phone</label><input id="c-phone" class="finput" type="tel" placeholder="+966..."></div>
       </div>
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="projectDescription">Project Description</label>
-        <textarea id="qm-desc" class="field-input" rows="2" placeholder="تصنیع وتورید وتركیب غرفة اجتماعات..."></textarea>
+      <div><label class="flabel" id="lbl-notes">Notes</label><textarea id="c-notes" class="finput" rows="3"></textarea></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeM('m-client')" id="btn-cancel">Cancel</button>
+      <button class="btn btn-gold" id="btn-save-client" onclick="saveClient()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE MODAL -->
+<div class="overlay" id="m-quote" style="display:none;">
+  <div class="mbox" style="max-width:860px;">
+    <div class="mhead"><h3 id="m-quote-title">New Quote</h3><button class="mclose" onclick="closeM('m-quote')">&#10005;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="q-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div><label class="flabel">Quote # *</label><input id="q-num" class="finput" placeholder="S962"></div>
+        <div><label class="flabel" id="lbl-client">Client *</label><select id="q-client" class="finput"><option value="">-- Select --</option></select></div>
+        <div><label class="flabel" id="lbl-date">Date</label><input id="q-date" class="finput" type="date"></div>
+        <div><label class="flabel" id="lbl-valid">Valid Until</label><input id="q-valid" class="finput" type="date"></div>
+      </div>
+      <div style="margin-bottom:14px;"><label class="flabel" id="lbl-projdesc">Project Description</label><textarea id="q-desc" class="finput" rows="2" placeholder="e.g. Manufacturing and installation of a meeting room..."></textarea></div>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <label class="flabel" style="margin:0;" id="lbl-items">Items</label>
+        <button class="btn btn-xs btn-gold" onclick="addRow()">+ Add Item</button>
+      </div>
+      <!-- ITEMS HEADER -->
+      <div style="display:grid;grid-template-columns:55px 1fr 70px 100px 110px 36px;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">
+        <div style="font-size:10px;color:var(--t2);font-weight:700;">NO.</div>
+        <div style="font-size:10px;color:var(--t2);font-weight:700;" id="lbl-desc">DESCRIPTION</div>
+        <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:center;" id="lbl-qty">QTY</div>
+        <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:right;" id="lbl-uprice">UNIT PRICE</div>
+        <div style="font-size:10px;color:var(--t2);font-weight:700;text-align:right;" id="lbl-total">TOTAL</div>
+        <div></div>
+      </div>
+      <div id="q-items"></div>
+      
+      <!-- TOTALS PREVIEW -->
+      <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;min-width:220px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--t2);" id="lbl-subtotal">Subtotal</span><span id="prev-sub">0.00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--t2);">VAT 15%</span><span id="prev-vat">0.00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:6px;"><span style="color:var(--gold);" id="lbl-tot">TOTAL</span><span style="color:var(--gold);" id="prev-tot">0.00</span></div>
+        </div>
       </div>
       
-      <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-        <label class="field-label" style="margin:0;" data-t="items">Items</label>
-        <button class="btn btn-xs btn-gold" onclick="addQuoteItem()">+ <span data-t="addItem">Add Item</span></button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;margin-bottom:12px;">
+        <div><label class="flabel" id="lbl-delivery">Delivery (days)</label><input id="q-delivery" class="finput" type="number" value="25" min="1"></div>
+        <div><label class="flabel" id="lbl-warranty">Warranty (years)</label><input id="q-warranty" class="finput" type="number" value="3" min="1"></div>
       </div>
-      <div id="quote-items-container" style="margin-bottom:16px;"></div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div>
-          <label class="field-label" data-t="deliveryDays">Delivery (days)</label>
-          <input id="qm-delivery" class="field-input" type="number" value="25" placeholder="25-30">
-        </div>
-        <div>
-          <label class="field-label" data-t="warrantyYears">Warranty (years)</label>
-          <input id="qm-warranty" class="field-input" type="number" value="3">
-        </div>
-      </div>
-      <div style="margin-bottom:14px;">
-        <label class="field-label" data-t="specialNotes">Special Notes</label>
-        <textarea id="qm-notes" class="field-input" rows="2"></textarea>
-      </div>
+      <div><label class="flabel" id="lbl-spnotes">Special Notes</label><textarea id="q-notes" class="finput" rows="2"></textarea></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('quote-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-quote-btn" onclick="saveQuote()" data-t="saveQuote">Save Quote</button>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeM('m-quote')" id="btn-cancel2">Cancel</button>
+      <button class="btn btn-gold" id="btn-save-quote" onclick="saveQuote()">Save Quote</button>
     </div>
   </div>
 </div>
 
-<!-- Client Modal (simplifié) -->
-<div class="modal-overlay" id="client-modal" style="display:none;">
-  <div class="modal-box" style="max-width:520px;">
-    <div class="modal-header">
-      <h3 id="client-modal-title" data-t="addClient">Add Client</h3>
-      <button onclick="closeModal('client-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="cm-id">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div>
-          <label class="field-label" data-t="clientName">Client Name *</label>
-          <input id="cm-name" class="field-input">
-        </div>
-        <div>
-          <label class="field-label" data-t="company">Company</label>
-          <input id="cm-company" class="field-input">
-        </div>
-        <div>
-          <label class="field-label" data-t="emailLabel">Email</label>
-          <input id="cm-email" class="field-input" type="email">
-        </div>
-        <div>
-          <label class="field-label" data-t="phoneLabel">Phone</label>
-          <input id="cm-phone" class="field-input" type="tel">
-        </div>
+<!-- TXN MODAL -->
+<div class="overlay" id="m-txn" style="display:none;">
+  <div class="mbox" style="max-width:480px;">
+    <div class="mhead"><h3 id="m-txn-title">Add Transaction</h3><button class="mclose" onclick="closeM('m-txn')">&#10005;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="t-id">
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button class="btn btn-green" style="flex:1;" id="tbtn-in" onclick="setTxType('income')">&#128200; Income</button>
+        <button class="btn btn-ghost" style="flex:1;" id="tbtn-ex" onclick="setTxType('expense')">&#128201; Expense</button>
       </div>
-      <div>
-        <label class="field-label" data-t="notesLabel">Notes</label>
-        <textarea id="cm-notes" class="field-input" rows="3"></textarea>
+      <input type="hidden" id="t-type" value="income">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div><label class="flabel" id="lbl-amount">Amount (SAR) *</label><input id="t-amount" class="finput" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div><label class="flabel" id="lbl-date2">Date</label><input id="t-date" class="finput" type="date"></div>
+        <div><label class="flabel" id="lbl-cat">Category</label><select id="t-cat" class="finput"><option value="sale">Sale</option><option value="service">Service</option><option value="deposit">Deposit</option><option value="salary">Salary</option><option value="material">Material</option><option value="other">Other</option></select></div>
+        <div><label class="flabel" id="lbl-linked">Client (opt.)</label><select id="t-client" class="finput"><option value="">-- None --</option></select></div>
       </div>
+      <div><label class="flabel" id="lbl-txdesc">Description</label><input id="t-desc" class="finput" placeholder="Details..."></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('client-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" id="save-client-btn" onclick="saveClient()" data-t="saveClient">Save</button>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeM('m-txn')" id="btn-cancel3">Cancel</button>
+      <button class="btn btn-gold" id="btn-save-txn" onclick="saveTxn()">Save</button>
     </div>
   </div>
 </div>
 
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal" style="display:none;">
-  <div class="modal-box" style="max-width:380px;">
-    <div class="modal-body" style="text-align:center;padding:32px 24px;">
-      <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
-      <h3 id="confirm-title" style="font-size:18px;margin-bottom:8px;"></h3>
-      <p id="confirm-text" style="font-size:13px;color:var(--text2);line-height:1.5;"></p>
+<!-- CONFIRM -->
+<div class="overlay" id="m-confirm" style="display:none;">
+  <div class="mbox" style="max-width:360px;">
+    <div class="mbody" style="text-align:center;padding:28px 22px;">
+      <div style="font-size:38px;margin-bottom:10px;">&#9888;&#65039;</div>
+      <h3 id="conf-title" style="font-size:17px;margin-bottom:7px;"></h3>
+      <p id="conf-text" style="font-size:13px;color:var(--t2);line-height:1.5;"></p>
     </div>
-    <div class="modal-footer" style="justify-content:center;">
-      <button class="btn btn-ghost" onclick="closeModal('confirm-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-red" id="confirm-ok-btn" data-t="delete">Delete</button>
-    </div>
-  </div>
-</div>
-
-<!-- Settings Modal -->
-<div class="modal-overlay" id="settings-modal" style="display:none;">
-  <div class="modal-box" style="max-width:480px;">
-    <div class="modal-header">
-      <h3 data-t="settings">Settings</h3>
-      <button onclick="closeModal('settings-modal')" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="margin-bottom:20px;">
-        <label class="field-label" data-t="geminiApiKey">Gemini API Key</label>
-        <input id="settings-api-key" class="field-input" type="password">
-        <p style="font-size:11px;color:var(--text3);margin-top:6px;" data-t="apiKeyInfo">Session only</p>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px;color:var(--gold);" data-t="getApiKey">Get key →</a>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('settings-modal')" data-t="cancel">Cancel</button>
-      <button class="btn btn-gold" onclick="saveSettings()" data-t="saveKey">Save</button>
+    <div class="mfoot" style="justify-content:center;">
+      <button class="btn btn-ghost" onclick="closeM('m-confirm')" id="btn-cancel4">Cancel</button>
+      <button class="btn btn-red" id="conf-ok" id="btn-delete">Delete</button>
     </div>
   </div>
 </div>
 
-<div id="toast-container"></div>
+<div id="toasts"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import {
-  getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc,
-  onSnapshot, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-const FIREBASE_CONFIG = {
+<script>
+// ============================================================
+// FIREBASE (SDK v11 via CDN — loaded dynamically)
+// ============================================================
+var FB_CFG = {
   apiKey: "AIzaSyBd-qKC_YUO9F3-Oh1WzgPi2osFaLO8G8Y",
   authDomain: "cliet-hub-mjm.firebaseapp.com",
   projectId: "cliet-hub-mjm",
@@ -482,973 +365,1138 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "416845101627",
   appId: "1:416845101627:web:6259b28c1632554d7dba1e"
 };
-const APP_ID = FIREBASE_CONFIG.appId;
-const DB_BASE = \`artifacts/\${APP_ID}/public/data\`;
+var BASE = "artifacts/" + FB_CFG.appId + "/public/data";
 
-const APP = {
-  lang: 'en',
-  module: 'dashboard',
+var APP = {
+  lang: "en",
+  page: "dash",
   hubId: null,
   clients: [],
   quotes: [],
-  projects: [],
-  transactions: [],
-  selectedQuoteId: null,
-  db: null, auth: null,
+  txns: [],
   unsubs: [],
   confirmCb: null,
-  geminiKey: null,
-  quoteItemCounter: 0
+  rowCount: 0,
+  db: null
 };
 
-const T = {
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+var TR = {
   en: {
-    appTitle:'Rattan Palace Hub', navigation:'Navigation', dashboard:'Dashboard',
-    clients:'Clients', quotes:'Quotes', projects:'Projects', finance:'Finance',
-    settings:'Settings', logout:'Logout',
-    createNewHub:'Create New Hub', joinExistingHub:'Join Existing Hub',
-    hubIdLabel:'Hub ID', passwordLabel:'Password', confirmPasswordLabel:'Confirm Password',
-    createHubBtn:'Create Hub', loginBtn:'Login', hubIdPlaceholder:'Enter Hub ID',
-    passwordPlaceholder:'Enter password', confirmPasswordPlaceholder:'Confirm password',
-    addClient:'Add Client', saveClient:'Save', clientName:'Client Name', company:'Company',
-    emailLabel:'Email', phoneLabel:'Phone', notesLabel:'Notes', cancel:'Cancel', save:'Save',
-    newQuote:'New Quote', editQuote:'Edit Quote', saveQuote:'Save Quote',
-    quoteNumber:'Quote #', clientLabel:'Client', dateLabel:'Date', validUntil:'Valid Until',
-    projectDescription:'Project Description', items:'Items', addItem:'Add Item',
-    deliveryDays:'Delivery (days)', warrantyYears:'Warranty (years)', specialNotes:'Special Notes',
-    no:'No.', description:'Description', quantity:'Qty', unitPrice:'Unit Price', total:'Total',
-    subtotal:'Subtotal', vat:'VAT 15%', totalAmount:'TOTAL', delete:'Delete',
-    quoteSaved:'Quote saved successfully', quoteDeleted:'Quote deleted',
-    clientSaved:'Client saved', error:'Error occurred', success:'Success',
-    confirmDelete:'Are you sure?', cannotUndo:'Cannot be undone.',
-    hubCreated:'Hub created!', loginSuccess:'Welcome back!', wrongPassword:'Wrong password',
-    apiKeySaved:'API key saved', geminiApiKey:'Gemini API Key', apiKeyInfo:'Session only',
-    getApiKey:'Get key →', saveKey:'Save', passwordMismatch:'Passwords do not match',
-    hubNotFound:'Hub not found', linkCopied:'Hub ID copied!',
-    noQuotes:'No quotes yet. Create your first quote!',
-    noClients:'No clients yet.', totalQuotes:'Total Quotes', monthlyRevenue:'Monthly Revenue',
-    recentQuotes:'Recent Quotes', viewPDF:'View PDF', exportPDF:'Export PDF',
-    quotation:'Quotation', customer:'Customer', quoteProjectDesc:'Quote/Project Description',
-    specialNotesInstructions:'Special Notes and Instructions', installments:'Installments',
-    downPayment:'Down payment 50%', payment2nd:'2nd payment 50% at delivery',
-    deliveryTime:'Delivery within {{days}} days from down payment',
-    warrantyText:'{{years}} years warranty on manufacturing defects',
-    bankName:'Bank Name', ibanDetails:'IBAN DETAILS', footerNote:'Above information is not an invoice and only an estimate',
-    signature:'Signature', printName:'Print Name', date:'Date', thankYou:'Thank you for your business!',
-    rattanPalaceCR:'Rattan Palace CR: 7050562888', vatNo:'Vat No. : 313099850500003',
-    address:'Short Address: RFKB2501. ALQods st,Alkhaleej, P.O.Box: 2401 RIYADH 13223, Kingdom of Saudi Arabia',
-    customerId:'Customer ID',
+    dash:"Dashboard", clients:"Clients", quotes:"Quotes / Devis", finance:"Finance", logout:"Logout",
+    newHub:"Create New Hub", existHub:"Join Existing Hub",
+    addClient:"Add Client", editClient:"Edit Client", saveClient:"Save Client",
+    newQuote:"New Quote", editQuote:"Edit Quote", saveQuote:"Save Quote",
+    addTxn:"Add Transaction",
+    name:"Name *", company:"Company", email:"Email", phone:"Phone", notes:"Notes",
+    client:"Client *", date:"Date", validUntil:"Valid Until", projdesc:"Project Description",
+    items:"Items", desc:"DESCRIPTION", qty:"QTY", uprice:"UNIT PRICE", total:"TOTAL",
+    subtotal:"Subtotal", delivery:"Delivery (days)", warranty:"Warranty (years)", spnotes:"Special Notes",
+    amount:"Amount (SAR) *", date2:"Date", cat:"Category", linked:"Client (opt.)", txdesc:"Description",
+    cancel:"Cancel", delete:"Delete", edit:"Edit",
+    confirmDel:"Are you sure you want to delete this?", cannotUndo:"This cannot be undone.",
+    quoteSaved:"Quote saved!", quoteDeleted:"Quote deleted!", clientSaved:"Client saved!", txnSaved:"Transaction saved!",
+    error:"An error occurred", hubCreated:"Hub created! Welcome!", loginOk:"Welcome back!",
+    wrongPwd:"Wrong password", hubNotFound:"Hub not found", pwdMismatch:"Passwords do not match",
+    copied:"Hub ID copied!", noQuotes:"No quotes yet — create your first!", noClients:"No clients yet.",
+    noTxns:"No transactions yet.", totalQuotes:"Total Quotes", totalClients:"Total Clients",
+    totalIncome:"Total Income", recentQuotes:"Recent Quotes",
+    viewPDF:"View PDF", quotation:"QUOTATION", customer:"Customer:", projectDesc:"Quote/Project Description",
+    specialNotes:"Special Notes and Instructions", installments:"Installments",
+    downPay:"Down payment 50%", pay2nd:"2nd payment 50% at time of delivery",
+    deliveryText:"Delivery within {{d}} days from down Payment",
+    warrantyText:"{{y}} years warranty on manufacturing defects and wood quality",
+    bankName:"Bank Name : Al Riyadh BANK",
+    iban:"IBAN DETAILS: SA3020000002126072249940",
+    footerNote:"Above information is not an invoice and only an estimate of services/goods described above.",
+    payNote:"Payment will be collected in prior to provision of services/goods described in this quote.",
+    sig:"Signature", pname:"Print Name", dateLabel:"Date",
+    thankyou:"Thank you for your business!",
+    rpFooter:"Rattan Palace  CR: 7050562888     Vat No. : 313099850500003",
+    rpAddress:"Short Address: RFKB2501. ALQods st,Alkhaleej, P.O.Box: 2401 RIYADH 13223, Kingdom of Saudi Arabia",
+    income:"Income", expense:"Expense", sale:"Sale", service:"Service", deposit:"Deposit",
+    salary:"Salary", material:"Material", other:"Other",
+    totalExpenses:"Total Expenses", netBalance:"Net Balance", addItem:"Add Item"
   },
   ar: {
-    appTitle:'منصة راتان بالاس', navigation:'التنقل', dashboard:'لوحة التحكم',
-    clients:'العملاء', quotes:'العروض', projects:'المشاريع', finance:'المالية',
-    settings:'الإعدادات', logout:'تسجيل الخروج',
-    createNewHub:'إنشاء مركز جديد', joinExistingHub:'الانضمام لمركز',
-    hubIdLabel:'رقم المركز', passwordLabel:'كلمة المرور', confirmPasswordLabel:'تأكيد كلمة المرور',
-    createHubBtn:'إنشاء', loginBtn:'دخول', hubIdPlaceholder:'أدخل رقم المركز',
-    passwordPlaceholder:'أدخل كلمة المرور', confirmPasswordPlaceholder:'تأكيد كلمة المرور',
-    addClient:'إضافة عميل', saveClient:'حفظ', clientName:'اسم العميل', company:'الشركة',
-    emailLabel:'البريد', phoneLabel:'الهاتف', notesLabel:'ملاحظات', cancel:'إلغاء', save:'حفظ',
-    newQuote:'عرض سعر جديد', editQuote:'تعديل العرض', saveQuote:'حفظ العرض',
-    quoteNumber:'رقم العرض', clientLabel:'العميل', dateLabel:'التاريخ', validUntil:'صالح حتى',
-    projectDescription:'وصف المشروع', items:'البنود', addItem:'إضافة بند',
-    deliveryDays:'التسليم (أيام)', warrantyYears:'الضمان (سنوات)', specialNotes:'ملاحظات خاصة',
-    no:'رقم', description:'الوصف', quantity:'الكمية', unitPrice:'السعر', total:'المجموع',
-    subtotal:'المجموع الفرعي', vat:'ضريبة 15%', totalAmount:'المجموع الكلي', delete:'حذف',
-    quoteSaved:'تم حفظ العرض', quoteDeleted:'تم حذف العرض',
-    clientSaved:'تم حفظ العميل', error:'حدث خطأ', success:'نجح',
-    confirmDelete:'هل أنت متأكد؟', cannotUndo:'لا يمكن التراجع',
-    hubCreated:'تم إنشاء المركز!', loginSuccess:'مرحباً بك!', wrongPassword:'كلمة مرور خاطئة',
-    apiKeySaved:'تم حفظ المفتاح', geminiApiKey:'مفتاح Gemini', apiKeyInfo:'للجلسة فقط',
-    getApiKey:'احصل على مفتاح ←', saveKey:'حفظ', passwordMismatch:'كلمتا المرور غير متطابقتين',
-    hubNotFound:'المركز غير موجود', linkCopied:'تم نسخ رقم المركز!',
-    noQuotes:'لا توجد عروض. أنشئ عرضك الأول!',
-    noClients:'لا يوجد عملاء', totalQuotes:'إجمالي العروض', monthlyRevenue:'الإيرادات الشهرية',
-    recentQuotes:'أحدث العروض', viewPDF:'عرض PDF', exportPDF:'تصدير PDF',
-    quotation:'عرض سعر', customer:'العميل', quoteProjectDesc:'وصف المشروع',
-    specialNotesInstructions:'ملاحظات خاصة', installments:'الدفعات',
-    downPayment:'دفعة مقدمة 50%', payment2nd:'دفعة ثانية 50% عند التسليم',
-    deliveryTime:'التسليم خلال {{days}} يوم من الدفعة المقدمة',
-    warrantyText:'ضمان {{years}} سنوات على عيوب التصنيع',
-    bankName:'اسم البنك', ibanDetails:'رقم الآيبان', footerNote:'المعلومات أعلاه ليست فاتورة بل تقدير فقط',
-    signature:'التوقيع', printName:'الاسم', date:'التاريخ', thankYou:'شكراً لتعاملكم معنا!',
-    rattanPalaceCR:'راتان بالاس س.ت: 7050562888', vatNo:'الرقم الضريبي: 313099850500003',
-    address:'العنوان: RFKB2501. شارع القدس، الخليج، ص.ب: 2401 الرياض 13223، المملكة العربية السعودية',
-    customerId:'رقم العميل',
+    dash:"لوحة التحكم", clients:"العملاء", quotes:"عروض الأسعار", finance:"المالية", logout:"تسجيل الخروج",
+    newHub:"إنشاء مركز جديد", existHub:"الدخول لمركز موجود",
+    addClient:"إضافة عميل", editClient:"تعديل العميل", saveClient:"حفظ العميل",
+    newQuote:"عرض سعر جديد", editQuote:"تعديل العرض", saveQuote:"حفظ العرض",
+    addTxn:"إضافة معاملة",
+    name:"الاسم *", company:"الشركة", email:"البريد الإلكتروني", phone:"الهاتف", notes:"ملاحظات",
+    client:"العميل *", date:"التاريخ", validUntil:"صالح حتى", projdesc:"وصف المشروع",
+    items:"البنود", desc:"الوصف", qty:"الكمية", uprice:"سعر الوحدة", total:"المجموع",
+    subtotal:"المجموع الجزئي", delivery:"التسليم (أيام)", warranty:"الضمان (سنوات)", spnotes:"ملاحظات خاصة",
+    amount:"المبلغ (ريال) *", date2:"التاريخ", cat:"الفئة", linked:"العميل (اختياري)", txdesc:"الوصف",
+    cancel:"إلغاء", delete:"حذف", edit:"تعديل",
+    confirmDel:"هل أنت متأكد من الحذف؟", cannotUndo:"لا يمكن التراجع عن هذا الإجراء.",
+    quoteSaved:"تم حفظ العرض!", quoteDeleted:"تم حذف العرض!", clientSaved:"تم حفظ العميل!", txnSaved:"تم حفظ المعاملة!",
+    error:"حدث خطأ ما", hubCreated:"تم إنشاء المركز! مرحباً!", loginOk:"مرحباً بعودتك!",
+    wrongPwd:"كلمة المرور غير صحيحة", hubNotFound:"المركز غير موجود", pwdMismatch:"كلمتا المرور غير متطابقتين",
+    copied:"تم نسخ رقم المركز!", noQuotes:"لا توجد عروض بعد — أنشئ أول عرض!", noClients:"لا يوجد عملاء بعد.",
+    noTxns:"لا توجد معاملات بعد.", totalQuotes:"إجمالي العروض", totalClients:"إجمالي العملاء",
+    totalIncome:"إجمالي الدخل", recentQuotes:"أحدث العروض",
+    viewPDF:"عرض PDF", quotation:"عرض سعر", customer:"العميل:", projectDesc:"وصف المشروع",
+    specialNotes:"ملاحظات وتعليمات خاصة", installments:"الدفعات",
+    downPay:"دفعة أولى 50%", pay2nd:"دفعة ثانية 50% عند التسليم",
+    deliveryText:"التسليم خلال {{d}} يوماً من الدفعة المقدمة",
+    warrantyText:"ضمان {{y}} سنوات على عيوب التصنيع وجودة الخشب",
+    bankName:"اسم البنك : بنك الرياض",
+    iban:"رقم الآيبان: SA3020000002126072249940",
+    footerNote:"المعلومات أعلاه ليست فاتورة، بل تقدير فقط للخدمات/البضائع الموضحة أعلاه.",
+    payNote:"سيتم تحصيل الدفع قبل تقديم الخدمات/البضائع.",
+    sig:"التوقيع", pname:"الاسم", dateLabel:"التاريخ",
+    thankyou:"شكراً لتعاملكم معنا!",
+    rpFooter:"راتان بالاس  س.ت: 7050562888     الرقم الضريبي: 313099850500003",
+    rpAddress:"العنوان المختصر: RFKB2501. شارع القدس، الخليج، ص.ب: 2401 الرياض 13223، المملكة العربية السعودية",
+    income:"دخل", expense:"مصروف", sale:"بيع", service:"خدمة", deposit:"دفعة مقدمة",
+    salary:"رواتب", material:"مواد", other:"أخرى",
+    totalExpenses:"إجمالي المصروفات", netBalance:"الرصيد الصافي", addItem:"إضافة بند"
   }
 };
 
-const t = (key, vars={}) => {
-  let str = T[APP.lang][key] || key;
-  Object.keys(vars).forEach(k => str = str.replace(\`{{\${k}}}\`, vars[k]));
-  return str;
-};
+function t(k, vars) {
+  var s = (TR[APP.lang] && TR[APP.lang][k]) ? TR[APP.lang][k] : k;
+  if (vars) {
+    Object.keys(vars).forEach(function(v) { s = s.replace("{{" + v + "}}", vars[v]); });
+  }
+  return s;
+}
 
-const $ = id => document.getElementById(id);
-const $$ = sel => document.querySelectorAll(sel);
+// ============================================================
+// UTILS
+// ============================================================
+function g(id) { return document.getElementById(id); }
+function qs(sel) { return document.querySelector(sel); }
+function qsa(sel) { return document.querySelectorAll(sel); }
 
-function el(tag, cls='', text='') {
-  const e = document.createElement(tag);
+function cel(tag, cls, txt) {
+  var e = document.createElement(tag);
   if (cls) e.className = cls;
-  if (text) e.textContent = text;
+  if (txt !== undefined) e.textContent = txt;
   return e;
 }
 
-function formatMoney(n) {
-  if (isNaN(n) || n === undefined) return '0';
-  return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function fmtMoney(n) {
+  var num = Number(n) || 0;
+  return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function formatDate(d) {
-  if (!d) return '—';
-  try { return new Date(d).toLocaleDateString(APP.lang === 'ar' ? 'ar-SA' : 'en-US'); } catch { return d; }
-}
-
-function getInitials(name='') {
-  const words = name.trim().split(/\s+/);
-  if (words.length >= 2) return (words[0][0] + words[words.length-1][0]).toUpperCase();
-  return name.substring(0,2).toUpperCase() || '?';
-}
-
-async function hashPwd(pwd) {
-  const enc = new TextEncoder().encode(pwd);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-function genHubId() {
-  return crypto.randomUUID().replace(/-/g,'').substring(0,8).toUpperCase();
-}
-
-function showToast(msg, type='success') {
-  const c = $('toast-container');
-  const toast = el('div', \`toast toast-\${type}\`);
-  const icon = type==='success'?'✓':type==='error'?'✕':'ℹ';
-  const iconEl = el('span', '', icon);
-  iconEl.style.cssText = \`font-weight:700;color:\${type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--blue)'}\`;
-  toast.appendChild(iconEl);
-  toast.appendChild(el('span','',msg));
-  c.appendChild(toast);
-  setTimeout(() => { if(c.contains(toast)) c.removeChild(toast); }, 3500);
-}
-
-function closeModal(id) { const m = $(id); if (m) m.style.display = 'none'; }
-function openModal(id) { const m = $(id); if (m) m.style.display = 'flex'; }
-
-function confirmAction(title, text, cb) {
-  $('confirm-title').textContent = title;
-  $('confirm-text').textContent = text;
-  APP.confirmCb = cb;
-  openModal('confirm-modal');
-}
-
-function setLoading(btn, on) {
-  if (!btn) return;
-  if (on) btn.classList.add('btn-loading');
-  else btn.classList.remove('btn-loading');
-}
-
-function dbPath(...parts) {
-  return \`\${DB_BASE}/hubs/\${APP.hubId}/\${parts.join('/')}\`;
-}
-
-window.setLang = function(lang) {
-  APP.lang = lang;
-  localStorage.setItem('rp_lang', lang);
-  const root = document.getElementById('root');
-  root.lang = lang;
-  root.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  ['lang-en','lang-ar'].forEach(id => {
-    const b = $(id);
-    if (b) b.classList.toggle('active', id === \`lang-\${lang}\`);
-  });
-  applyTranslations();
-  if (APP.hubId) refreshCurrentView();
-}
-
-window.setAuthLang = function(lang) {
-  APP.lang = lang;
-  const root = document.getElementById('root');
-  root.lang = lang; root.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  ['auth-lang-en','auth-lang-ar'].forEach(id => {
-    const b = $(id);
-    if (b) b.classList.toggle('active', id === \`auth-lang-\${lang}\`);
-  });
-  applyTranslations();
-}
-
-function applyTranslations() {
-  $$('[data-t]').forEach(e => {
-    const key = e.getAttribute('data-t');
-    const v = T[APP.lang][key];
-    if (v !== undefined) e.textContent = v;
-  });
-  $$('[data-t-placeholder]').forEach(e => {
-    const key = e.getAttribute('data-t-placeholder');
-    const v = T[APP.lang][key];
-    if (v !== undefined) e.placeholder = v;
-  });
-}
-
-let fbApp, db, auth;
-
-async function initFirebase() {
+function fmtDate(d) {
+  if (!d) return "—";
   try {
-    fbApp = initializeApp(FIREBASE_CONFIG);
-    db = getFirestore(fbApp);
-    auth = getAuth(fbApp);
-    APP.db = db; APP.auth = auth;
-    await signInAnonymously(auth);
-  } catch(e) {
-    console.error('Firebase init error:', e);
-    showToast('Database connection error', 'error');
-  }
+    var dt = new Date(d);
+    return dt.toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" });
+  } catch(e) { return d; }
 }
 
-function clearListeners() {
-  APP.unsubs.forEach(u => u());
+function initials(n) {
+  if (!n) return "?";
+  var w = n.trim().split(/\s+/);
+  if (w.length > 1) return (w[0][0] + w[w.length-1][0]).toUpperCase();
+  return n.substring(0,2).toUpperCase();
+}
+
+function toast(msg, type) {
+  var c = g("toasts");
+  var d = cel("div", "toast " + (type === "err" ? "t-err" : "t-ok"));
+  var ic = cel("span", "", type === "err" ? "✕" : "✓");
+  ic.style.fontWeight = "700";
+  ic.style.color = type === "err" ? "var(--red)" : "var(--green)";
+  d.appendChild(ic);
+  d.appendChild(cel("span", "", msg));
+  c.appendChild(d);
+  setTimeout(function() { if (c.contains(d)) c.removeChild(d); }, 3500);
+}
+
+function openM(id) { var m = g(id); if (m) m.style.display = "flex"; }
+function closeM(id) { var m = g(id); if (m) m.style.display = "none"; }
+
+function confirm2(title, text, cb) {
+  g("conf-title").textContent = title;
+  g("conf-text").textContent = text;
+  APP.confirmCb = cb;
+  openM("m-confirm");
+}
+
+function setLoad(btn, on) {
+  if (!btn) return;
+  if (on) btn.classList.add("btn-loading");
+  else btn.classList.remove("btn-loading");
+}
+
+async function sha256(str) {
+  var enc = new TextEncoder().encode(str);
+  var buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,"0"); }).join("");
+}
+
+function genId() {
+  return Math.random().toString(36).substring(2,6).toUpperCase() +
+         Math.random().toString(36).substring(2,6).toUpperCase();
+}
+
+// ============================================================
+// FIREBASE DYNAMIC IMPORT
+// ============================================================
+var db, fs;
+
+async function loadFirebase() {
+  var m = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+  var mfs = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+  var ma = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+  var app = m.initializeApp(FB_CFG);
+  db = mfs.getFirestore(app);
+  APP.db = db;
+  fs = mfs;
+  var auth = ma.getAuth(app);
+  await ma.signInAnonymously(auth);
+}
+
+function hubCol(col) {
+  return BASE + "/hubs/" + APP.hubId + "/" + col;
+}
+
+function stopListeners() {
+  APP.unsubs.forEach(function(u) { try { u(); } catch(e){} });
   APP.unsubs = [];
 }
 
-function setupHubListeners() {
-  clearListeners();
-  const base = \`\${DB_BASE}/hubs/\${APP.hubId}\`;
-
-  const clientsUnsub = onSnapshot(collection(db, \`\${base}/clients\`), snap => {
-    APP.clients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    APP.clients.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-    refreshCurrentView();
+function startListeners() {
+  stopListeners();
+  var u1 = fs.onSnapshot(fs.collection(db, hubCol("clients")), function(snap) {
+    APP.clients = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+    APP.clients.sort(function(a,b) { return (b.createdAt && b.createdAt.seconds || 0) - (a.createdAt && a.createdAt.seconds || 0); });
+    rerender();
   });
-
-  const quotesUnsub = onSnapshot(collection(db, \`\${base}/quotes\`), snap => {
-    APP.quotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    APP.quotes.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
-    refreshCurrentView();
+  var u2 = fs.onSnapshot(fs.collection(db, hubCol("quotes")), function(snap) {
+    APP.quotes = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+    APP.quotes.sort(function(a,b) { return new Date(b.date||0) - new Date(a.date||0); });
+    rerender();
   });
-
-  const projectsUnsub = onSnapshot(collection(db, \`\${base}/projects\`), snap => {
-    APP.projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    refreshCurrentView();
+  var u3 = fs.onSnapshot(fs.collection(db, hubCol("transactions")), function(snap) {
+    APP.txns = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+    APP.txns.sort(function(a,b) { return new Date(b.date||0) - new Date(a.date||0); });
+    rerender();
   });
-
-  const txUnsub = onSnapshot(collection(db, \`\${base}/transactions\`), snap => {
-    APP.transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    refreshCurrentView();
-  });
-
-  APP.unsubs = [clientsUnsub, quotesUnsub, projectsUnsub, txUnsub];
+  APP.unsubs = [u1, u2, u3];
 }
 
-window.switchAuthTab = function(tab) {
-  $('auth-form-new').style.display = tab === 'new' ? 'block' : 'none';
-  $('auth-form-existing').style.display = tab === 'existing' ? 'block' : 'none';
-  $('tab-new').classList.toggle('active', tab === 'new');
-  $('tab-existing').classList.toggle('active', tab === 'existing');
-  if (tab === 'new') $('new-hub-id').value = genHubId();
+// ============================================================
+// AUTH
+// ============================================================
+function switchTab(tab) {
+  g("aform-new").style.display = tab === "new" ? "block" : "none";
+  g("aform-exist").style.display = tab === "exist" ? "block" : "none";
+  g("atab-new").classList.toggle("on", tab === "new");
+  g("atab-exist").classList.toggle("on", tab === "exist");
+  if (tab === "new") g("a-new-id").value = genId();
 }
 
-window.handleCreateHub = async function() {
-  const id = $('new-hub-id').value.trim().toUpperCase();
-  const pwd = $('new-hub-pwd').value;
-  const pwd2 = $('new-hub-pwd2').value;
-  if (!id || !pwd) return showToast('Hub ID and password required', 'error');
-  if (pwd !== pwd2) return showToast(t('passwordMismatch'), 'error');
-  const btn = $('create-hub-btn');
-  setLoading(btn, true);
+async function doCreate() {
+  var id = (g("a-new-id").value || "").trim().toUpperCase();
+  var pwd = g("a-new-pwd").value;
+  var pwd2 = g("a-new-pwd2").value;
+  if (!id || !pwd) return toast("Hub ID and password required", "err");
+  if (pwd !== pwd2) return toast(t("pwdMismatch"), "err");
+  var btn = g("btn-create"); setLoad(btn, true);
   try {
-    const hash = await hashPwd(pwd);
-    const hubDoc = doc(db, \`\${DB_BASE}/hubs/\${id}\`);
-    const existing = await getDoc(hubDoc);
-    if (existing.exists()) { setLoading(btn,false); return showToast('Hub ID taken','error'); }
-    await setDoc(hubDoc, { passwordHash: hash, createdAt: serverTimestamp() });
+    var hash = await sha256(pwd);
+    var ref = fs.doc(db, BASE + "/hubs/" + id);
+    var snap = await fs.getDoc(ref);
+    if (snap.exists()) { setLoad(btn, false); return toast("Hub ID already taken, try another", "err"); }
+    await fs.setDoc(ref, { passwordHash: hash, createdAt: fs.serverTimestamp() });
     APP.hubId = id;
-    localStorage.setItem('rp_hubId', id);
-    sessionStorage.setItem('rp_auth', 'true');
-    showToast(t('hubCreated'), 'success');
+    localStorage.setItem("rp_hub", id);
+    sessionStorage.setItem("rp_ok", "1");
     enterApp();
-  } catch(e) {
-    console.error(e);
-    showToast(t('error'), 'error');
-  } finally { setLoading(btn, false); }
+    toast(t("hubCreated"), "ok");
+  } catch(e) { console.error(e); toast(t("error"), "err"); }
+  setLoad(btn, false);
 }
 
-window.handleLoginHub = async function() {
-  const id = $('existing-hub-id').value.trim().toUpperCase();
-  const pwd = $('existing-hub-pwd').value;
-  if (!id || !pwd) return showToast('Hub ID and password required', 'error');
-  const btn = $('login-hub-btn');
-  setLoading(btn, true);
+async function doLogin() {
+  var id = (g("a-ex-id").value || "").trim().toUpperCase();
+  var pwd = g("a-ex-pwd").value;
+  if (!id || !pwd) return toast("Hub ID and password required", "err");
+  var btn = g("btn-login"); setLoad(btn, true);
   try {
-    const hash = await hashPwd(pwd);
-    const hubDoc = doc(db, \`\${DB_BASE}/hubs/\${id}\`);
-    const snap = await getDoc(hubDoc);
-    if (!snap.exists()) { setLoading(btn,false); return showToast(t('hubNotFound'), 'error'); }
-    if (snap.data().passwordHash !== hash) { setLoading(btn,false); return showToast(t('wrongPassword'), 'error'); }
+    var hash = await sha256(pwd);
+    var ref = fs.doc(db, BASE + "/hubs/" + id);
+    var snap = await fs.getDoc(ref);
+    if (!snap.exists()) { setLoad(btn, false); return toast(t("hubNotFound"), "err"); }
+    if (snap.data().passwordHash !== hash) { setLoad(btn, false); return toast(t("wrongPwd"), "err"); }
     APP.hubId = id;
-    localStorage.setItem('rp_hubId', id);
-    sessionStorage.setItem('rp_auth', 'true');
-    showToast(t('loginSuccess'), 'success');
+    localStorage.setItem("rp_hub", id);
+    sessionStorage.setItem("rp_ok", "1");
     enterApp();
-  } catch(e) {
-    console.error(e);
-    showToast(t('error'), 'error');
-  } finally { setLoading(btn, false); }
+    toast(t("loginOk"), "ok");
+  } catch(e) { console.error(e); toast(t("error"), "err"); }
+  setLoad(btn, false);
 }
 
 function enterApp() {
-  $('auth-screen').style.display = 'none';
-  $('app').style.display = 'flex';
-  $('sidebar-hub-id').textContent = \`HUB: \${APP.hubId}\`;
-  setupHubListeners();
-  navigate('dashboard');
-  applyTranslations();
+  g("auth").style.display = "none";
+  g("app").style.display = "flex";
+  g("hub-id-show").textContent = "HUB: " + APP.hubId;
+  startListeners();
+  go("dash");
+  applyLang();
 }
 
-window.handleLogout = function() {
-  confirmAction(t('logout'), 'You will need Hub ID and password to log back in.', () => {
-    clearListeners();
-    sessionStorage.removeItem('rp_auth');
-    APP.hubId = null;
-    APP.clients = []; APP.quotes = []; APP.projects = []; APP.transactions = [];
-    $('app').style.display = 'none';
-    $('auth-screen').style.display = 'flex';
-    closeModal('confirm-modal');
+function doLogout() {
+  confirm2("Logout?", "You will need your Hub ID and password to log back in.", function() {
+    stopListeners();
+    sessionStorage.removeItem("rp_ok");
+    APP.hubId = null; APP.clients = []; APP.quotes = []; APP.txns = [];
+    g("app").style.display = "none";
+    g("auth").style.display = "flex";
+    closeM("m-confirm");
   });
 }
 
-window.copyHubId = function() {
-  navigator.clipboard.writeText(APP.hubId).then(() => showToast(t('linkCopied'), 'success')).catch(()=>{});
+function copyHub() {
+  navigator.clipboard.writeText(APP.hubId).then(function() { toast(t("copied"), "ok"); });
 }
 
-window.navigate = function(module) {
-  APP.module = module;
-  $$('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.module === module));
-  const titles = { dashboard: t('dashboard'), clients: t('clients'), quotes: t('quotes'), projects: t('projects'), finance: t('finance'), settings: t('settings') };
-  $('topbar-title').textContent = titles[module] || module;
-  renderModule(module);
+// ============================================================
+// LANGUAGE
+// ============================================================
+function setLang(lang) {
+  APP.lang = lang;
+  localStorage.setItem("rp_lang", lang);
+  var root = document.getElementById("root");
+  root.lang = lang;
+  root.dir = lang === "ar" ? "rtl" : "ltr";
+  ["lang-en","lang-ar"].forEach(function(id) {
+    var b = g(id);
+    if (b) b.classList.toggle("on", id === "lang-" + lang);
+  });
+  applyLang();
+  rerender();
 }
 
-function refreshCurrentView() {
-  renderModule(APP.module);
+function setAuthLang(lang) {
+  APP.lang = lang;
+  var root = document.getElementById("root");
+  root.lang = lang; root.dir = lang === "ar" ? "rtl" : "ltr";
+  ["alang-en","alang-ar"].forEach(function(id) {
+    var b = g(id); if (b) b.classList.toggle("on", id === "alang-" + lang);
+  });
 }
 
-function renderModule(m) {
-  switch(m) {
-    case 'dashboard': renderDashboard(); break;
-    case 'clients':   renderClients();   break;
-    case 'quotes':    renderQuotes();    break;
-    case 'projects':  renderProjects();  break;
-    case 'finance':   renderFinance();   break;
-    case 'settings':  renderSettings();  break;
+function applyLang() {
+  // Nav items
+  var map = {
+    "nav-dash": "dash", "nav-clients": "clients", "nav-quotes": "quotes",
+    "nav-finance": "finance", "nav-logout": "logout"
+  };
+  Object.keys(map).forEach(function(id) {
+    var el = g(id); if (el) el.textContent = t(map[id]);
+  });
+  // Labels in modals
+  var lblMap = {
+    "lbl-name":"name","lbl-company":"company","lbl-email":"email","lbl-phone":"phone","lbl-notes":"notes",
+    "lbl-client":"client","lbl-date":"date","lbl-valid":"validUntil","lbl-projdesc":"projdesc",
+    "lbl-items":"items","lbl-desc":"desc","lbl-qty":"qty","lbl-uprice":"uprice","lbl-total":"total",
+    "lbl-subtotal":"subtotal","lbl-tot":"total","lbl-delivery":"delivery","lbl-warranty":"warranty",
+    "lbl-spnotes":"spnotes","lbl-amount":"amount","lbl-date2":"date2","lbl-cat":"cat",
+    "lbl-linked":"linked","lbl-txdesc":"txdesc"
+  };
+  Object.keys(lblMap).forEach(function(id) {
+    var el = g(id); if (el) el.textContent = t(lblMap[id]);
+  });
+  var btns = {
+    "btn-cancel":"cancel","btn-cancel2":"cancel","btn-cancel3":"cancel","btn-cancel4":"cancel",
+    "btn-save-client":"saveClient","btn-save-quote":"saveQuote","btn-save-txn":"cancel",
+    "conf-ok":"delete","btn-delete":"delete"
+  };
+  Object.keys(btns).forEach(function(id) {
+    var el = g(id); if (el) el.textContent = t(btns[id]);
+  });
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function go(page) {
+  APP.page = page;
+  qsa(".s-item").forEach(function(el) { el.classList.toggle("active", el.dataset.m === page); });
+  var titles = { dash: t("dash"), clients: t("clients"), quotes: t("quotes"), finance: t("finance") };
+  g("page-title").textContent = titles[page] || page;
+  render(page);
+}
+
+function rerender() { render(APP.page); }
+
+function render(page) {
+  switch(page) {
+    case "dash":    renderDash();    break;
+    case "clients": renderClients(); break;
+    case "quotes":  renderQuotes();  break;
+    case "finance": renderFinance(); break;
   }
 }
 
-function renderDashboard() {
-  const area = $('view-area');
-  const topbar = $('topbar-actions');
-  topbar.innerHTML = '';
-  area.innerHTML = '';
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDash() {
+  var area = g("view-area");
+  g("top-actions").innerHTML = "";
+  area.innerHTML = "";
 
-  const totalIncome = APP.transactions.filter(tx=>tx.type==='income').reduce((s,tx)=>s+Number(tx.amount||0),0);
-  
-  const wrap = el('div','');
-  wrap.style.padding = '24px';
+  var income = APP.txns.filter(function(x) { return x.type === "income"; }).reduce(function(s,x) { return s + Number(x.amount||0); }, 0);
 
-  const kpiGrid = el('div','');
-  kpiGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;';
+  var wrap = cel("div",""); wrap.style.padding = "22px";
 
-  const kpis = [
-    { label:t('totalQuotes'), value:APP.quotes.length, icon:'📄', cls:'kpi-purple', color:'var(--purple)' },
-    { label:t('clients'), value:APP.clients.length, icon:'👥', cls:'kpi-gold', color:'var(--gold)' },
-    { label:t('projects'), value:APP.projects.length, icon:'📋', cls:'kpi-blue', color:'var(--blue)' },
-    { label:t('monthlyRevenue'), value:formatMoney(totalIncome)+' SAR', icon:'💰', cls:'kpi-green', color:'var(--green)' },
+  // KPI grid
+  var kg = cel("div","");
+  kg.style.cssText = "display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;";
+  var kpis = [
+    { lbl: t("totalQuotes"), val: APP.quotes.length, icon: "📄", color: "var(--purple)" },
+    { lbl: t("totalClients"), val: APP.clients.length, icon: "👥", color: "var(--gold)" },
+    { lbl: t("totalIncome"), val: fmtMoney(income) + " SAR", icon: "💰", color: "var(--green)" },
+    { lbl: "Active Projects", val: APP.quotes.length, icon: "📋", color: "var(--blue)" }
   ];
-
-  kpis.forEach(k => {
-    const card = el('div', \`card kpi-card \${k.cls}\`);
-    const iconEl = el('div', '');
-    iconEl.style.cssText = \`font-size:28px;margin-bottom:8px;\`;
-    iconEl.textContent = k.icon;
-    const val = el('div', 'kpi-value');
-    val.style.color = k.color;
-    val.textContent = k.value;
-    const lbl = el('div', 'kpi-label text-muted', k.label);
-    card.append(iconEl, val, lbl);
-    kpiGrid.appendChild(card);
+  kpis.forEach(function(k) {
+    var c = cel("div","card kpi"); c.style.cssText = "position:relative;overflow:hidden;padding:18px;";
+    var ic = cel("div",""); ic.style.cssText = "font-size:26px;margin-bottom:7px;"; ic.textContent = k.icon;
+    var v = cel("div","kpi-val"); v.style.color = k.color; v.textContent = k.val;
+    var l = cel("div","kpi-lbl"); l.textContent = k.lbl;
+    c.append(ic, v, l); kg.appendChild(c);
   });
 
-  const qCard = el('div','card');
-  const qHeader = el('div','');
-  qHeader.style.cssText = 'padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;';
-  const qTitle = el('h3', '', t('recentQuotes'));
-  qTitle.style.fontSize = '16px';
-  const qBtn = el('button', 'btn btn-xs btn-ghost', t('quotes')+' →');
-  qBtn.onclick = () => navigate('quotes');
-  qHeader.append(qTitle, qBtn);
-  qCard.appendChild(qHeader);
-  const qList = el('div','');
-  const recQuotes = APP.quotes.slice(0,5);
-  if (recQuotes.length === 0) {
-    qList.appendChild(emptyState(t('noQuotes')));
-  } else {
-    recQuotes.forEach(q => {
-      const client = APP.clients.find(c=>c.id===q.clientId);
-      const item = el('div','list-item');
-      item.style.cursor = 'pointer';
-      item.onclick = () => { navigate('quotes'); setTimeout(()=>viewQuote(q.id),100); };
-      const info = el('div','');
-      info.style.flex = '1';
-      const nm = el('div','', \`#\${q.number || q.id.substring(0,6)}\`);
-      nm.style.cssText = 'font-size:13px;font-weight:600;';
-      const clientNm = el('div','text-muted', client?.name || '—');
-      clientNm.style.fontSize = '12px';
-      const date = el('div','text-faint', formatDate(q.date));
-      date.style.fontSize = '11px';
-      info.append(nm, clientNm, date);
-      const total = el('div','');
-      total.style.cssText = 'font-size:14px;font-weight:700;color:var(--green);';
-      const subT = (q.items||[]).reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
-      const vat = subT * 0.15;
-      total.textContent = formatMoney(subT+vat)+' SAR';
-      item.append(info, total);
-      qList.appendChild(item);
+  // Recent quotes
+  var rc = cel("div","card"); rc.style.marginBottom = "16px";
+  var rh = cel("div","");
+  rh.style.cssText = "padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;";
+  var rt = cel("h3",""); rt.style.fontSize = "16px"; rt.textContent = t("recentQuotes");
+  var rb = cel("button","btn btn-xs btn-ghost"); rb.textContent = t("quotes") + " →"; rb.onclick = function() { go("quotes"); };
+  rh.append(rt, rb); rc.appendChild(rh);
+  var ql = cel("div","");
+  var rq = APP.quotes.slice(0,5);
+  if (rq.length === 0) { ql.appendChild(mkEmpty(t("noQuotes"))); }
+  else {
+    rq.forEach(function(q) {
+      var cl = APP.clients.find(function(c) { return c.id === q.clientId; });
+      var item = cel("div","litem");
+      item.onclick = function() { go("quotes"); };
+      var inf = cel("div",""); inf.style.flex = "1";
+      var nm = cel("div",""); nm.style.cssText = "font-size:13px;font-weight:600;";
+      nm.textContent = "#" + (q.number || q.id.substring(0,6));
+      var cn = cel("div",""); cn.style.cssText = "font-size:12px;color:var(--t2);";
+      cn.textContent = (cl ? cl.name : "—") + " — " + fmtDate(q.date);
+      inf.append(nm, cn);
+      var sub = (q.items||[]).reduce(function(s,i) { return s + Number(i.qty||0)*Number(i.price||0); }, 0);
+      var tot = cel("div",""); tot.style.cssText = "font-size:14px;font-weight:700;color:var(--green);";
+      tot.textContent = fmtMoney(sub * 1.15) + " SAR";
+      item.append(inf, tot);
+      ql.appendChild(item);
     });
   }
-  qCard.appendChild(qList);
+  rc.appendChild(ql);
 
-  wrap.append(kpiGrid, qCard);
+  wrap.append(kg, rc);
   area.appendChild(wrap);
 }
 
+// ============================================================
+// CLIENTS
+// ============================================================
 function renderClients() {
-  const area = $('view-area');
-  const topbar = $('topbar-actions');
-  topbar.innerHTML = '';
-
-  const addBtn = el('button','btn btn-gold btn-sm',\`+ \${t('addClient')}\`);
-  addBtn.onclick = () => openClientModal();
-  topbar.appendChild(addBtn);
-
-  area.innerHTML = '';
-  const wrap = el('div','');
-  wrap.style.padding = '24px';
-
-  const card = el('div','card');
-  const tbl = el('table','data-table');
-  const thead = el('thead','');
-  const hRow = el('tr','');
-  [t('clientName'), t('company'), t('emailLabel'), t('phoneLabel'), ''].forEach(h => hRow.appendChild(el('th','',h)));
-  thead.appendChild(hRow); tbl.appendChild(thead);
-  const tbody = el('tbody','');
+  var area = g("view-area");
+  var top = g("top-actions"); top.innerHTML = "";
+  var ab = cel("button","btn btn-gold btn-sm"); ab.textContent = "+ " + t("addClient");
+  ab.onclick = function() { openClientModal(null); };
+  top.appendChild(ab);
+  area.innerHTML = "";
+  var wrap = cel("div",""); wrap.style.padding = "22px";
+  var card = cel("div","card");
+  var tbl = cel("table","dtable");
+  var th = cel("thead",""); var hr = cel("tr","");
+  [t("name"),t("company"),t("email"),t("phone"),""].forEach(function(h) { hr.appendChild(cel("th","",h)); });
+  th.appendChild(hr); tbl.appendChild(th);
+  var tb = cel("tbody","");
   if (APP.clients.length === 0) {
-    const row = el('tr',''); const td = el('td',''); td.colSpan = 5;
-    td.appendChild(emptyState(t('noClients')));
-    row.appendChild(td); tbody.appendChild(row);
+    var r = cel("tr",""); var td = cel("td",""); td.colSpan = 5; td.appendChild(mkEmpty(t("noClients")));
+    r.appendChild(td); tb.appendChild(r);
   } else {
-    APP.clients.forEach(c => {
-      const row = el('tr','');
-      row.appendChild(el('td','', c.name));
-      row.appendChild(el('td','', c.company||'—'));
-      row.appendChild(el('td','', c.email||'—'));
-      row.appendChild(el('td','', c.phone||'—'));
-      const actTd = el('td','');
-      const editBtn = el('button','btn btn-xs btn-ghost','✏');
-      editBtn.onclick = () => openClientModal(c);
-      const delBtn = el('button','btn btn-xs btn-red','🗑');
-      delBtn.onclick = () => confirmAction(t('confirmDelete'), t('cannotUndo'), () => deleteClient(c.id));
-      actTd.append(editBtn, delBtn);
-      row.appendChild(actTd);
-      tbody.appendChild(row);
+    APP.clients.forEach(function(c) {
+      var r = cel("tr","");
+      r.appendChild(cel("td","",c.name||"—"));
+      r.appendChild(cel("td","",c.company||"—"));
+      r.appendChild(cel("td","",c.email||"—"));
+      r.appendChild(cel("td","",c.phone||"—"));
+      var at = cel("td",""); at.style.cssText = "display:flex;gap:6px;padding:8px 13px;";
+      var eb = cel("button","btn btn-xs btn-ghost","✏"); eb.onclick = function() { openClientModal(c); };
+      var db2 = cel("button","btn btn-xs btn-red","🗑");
+      db2.onclick = (function(cid) { return function() { confirm2(t("confirmDel"), t("cannotUndo"), function() { deleteClient(cid); }); }; })(c.id);
+      at.append(eb, db2); r.appendChild(at);
+      tb.appendChild(r);
     });
   }
-  tbl.appendChild(tbody);
-  card.appendChild(tbl);
-  wrap.appendChild(card);
-  area.appendChild(wrap);
+  tbl.appendChild(tb); card.appendChild(tbl); wrap.appendChild(card); area.appendChild(wrap);
 }
 
-function renderQuotes() {
-  const area = $('view-area');
-  const topbar = $('topbar-actions');
-  topbar.innerHTML = '';
-
-  const addBtn = el('button','btn btn-gold btn-sm',\`+ \${t('newQuote')}\`);
-  addBtn.onclick = () => openQuoteModal();
-  topbar.appendChild(addBtn);
-
-  area.innerHTML = '';
-  const wrap = el('div','');
-  wrap.style.padding = '24px';
-
-  const card = el('div','card');
-  const tbl = el('table','data-table');
-  const thead = el('thead','');
-  const hRow = el('tr','');
-  [t('quoteNumber'), t('dateLabel'), t('clientLabel'), t('totalAmount'), ''].forEach(h => hRow.appendChild(el('th','',h)));
-  thead.appendChild(hRow); tbl.appendChild(thead);
-  const tbody = el('tbody','');
-  if (APP.quotes.length === 0) {
-    const row = el('tr',''); const td = el('td',''); td.colSpan = 5;
-    td.appendChild(emptyState(t('noQuotes')));
-    row.appendChild(td); tbody.appendChild(row);
-  } else {
-    APP.quotes.forEach(q => {
-      const client = APP.clients.find(c=>c.id===q.clientId);
-      const row = el('tr','');
-      row.appendChild(el('td','', q.number||q.id.substring(0,8)));
-      row.appendChild(el('td','', formatDate(q.date)));
-      row.appendChild(el('td','', client?.name||'—'));
-      const subT = (q.items||[]).reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
-      const vat = subT * 0.15;
-      const totalTd = el('td','');
-      const totalSpan = el('span','');
-      totalSpan.style.cssText = 'font-weight:700;color:var(--green);';
-      totalSpan.textContent = formatMoney(subT+vat)+' SAR';
-      totalTd.appendChild(totalSpan);
-      row.appendChild(totalTd);
-      const actTd = el('td','');
-      const pdfBtn = el('button','btn btn-xs btn-purple',\`📄 \${t('viewPDF')}\`);
-      pdfBtn.onclick = () => generateQuotePDF(q);
-      const editBtn = el('button','btn btn-xs btn-ghost','✏');
-      editBtn.onclick = () => openQuoteModal(q);
-      const delBtn = el('button','btn btn-xs btn-red','🗑');
-      delBtn.onclick = () => confirmAction(t('confirmDelete'), t('cannotUndo'), () => deleteQuote(q.id));
-      actTd.append(pdfBtn, editBtn, delBtn);
-      row.appendChild(actTd);
-      tbody.appendChild(row);
-    });
-  }
-  tbl.appendChild(tbody);
-  card.appendChild(tbl);
-  wrap.appendChild(card);
-  area.appendChild(wrap);
+function openClientModal(cl) {
+  g("c-id").value = cl ? cl.id : "";
+  g("c-name").value = cl ? cl.name||"" : "";
+  g("c-company").value = cl ? cl.company||"" : "";
+  g("c-email").value = cl ? cl.email||"" : "";
+  g("c-phone").value = cl ? cl.phone||"" : "";
+  g("c-notes").value = cl ? cl.notes||"" : "";
+  g("m-client-title").textContent = cl ? t("editClient") : t("addClient");
+  openM("m-client");
 }
 
-function renderProjects() {
-  const area = $('view-area');
-  $('topbar-actions').innerHTML = '';
-  area.innerHTML = '';
-  const wrap = el('div',''); wrap.style.padding='24px';
-  wrap.appendChild(emptyState('Projects module — Coming soon'));
-  area.appendChild(wrap);
-}
-
-function renderFinance() {
-  const area = $('view-area');
-  $('topbar-actions').innerHTML = '';
-  area.innerHTML = '';
-  const wrap = el('div',''); wrap.style.padding='24px';
-  wrap.appendChild(emptyState('Finance module — Coming soon'));
-  area.appendChild(wrap);
-}
-
-function renderSettings() {
-  const area = $('view-area');
-  $('topbar-actions').innerHTML='';
-  area.innerHTML='';
-  const wrap=el('div','');wrap.style.padding='24px';
-  const card=el('div','card');card.style.maxWidth='480px';
-  const header=el('div','');header.style.cssText='padding:20px 24px;border-bottom:1px solid var(--border);';
-  header.appendChild(el('h3','',t('settings')));
-  const body=el('div','');body.style.padding='24px';
-  const lbl=el('label','field-label',t('geminiApiKey'));
-  const input=el('input','field-input');input.type='password';input.id='settings-api-key-inline';
-  input.value=APP.geminiKey||'';
-  const info=el('p','');info.style.cssText='font-size:11px;color:var(--text3);margin-top:6px;';info.textContent=t('apiKeyInfo');
-  const link=el('a','');link.href='https://aistudio.google.com/app/apikey';link.target='_blank';
-  link.style.cssText='font-size:11px;color:var(--gold);display:block;margin-top:4px;';link.textContent=t('getApiKey');
-  const saveBtn=el('button','btn btn-gold btn-sm',t('saveKey'));
-  saveBtn.style.marginTop='12px';
-  saveBtn.onclick=()=>{
-    APP.geminiKey=input.value.trim();
-    sessionStorage.setItem('rp_gemini',APP.geminiKey);
-    showToast(t('apiKeySaved'),'success');
-  };
-  body.append(lbl,input,info,link,saveBtn);
-  card.append(header,body);
-  wrap.appendChild(card);
-  area.appendChild(wrap);
-}
-
-function openClientModal(client=null) {
-  $('cm-id').value = client?.id||'';
-  $('cm-name').value = client?.name||'';
-  $('cm-company').value = client?.company||'';
-  $('cm-email').value = client?.email||'';
-  $('cm-phone').value = client?.phone||'';
-  $('cm-notes').value = client?.notes||'';
-  $('client-modal-title').textContent = client ? t('editClient') : t('addClient');
-  openModal('client-modal');
-}
-
-function openQuoteModal(quote=null) {
-  $('qm-id').value = quote?.id||'';
-  $('qm-number').value = quote?.number||'';
-  $('qm-date').value = quote?.date||new Date().toISOString().split('T')[0];
-  const validDate = new Date();
-  validDate.setDate(validDate.getDate() + 18);
-  $('qm-valid').value = quote?.validUntil||validDate.toISOString().split('T')[0];
-  $('qm-desc').value = quote?.description||'';
-  $('qm-delivery').value = quote?.deliveryDays||25;
-  $('qm-warranty').value = quote?.warrantyYears||3;
-  $('qm-notes').value = quote?.specialNotes||'';
-  
-  const sel = $('qm-client');
-  sel.innerHTML = '<option value="">— Select —</option>';
-  APP.clients.forEach(c=>{const o=el('option','',c.name);o.value=c.id;if(c.id===quote?.clientId)o.selected=true;sel.appendChild(o);});
-  
-  APP.quoteItemCounter = 0;
-  $('quote-items-container').innerHTML = '';
-  if (quote && quote.items && quote.items.length > 0) {
-    quote.items.forEach(item => addQuoteItem(item));
-  } else {
-    addQuoteItem();
-  }
-  
-  $('quote-modal-title').textContent = quote ? t('editQuote') : t('newQuote');
-  openModal('quote-modal');
-}
-
-window.addQuoteItem = function(item=null) {
-  const container = $('quote-items-container');
-  const id = ++APP.quoteItemCounter;
-  
-  const row = el('div','quote-item-row');
-  row.dataset.itemId = id;
-  
-  const noInput = el('input','field-input');
-  noInput.type = 'number';
-  noInput.placeholder = '#';
-  noInput.value = item?.no || id;
-  noInput.dataset.field = 'no';
-  
-  const descTa = el('textarea','field-input');
-  descTa.placeholder = t('description');
-  descTa.value = item?.description || '';
-  descTa.dataset.field = 'description';
-  
-  const qtyInput = el('input','field-input');
-  qtyInput.type = 'number';
-  qtyInput.placeholder = t('quantity');
-  qtyInput.value = item?.quantity || 1;
-  qtyInput.dataset.field = 'quantity';
-  qtyInput.step = '0.01';
-  
-  const priceInput = el('input','field-input');
-  priceInput.type = 'number';
-  priceInput.placeholder = t('unitPrice');
-  priceInput.value = item?.unitPrice || 0;
-  priceInput.dataset.field = 'unitPrice';
-  priceInput.step = '0.01';
-  
-  const totalInput = el('input','field-input');
-  totalInput.readOnly = true;
-  totalInput.placeholder = t('total');
-  totalInput.style.background = 'var(--surface2)';
-  totalInput.dataset.field = 'total';
-  
-  const calcTotal = () => {
-    const qty = Number(qtyInput.value) || 0;
-    const price = Number(priceInput.value) || 0;
-    totalInput.value = formatMoney(qty * price);
-  };
-  
-  qtyInput.oninput = calcTotal;
-  priceInput.oninput = calcTotal;
-  calcTotal();
-  
-  const delBtn = el('button','btn btn-xs btn-red','🗑');
-  delBtn.onclick = () => { if(container.children.length > 1) container.removeChild(row); };
-  
-  row.append(noInput, descTa, qtyInput, priceInput, totalInput, delBtn);
-  container.appendChild(row);
-}
-
-window.saveClient = async function() {
-  const name = $('cm-name').value.trim();
-  if(!name) return showToast('Name required','error');
-  const btn = $('save-client-btn');
-  setLoading(btn,true);
+async function saveClient() {
+  var name = (g("c-name").value || "").trim();
+  if (!name) return toast("Name is required", "err");
+  var btn = g("btn-save-client"); setLoad(btn, true);
   try {
-    const data = {
-      name, company:$('cm-company').value.trim(), email:$('cm-email').value.trim(),
-      phone:$('cm-phone').value.trim(), notes:$('cm-notes').value.trim(),
+    var data = {
+      name: name,
+      company: (g("c-company").value||"").trim(),
+      email: (g("c-email").value||"").trim(),
+      phone: (g("c-phone").value||"").trim(),
+      notes: (g("c-notes").value||"").trim()
     };
-    const id = $('cm-id').value;
-    if(id) {
-      await updateDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`,id), data);
+    var id = g("c-id").value;
+    if (id) {
+      await fs.updateDoc(fs.doc(db, hubCol("clients"), id), data);
     } else {
-      data.createdAt=serverTimestamp();
-      await addDoc(collection(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`), data);
+      data.createdAt = fs.serverTimestamp();
+      await fs.addDoc(fs.collection(db, hubCol("clients")), data);
     }
-    closeModal('client-modal');
-    showToast(t('clientSaved'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
+    closeM("m-client");
+    toast(t("clientSaved"), "ok");
+  } catch(e) { console.error(e); toast(t("error"), "err"); }
+  setLoad(btn, false);
 }
 
 async function deleteClient(id) {
-  closeModal('confirm-modal');
+  closeM("m-confirm");
   try {
-    await deleteDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/clients\`,id));
-    showToast(t('clientSaved'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
+    await fs.deleteDoc(fs.doc(db, hubCol("clients"), id));
+    toast("Client deleted", "ok");
+  } catch(e) { toast(t("error"), "err"); }
 }
 
-window.saveQuote = async function() {
-  const clientId = $('qm-client').value;
-  if(!clientId) return showToast('Client required','error');
-  
-  const itemRows = $$('#quote-items-container .quote-item-row');
-  const items = Array.from(itemRows).map(row => ({
-    no: Number(row.querySelector('[data-field="no"]').value) || 1,
-    description: row.querySelector('[data-field="description"]').value.trim(),
-    quantity: Number(row.querySelector('[data-field="quantity"]').value) || 1,
-    unitPrice: Number(row.querySelector('[data-field="unitPrice"]').value) || 0,
-  }));
-  
-  if (items.length === 0 || !items[0].description) return showToast('At least one item required','error');
-  
-  const btn = $('save-quote-btn');
-  setLoading(btn,true);
-  try {
-    const data = {
-      number: $('qm-number').value.trim(),
-      clientId,
-      date: $('qm-date').value,
-      validUntil: $('qm-valid').value,
-      description: $('qm-desc').value.trim(),
-      items,
-      deliveryDays: Number($('qm-delivery').value) || 25,
-      warrantyYears: Number($('qm-warranty').value) || 3,
-      specialNotes: $('qm-notes').value.trim(),
-    };
-    const id = $('qm-id').value;
-    if(id) {
-      await updateDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`,id), data);
-    } else {
-      data.createdAt=serverTimestamp();
-      await addDoc(collection(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`), data);
+// ============================================================
+// QUOTES
+// ============================================================
+function renderQuotes() {
+  var area = g("view-area");
+  var top = g("top-actions"); top.innerHTML = "";
+  var ab = cel("button","btn btn-gold btn-sm"); ab.textContent = "+ " + t("newQuote");
+  ab.onclick = function() { openQuoteModal(null); };
+  top.appendChild(ab);
+  area.innerHTML = "";
+  var wrap = cel("div",""); wrap.style.padding = "22px";
+  var card = cel("div","card");
+  var tbl = cel("table","dtable");
+  var th = cel("thead",""); var hr = cel("tr","");
+  ["Quote #", t("date"), t("clients"), "Subtotal","VAT 15%","Total SAR",""].forEach(function(h) { hr.appendChild(cel("th","",h)); });
+  th.appendChild(hr); tbl.appendChild(th);
+  var tb = cel("tbody","");
+  if (APP.quotes.length === 0) {
+    var r = cel("tr",""); var td = cel("td",""); td.colSpan = 7; td.appendChild(mkEmpty(t("noQuotes")));
+    r.appendChild(td); tb.appendChild(r);
+  } else {
+    APP.quotes.forEach(function(q) {
+      var cl = APP.clients.find(function(c) { return c.id === q.clientId; });
+      var sub = (q.items||[]).reduce(function(s,i) { return s + Number(i.qty||0)*Number(i.price||0); }, 0);
+      var vat = sub * 0.15;
+      var tot = sub + vat;
+      var r = cel("tr","");
+      var ntd = cel("td",""); ntd.style.fontWeight = "600";
+      ntd.textContent = "#" + (q.number||q.id.substring(0,6));
+      r.appendChild(ntd);
+      r.appendChild(cel("td","",fmtDate(q.date)));
+      r.appendChild(cel("td","",cl ? cl.name : "—"));
+      r.appendChild(cel("td","",fmtMoney(sub)));
+      r.appendChild(cel("td","",fmtMoney(vat)));
+      var ttd = cel("td","");
+      var ts = cel("span",""); ts.style.cssText = "font-weight:700;color:var(--green);";
+      ts.textContent = fmtMoney(tot);
+      ttd.appendChild(ts); r.appendChild(ttd);
+      var at = cel("td",""); at.style.cssText = "display:flex;gap:5px;padding:8px 13px;";
+      var pb = cel("button","btn btn-xs btn-purple"); pb.textContent = "📄 PDF";
+      pb.onclick = (function(quote) { return function() { genPDF(quote); }; })(q);
+      var eb = cel("button","btn btn-xs btn-ghost","✏");
+      eb.onclick = (function(quote) { return function() { openQuoteModal(quote); }; })(q);
+      var db2 = cel("button","btn btn-xs btn-red","🗑");
+      db2.onclick = (function(qid) { return function() { confirm2(t("confirmDel"), t("cannotUndo"), function() { deleteQuote(qid); }); }; })(q.id);
+      at.append(pb, eb, db2); r.appendChild(at);
+      tb.appendChild(r);
+    });
+  }
+  tbl.appendChild(tb); card.appendChild(tbl); wrap.appendChild(card); area.appendChild(wrap);
+}
+
+function openQuoteModal(q) {
+  APP.rowCount = 0;
+  g("q-id").value = q ? q.id : "";
+  g("q-num").value = q ? q.number||"" : "";
+  g("q-date").value = q ? q.date||today() : today();
+  g("q-valid").value = q ? q.validUntil||addDays(18) : addDays(18);
+  g("q-desc").value = q ? q.description||"" : "";
+  g("q-delivery").value = q ? q.deliveryDays||25 : 25;
+  g("q-warranty").value = q ? q.warrantyYears||3 : 3;
+  g("q-notes").value = q ? q.specialNotes||"" : "";
+
+  var sel = g("q-client");
+  sel.innerHTML = "<option value=''>-- Select --</option>";
+  APP.clients.forEach(function(c) {
+    var o = cel("option","",c.name); o.value = c.id;
+    if (q && q.clientId === c.id) o.selected = true;
+    sel.appendChild(o);
+  });
+
+  var container = g("q-items");
+  container.innerHTML = "";
+  if (q && q.items && q.items.length > 0) {
+    q.items.forEach(function(item) { addRow(item); });
+  } else {
+    addRow(null);
+  }
+
+  g("m-quote-title").textContent = q ? t("editQuote") : t("newQuote");
+  openM("m-quote");
+  updateTotals();
+}
+
+function today() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function addDays(n) {
+  var d = new Date(); d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+}
+
+function addRow(item) {
+  APP.rowCount++;
+  var id = APP.rowCount;
+  var container = g("q-items");
+  var row = cel("div","qi-row"); row.dataset.rid = id;
+
+  var noIn = cel("input","finput"); noIn.type = "number"; noIn.value = item ? item.no||id : id; noIn.placeholder = "#"; noIn.dataset.f = "no";
+  var descTa = cel("textarea","finput"); descTa.value = item ? item.desc||"" : ""; descTa.placeholder = "Description..."; descTa.dataset.f = "desc";
+  var qIn = cel("input","finput"); qIn.type = "number"; qIn.value = item ? item.qty||1 : 1; qIn.min = "0"; qIn.step = "0.01"; qIn.dataset.f = "qty";
+  var pIn = cel("input","finput"); pIn.type = "number"; pIn.value = item ? item.price||0 : 0; pIn.min = "0"; pIn.step = "0.01"; pIn.dataset.f = "price";
+  var totIn = cel("input","finput"); totIn.readOnly = true; totIn.style.background = "var(--surface2)"; totIn.dataset.f = "total";
+
+  function calcRow() {
+    var q2 = Number(qIn.value)||0; var p2 = Number(pIn.value)||0;
+    totIn.value = fmtMoney(q2 * p2);
+    updateTotals();
+  }
+  qIn.oninput = calcRow; pIn.oninput = calcRow;
+
+  var delBtn = cel("button","btn btn-xs btn-red","🗑");
+  delBtn.onclick = function() {
+    if (container.children.length > 1) { container.removeChild(row); updateTotals(); }
+  };
+
+  calcRow();
+  row.append(noIn, descTa, qIn, pIn, totIn, delBtn);
+  container.appendChild(row);
+}
+
+function updateTotals() {
+  var rows = qsa("#q-items .qi-row");
+  var sub = 0;
+  rows.forEach(function(row) {
+    var q2 = Number((row.querySelector("[data-f=qty]")||{}).value)||0;
+    var p2 = Number((row.querySelector("[data-f=price]")||{}).value)||0;
+    sub += q2 * p2;
+  });
+  var vat = sub * 0.15;
+  var tot = sub + vat;
+  if (g("prev-sub")) g("prev-sub").textContent = fmtMoney(sub);
+  if (g("prev-vat")) g("prev-vat").textContent = fmtMoney(vat);
+  if (g("prev-tot")) g("prev-tot").textContent = fmtMoney(tot);
+}
+
+async function saveQuote() {
+  var clientId = g("q-client").value;
+  var num = (g("q-num").value||"").trim();
+  if (!clientId) return toast("Please select a client", "err");
+  if (!num) return toast("Quote # is required", "err");
+
+  var rows = qsa("#q-items .qi-row");
+  var items = [];
+  rows.forEach(function(row) {
+    var desc = (row.querySelector("[data-f=desc]")||{}).value||"";
+    if (desc.trim()) {
+      items.push({
+        no: Number((row.querySelector("[data-f=no]")||{}).value)||1,
+        desc: desc.trim(),
+        qty: Number((row.querySelector("[data-f=qty]")||{}).value)||1,
+        price: Number((row.querySelector("[data-f=price]")||{}).value)||0
+      });
     }
-    closeModal('quote-modal');
-    showToast(t('quoteSaved'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
-  setLoading(btn,false);
+  });
+  if (items.length === 0) return toast("Add at least one item with a description", "err");
+
+  var btn = g("btn-save-quote"); setLoad(btn, true);
+  try {
+    var data = {
+      number: num,
+      clientId: clientId,
+      date: g("q-date").value,
+      validUntil: g("q-valid").value,
+      description: (g("q-desc").value||"").trim(),
+      items: items,
+      deliveryDays: Number(g("q-delivery").value)||25,
+      warrantyYears: Number(g("q-warranty").value)||3,
+      specialNotes: (g("q-notes").value||"").trim()
+    };
+    var id = g("q-id").value;
+    if (id) {
+      await fs.updateDoc(fs.doc(db, hubCol("quotes"), id), data);
+    } else {
+      data.createdAt = fs.serverTimestamp();
+      await fs.addDoc(fs.collection(db, hubCol("quotes")), data);
+    }
+    closeM("m-quote");
+    toast(t("quoteSaved"), "ok");
+  } catch(e) { console.error(e); toast(t("error"), "err"); }
+  setLoad(btn, false);
 }
 
 async function deleteQuote(id) {
-  closeModal('confirm-modal');
+  closeM("m-confirm");
   try {
-    await deleteDoc(doc(db,\`\${DB_BASE}/hubs/\${APP.hubId}/quotes\`,id));
-    showToast(t('quoteDeleted'),'success');
-  } catch(e){console.error(e);showToast(t('error'),'error');}
+    await fs.deleteDoc(fs.doc(db, hubCol("quotes"), id));
+    toast(t("quoteDeleted"), "ok");
+  } catch(e) { toast(t("error"), "err"); }
 }
 
-function generateQuotePDF(quote) {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  const client = APP.clients.find(c=>c.id===quote.clientId);
-  
-  // LOGO / HEADER
-  pdf.setFontSize(24);
-  pdf.setFont('helvetica','bold');
-  pdf.text('RP', 14, 20);
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica','normal');
-  pdf.text('RATTAN PALACE', 14, 26);
-  
-  // QUOTATION TITLE
-  pdf.setFontSize(18);
-  pdf.setFont('helvetica','bold');
-  pdf.setTextColor(128, 0, 128);
-  pdf.text(t('quotation'), 105, 20, { align: 'center' });
-  
-  // DATE BOX (top right)
-  pdf.setFontSize(9);
-  pdf.setTextColor(0);
-  pdf.setFont('helvetica','normal');
-  let yPos = 35;
-  pdf.text(\`Date: \${formatDate(quote.date)}\`, 140, yPos);
-  yPos += 5;
-  pdf.text(\`Valid Until: \${formatDate(quote.validUntil)}\`, 140, yPos);
-  yPos += 5;
-  pdf.text(\`Quote #: \${quote.number || quote.id.substring(0,8)}\`, 140, yPos);
-  yPos += 5;
-  pdf.text(\`Customer ID: \${client?.id?.substring(0,6) || 'N/A'}\`, 140, yPos);
-  
-  // CUSTOMER INFO
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('customer')+':', 14, 50);
-  pdf.setFont('helvetica','normal');
-  pdf.text(client?.name || '—', 14, 56);
-  if (client?.company) pdf.text(client.company, 14, 61);
-  
-  // PROJECT DESCRIPTION
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('quoteProjectDesc')+':', 100, 50);
-  pdf.setFont('helvetica','normal');
-  const descLines = pdf.splitTextToSize(quote.description || '', 90);
-  pdf.text(descLines, 100, 56);
-  
-  // TABLE
-  const tableData = quote.items.map(item => [
-    item.no,
-    item.description,
-    item.quantity,
-    formatMoney(item.unitPrice),
-    formatMoney(item.quantity * item.unitPrice)
-  ]);
-  
-  const subtotal = quote.items.reduce((s,i)=>s+Number(i.quantity||0)*Number(i.unitPrice||0),0);
-  const vat = subtotal * 0.15;
-  const total = subtotal + vat;
-  
-  pdf.autoTable({
-    startY: 75,
-    head: [[t('no'), t('description'), t('quantity'), t('unitPrice'), t('total')]],
-    body: tableData,
-    theme: 'grid',
-    styles: { fontSize: 9, cellPadding: 3 },
-    headStyles: { fillColor: [128, 0, 128], textColor: 255 },
-    columnStyles: {
-      0: { cellWidth: 15 },
-      1: { cellWidth: 85 },
-      2: { cellWidth: 20, halign: 'center' },
-      3: { cellWidth: 30, halign: 'right' },
-      4: { cellWidth: 35, halign: 'right' }
-    }
+// ============================================================
+// FINANCE
+// ============================================================
+function renderFinance() {
+  var area = g("view-area");
+  var top = g("top-actions"); top.innerHTML = "";
+  var ab = cel("button","btn btn-gold btn-sm"); ab.textContent = "+ " + t("addTxn");
+  ab.onclick = function() { openTxnModal(null); };
+  top.appendChild(ab);
+  area.innerHTML = "";
+  var wrap = cel("div",""); wrap.style.padding = "22px";
+
+  var inc = APP.txns.filter(function(x) { return x.type==="income"; }).reduce(function(s,x) { return s+Number(x.amount||0); }, 0);
+  var exp = APP.txns.filter(function(x) { return x.type==="expense"; }).reduce(function(s,x) { return s+Number(x.amount||0); }, 0);
+  var net = inc - exp;
+
+  var sg = cel("div",""); sg.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;";
+  var sums = [
+    { lbl:t("totalIncome"), val:fmtMoney(inc)+" SAR", color:"var(--green)", bg:"var(--greenbg)" },
+    { lbl:t("totalExpenses"), val:fmtMoney(exp)+" SAR", color:"var(--red)", bg:"var(--redbg)" },
+    { lbl:t("netBalance"), val:fmtMoney(net)+" SAR", color:"var(--gold)", bg:"var(--goldfaint)" }
+  ];
+  sums.forEach(function(s) {
+    var c = cel("div",""); c.style.cssText = "background:"+s.bg+";border-radius:10px;padding:16px;text-align:center;";
+    var v = cel("div",""); v.style.cssText = "font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:"+s.color+";";
+    v.textContent = s.val;
+    var l = cel("div",""); l.style.cssText = "font-size:11px;color:var(--t2);margin-top:3px;"; l.textContent = s.lbl;
+    c.append(v,l); sg.appendChild(c);
   });
-  
-  const finalY = pdf.lastAutoTable.finalY + 5;
-  
-  // TOTALS
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('subtotal'), 130, finalY);
-  pdf.text(formatMoney(subtotal), 190, finalY, { align: 'right' });
-  
-  pdf.text(t('vat'), 130, finalY + 6);
-  pdf.text(formatMoney(vat), 190, finalY + 6, { align: 'right' });
-  
-  pdf.setFontSize(11);
-  pdf.text(t('totalAmount'), 130, finalY + 13);
-  pdf.text(formatMoney(total), 190, finalY + 13, { align: 'right' });
-  
-  // SPECIAL NOTES
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('specialNotesInstructions'), 14, finalY + 25);
-  
-  // INSTALLMENTS
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('installments'), 14, finalY + 35);
-  pdf.setFont('helvetica','normal');
-  pdf.setFontSize(9);
-  pdf.text(t('downPayment'), 14, finalY + 41);
-  pdf.text(t('payment2nd'), 14, finalY + 46);
-  pdf.text(formatMoney(total), 190, finalY + 50, { align: 'right' });
-  
-  pdf.text(t('deliveryTime', {days: quote.deliveryDays || 25}), 14, finalY + 56);
-  pdf.text(t('warrantyText', {years: quote.warrantyYears || 3}), 14, finalY + 61);
-  
-  // BANK INFO
-  pdf.setFont('helvetica','bold');
-  pdf.text(t('bankName')+': Al Riyadh BANK', 14, finalY + 70);
-  pdf.setFont('helvetica','normal');
-  pdf.text(t('ibanDetails')+': SA3020000002126072249940', 14, finalY + 75);
-  
-  // FOOTER NOTE
-  pdf.setFontSize(8);
-  pdf.text(t('footerNote'), 14, finalY + 85);
-  
-  // SIGNATURE
-  pdf.text(t('signature')+':', 14, finalY + 95);
-  pdf.text(t('printName')+':', 70, finalY + 95);
-  pdf.text(t('date')+':', 130, finalY + 95);
-  
-  pdf.line(14, finalY + 105, 60, finalY + 105);
-  pdf.line(70, finalY + 105, 120, finalY + 105);
-  pdf.line(130, finalY + 105, 180, finalY + 105);
-  
-  // COMPANY FOOTER
-  pdf.setFontSize(7);
-  pdf.text(t('thankYou'), 105, finalY + 115, { align: 'center' });
-  pdf.text(t('rattanPalaceCR'), 105, finalY + 120, { align: 'center' });
-  pdf.text(t('vatNo'), 105, finalY + 124, { align: 'center' });
-  pdf.text(t('address'), 105, finalY + 128, { align: 'center' });
-  
-  pdf.save(\`Quote_\${quote.number || quote.id.substring(0,6)}.pdf\`);
-}
 
-function emptyState(text) {
-  const wrap=el('div','empty-state');
-  wrap.style.padding='24px';
-  const icon=el('div','empty-icon','📭');
-  const txt=el('div','empty-desc',text);
-  wrap.append(icon,txt);
-  return wrap;
-}
-
-document.addEventListener('click', e => {
-  if(e.target.id==='confirm-ok-btn' && APP.confirmCb) {
-    APP.confirmCb();
-  }
-});
-
-document.addEventListener('keydown', e => {
-  if(e.key==='Escape') {
-    ['client-modal','quote-modal','confirm-modal','settings-modal'].forEach(id=>{
-      closeModal(id);
+  var card = cel("div","card");
+  var tbl = cel("table","dtable");
+  var th = cel("thead",""); var hr = cel("tr","");
+  [t("date2"),"Type",t("txdesc"),t("cat"),"Amount",""].forEach(function(h) { hr.appendChild(cel("th","",h)); });
+  th.appendChild(hr); tbl.appendChild(th);
+  var tb = cel("tbody","");
+  if (APP.txns.length === 0) {
+    var r = cel("tr",""); var td = cel("td",""); td.colSpan = 6; td.appendChild(mkEmpty(t("noTxns")));
+    r.appendChild(td); tb.appendChild(r);
+  } else {
+    APP.txns.forEach(function(x) {
+      var r = cel("tr","");
+      r.appendChild(cel("td","",fmtDate(x.date)));
+      var tt = cel("td","");
+      var badge = cel("span","badge "+(x.type==="income"?"b-green":"b-red"), x.type==="income"?t("income"):t("expense"));
+      tt.appendChild(badge); r.appendChild(tt);
+      r.appendChild(cel("td","",x.desc||"—"));
+      r.appendChild(cel("td","",x.cat||"—"));
+      var at2 = cel("td","");
+      var amt = cel("span",""); amt.style.cssText = "font-weight:700;color:"+(x.type==="income"?"var(--green)":"var(--red)")+";";
+      amt.textContent = (x.type==="income"?"+":"-") + fmtMoney(x.amount);
+      at2.appendChild(amt); r.appendChild(at2);
+      var ac = cel("td","");
+      var db3 = cel("button","btn btn-xs btn-red","🗑");
+      db3.onclick = (function(xid) { return function() { confirm2(t("confirmDel"),t("cannotUndo"),function() { deleteTxn(xid); }); }; })(x.id);
+      ac.appendChild(db3); r.appendChild(ac);
+      tb.appendChild(r);
     });
   }
+  tbl.appendChild(tb); card.appendChild(tbl);
+  wrap.append(sg, card); area.appendChild(wrap);
+}
+
+function setTxType(type) {
+  g("t-type").value = type;
+  g("tbtn-in").className = "btn " + (type==="income"?"btn-green":"btn-ghost");
+  g("tbtn-ex").className = "btn " + (type==="expense"?"btn-red":"btn-ghost");
+}
+
+function openTxnModal(x) {
+  g("t-id").value = x ? x.id : "";
+  setTxType(x ? x.type||"income" : "income");
+  g("t-amount").value = x ? x.amount||"" : "";
+  g("t-date").value = x ? x.date||today() : today();
+  g("t-cat").value = x ? x.cat||"sale" : "sale";
+  g("t-desc").value = x ? x.desc||"" : "";
+  var sel = g("t-client"); sel.innerHTML = "<option value=''>-- None --</option>";
+  APP.clients.forEach(function(c) {
+    var o = cel("option","",c.name); o.value = c.id;
+    if (x && x.clientId === c.id) o.selected = true;
+    sel.appendChild(o);
+  });
+  openM("m-txn");
+}
+
+async function saveTxn() {
+  var amount = Number(g("t-amount").value)||0;
+  if (!amount || amount <= 0) return toast("Valid amount required", "err");
+  var btn = g("btn-save-txn"); setLoad(btn, true);
+  try {
+    var data = {
+      type: g("t-type").value,
+      amount: amount,
+      date: g("t-date").value,
+      cat: g("t-cat").value,
+      desc: (g("t-desc").value||"").trim(),
+      clientId: g("t-client").value||null
+    };
+    var id = g("t-id").value;
+    if (id) {
+      await fs.updateDoc(fs.doc(db, hubCol("transactions"), id), data);
+    } else {
+      data.createdAt = fs.serverTimestamp();
+      await fs.addDoc(fs.collection(db, hubCol("transactions")), data);
+    }
+    closeM("m-txn");
+    toast(t("txnSaved"), "ok");
+  } catch(e) { console.error(e); toast(t("error"), "err"); }
+  setLoad(btn, false);
+}
+
+async function deleteTxn(id) {
+  closeM("m-confirm");
+  try {
+    await fs.deleteDoc(fs.doc(db, hubCol("transactions"), id));
+    toast("Transaction deleted", "ok");
+  } catch(e) { toast(t("error"), "err"); }
+}
+
+// ============================================================
+// PDF GENERATION — EXACT RATTAN PALACE FORMAT
+// ============================================================
+function genPDF(q) {
+  var jsPDF = window.jspdf.jsPDF;
+  var pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  var cl = APP.clients.find(function(c) { return c.id === q.clientId; }) || {};
+
+  // Calculate totals
+  var sub = (q.items||[]).reduce(function(s,i) { return s + Number(i.qty||0)*Number(i.price||0); }, 0);
+  var vat = sub * 0.15;
+  var tot = sub + vat;
+
+  var W = 210; // A4 width mm
+  var L = 14;  // left margin
+  var R = W - 14; // right edge
+
+  // ---- HEADER BACKGROUND ----
+  pdf.setFillColor(240, 235, 250);
+  pdf.rect(0, 0, W, 42, "F");
+
+  // ---- LOGO (RP text style) ----
+  pdf.setFont("helvetica","bold");
+  pdf.setFontSize(28);
+  pdf.setTextColor(80, 0, 100);
+  pdf.text("RP", L, 16);
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica","bold");
+  pdf.text("RATTAN PALACE", L, 22);
+
+  // ---- QUOTATION TITLE ----
+  pdf.setFontSize(22);
+  pdf.setFont("helvetica","bold");
+  pdf.setTextColor(100, 30, 130);
+  pdf.text("Quotation", W/2, 20, { align:"center" });
+
+  // ---- DATE BOX (top right) ----
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica","normal");
+  pdf.setTextColor(50,50,50);
+  var bx = 130, by = 10, bw = 65, bh = 28;
+  pdf.setDrawColor(180,180,180);
+  pdf.rect(bx, by, bw, bh);
+  // border header
+  pdf.setFillColor(80, 0, 100);
+  pdf.rect(bx, by, bw, 5, "F");
+  pdf.setTextColor(255,255,255); pdf.setFontSize(7.5); pdf.setFont("helvetica","bold");
+  var headers2 = ["Date:", "Valid Until:", "Quote #:", "Customer ID:"];
+  var vals = [
+    fmtDate(q.date),
+    fmtDate(q.validUntil),
+    "#" + (q.number||q.id.substring(0,6)),
+    "GA" + (cl.id||"000").substring(0,3).toUpperCase()
+  ];
+  headers2.forEach(function(h, i) {
+    pdf.setTextColor(50,50,50); pdf.setFont("helvetica","normal"); pdf.setFontSize(8);
+    pdf.text(h, bx+2, by+9+(i*5.5));
+    pdf.setFont("helvetica","bold");
+    pdf.text(vals[i], bx+bw-2, by+9+(i*5.5), { align:"right" });
+  });
+
+  // ---- HORIZONTAL SEPARATOR ----
+  pdf.setDrawColor(200,200,200);
+  pdf.line(L, 44, R, 44);
+
+  // ---- CUSTOMER + PROJECT DESCRIPTION BOXES ----
+  // Customer box (left)
+  pdf.setFillColor(80,0,100);
+  pdf.rect(L, 46, 85, 6, "F");
+  pdf.setTextColor(255,255,255); pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Customer:", L+2, 50.5);
+
+  pdf.setTextColor(30,30,30); pdf.setFont("helvetica","bold"); pdf.setFontSize(10);
+  pdf.text(cl.name || "—", L+2, 58);
+  pdf.setFont("helvetica","normal"); pdf.setFontSize(9);
+  if (cl.company) pdf.text(cl.company, L+2, 63);
+
+  // Project Description box (right)
+  pdf.setFillColor(80,0,100);
+  pdf.rect(105, 46, 90, 6, "F");
+  pdf.setTextColor(255,255,255); pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Quote/Project Description", 107, 50.5);
+
+  pdf.setTextColor(30,30,30); pdf.setFont("helvetica","normal"); pdf.setFontSize(9);
+  var descLines = pdf.splitTextToSize(q.description||"", 86);
+  pdf.text(descLines, 107, 58);
+
+  // ---- ITEMS TABLE ----
+  var tableData = (q.items||[]).map(function(item) {
+    return [
+      item.no || "",
+      item.desc || "",
+      String(item.qty || 0),
+      "( " + fmtMoney(item.price) + ")",
+      "( " + fmtMoney(Number(item.qty||0)*Number(item.price||0)) + ")"
+    ];
+  });
+
+  pdf.autoTable({
+    startY: 72,
+    head: [["No.", "Description", "Quantity", "Unit price", "Total"]],
+    body: tableData,
+    theme: "grid",
+    styles: { fontSize: 9, cellPadding: 3, textColor: [30,30,30] },
+    headStyles: { fillColor: [80,0,100], textColor: [255,255,255], fontStyle:"bold", fontSize:9 },
+    columnStyles: {
+      0: { cellWidth: 14, halign:"center" },
+      1: { cellWidth: 100 },
+      2: { cellWidth: 20, halign:"center" },
+      3: { cellWidth: 28, halign:"right" },
+      4: { cellWidth: 28, halign:"right" }
+    },
+    didParseCell: function(data) {
+      if (data.column.index === 4 && data.section === "body") {
+        data.cell.styles.fontStyle = "bold";
+      }
+    }
+  });
+
+  var fy = pdf.lastAutoTable.finalY;
+
+  // ---- SPECIAL NOTES + TOTALS side by side ----
+  var notesY = fy + 4;
+
+  // Left: Special Notes box
+  pdf.setFillColor(80,0,100);
+  pdf.rect(L, notesY, 100, 6, "F");
+  pdf.setTextColor(255,255,255); pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Special Notes and Instructions", L+2, notesY+4.5);
+
+  // Right: Subtotal box
+  pdf.setFillColor(248,248,248);
+  pdf.setDrawColor(200,200,200);
+  pdf.rect(118, notesY, 77, 20, "FD");
+  pdf.setTextColor(30,30,30); pdf.setFont("helvetica","normal"); pdf.setFontSize(9);
+  pdf.text("Subtotal", 120, notesY+7);
+  pdf.setFont("helvetica","bold");
+  pdf.text("( " + fmtMoney(sub) + ")", R, notesY+7, { align:"right" });
+  pdf.setFont("helvetica","normal");
+  pdf.text("vat", 120, notesY+13);
+  pdf.setFont("helvetica","bold");
+  pdf.text("( " + fmtMoney(vat) + ")", R, notesY+13, { align:"right" });
+  pdf.setFont("helvetica","bold"); pdf.setFontSize(10);
+  pdf.text("TOTAL", 120, notesY+20);
+  pdf.text("( " + fmtMoney(tot) + ")", R, notesY+20, { align:"right" });
+
+  // ---- INSTALLMENTS ----
+  var instY = notesY + 24;
+  pdf.setFillColor(248,248,248);
+  pdf.setDrawColor(200,200,200);
+  pdf.rect(L, instY, 100, 32, "FD");
+  pdf.setTextColor(30,30,30); pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Installments", L+2, instY+7);
+  pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Down payment 50%", L+2, instY+14);
+  pdf.text("2nd payment 50% at time of delivery", L+2, instY+20);
+  pdf.setFont("helvetica","normal");
+  pdf.text(t("deliveryText",{d:q.deliveryDays||25}), L+2, instY+26);
+  pdf.text(t("warrantyText",{y:q.warrantyYears||3}), L+2, instY+31);
+
+  // Total box (right side of installments)
+  pdf.setFillColor(80,0,100);
+  pdf.rect(118, instY, 77, 32, "F");
+  pdf.setTextColor(255,255,255); pdf.setFont("helvetica","normal"); pdf.setFontSize(9);
+  pdf.text("Total", 120, instY+15);
+  pdf.setFont("helvetica","bold"); pdf.setFontSize(14);
+  pdf.text(fmtMoney(tot), R, instY+22, { align:"right" });
+
+  // ---- BANK INFO ----
+  var bankY = instY + 36;
+  pdf.setTextColor(30,30,30); pdf.setFont("helvetica","bold"); pdf.setFontSize(9);
+  pdf.text("Bank Name : Al Riyadh BANK", L, bankY);
+  pdf.setFont("helvetica","bold");
+  pdf.text("IBAN DETAILS: SA3020000002126072249940", L, bankY+6);
+
+  // ---- FOOTER NOTE ----
+  pdf.setFont("helvetica","normal"); pdf.setFontSize(7.5); pdf.setTextColor(80,80,80);
+  pdf.text(t("footerNote"), L, bankY+14);
+  pdf.text(t("payNote"), L, bankY+19);
+
+  // ---- SIGNATURE LINE ----
+  var sigY = bankY + 28;
+  pdf.setFont("helvetica","normal"); pdf.setFontSize(8.5); pdf.setTextColor(30,30,30);
+  pdf.text("Please confirm your acceptance of this quote by signing this document", L, sigY);
+
+  // Three signature boxes
+  var sx = [L, 80, 145];
+  var slbls = [t("sig"), t("pname"), t("dateLabel")];
+  sx.forEach(function(x2, i) {
+    pdf.setFont("helvetica","normal"); pdf.setFontSize(8);
+    pdf.text(slbls[i], x2, sigY+8);
+    pdf.setDrawColor(100,100,100);
+    pdf.line(x2, sigY+16, x2+52, sigY+16);
+  });
+
+  // ---- THANK YOU ----
+  var tyY = sigY + 22;
+  pdf.setFont("helvetica","bold"); pdf.setFontSize(11);
+  pdf.setTextColor(100, 30, 130);
+  pdf.text("Thank you for your business!", W/2, tyY, { align:"center" });
+
+  // ---- COMPANY FOOTER ----
+  var cfY = tyY + 8;
+  pdf.setFillColor(80,0,100);
+  pdf.rect(0, cfY, W, 14, "F");
+  pdf.setTextColor(255,255,255); pdf.setFont("helvetica","bold"); pdf.setFontSize(8);
+  pdf.text("Rattan Palace", W/2, cfY+4, { align:"center" });
+  pdf.setFont("helvetica","normal"); pdf.setFontSize(7.5);
+  pdf.text("CR: 7050562888     Vat No. : 313099850500003", W/2, cfY+8.5, { align:"center" });
+  pdf.text("Short Address: RFKB2501. ALQods st,Alkhaleej, P.O.Box: 2401 RIYADH 13223, Kingdom of Saudi Arabia", W/2, cfY+13, { align:"center" });
+
+  pdf.save("Rattan_Palace_Quote_" + (q.number||q.id.substring(0,6)) + ".pdf");
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function mkEmpty(txt) {
+  var w = cel("div","empty");
+  var ic = cel("div","empty-icon"); ic.textContent = "📭";
+  var t2 = cel("div","empty-txt"); t2.textContent = txt;
+  w.append(ic, t2); return w;
+}
+
+function toggleSidebar() {
+  g("sidebar").classList.toggle("open");
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener("click", function(e) {
+  if (e.target && e.target.id === "conf-ok") {
+    if (APP.confirmCb) APP.confirmCb();
+  }
 });
 
-window.toggleSidebar = function() {
-  const sb=$('sidebar');
-  sb.classList.toggle('open');
-}
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    ["m-client","m-quote","m-txn","m-confirm"].forEach(function(id) { closeM(id); });
+  }
+});
 
-function checkMobile() {
-  const mobileBtn=$('mobile-menu-btn');
-  if(mobileBtn) mobileBtn.style.display=window.innerWidth<768?'flex':'none';
-}
-window.addEventListener('resize', checkMobile);
+window.addEventListener("resize", function() {
+  var mb = g("menu-btn");
+  if (mb) mb.style.display = window.innerWidth < 768 ? "flex" : "none";
+});
 
 async function init() {
-  APP.lang = localStorage.getItem('rp_lang') || (navigator.language.startsWith('ar')?'ar':'en');
+  APP.lang = localStorage.getItem("rp_lang") || (navigator.language.startsWith("ar") ? "ar" : "en");
   setLang(APP.lang);
 
-  const savedKey=sessionStorage.getItem('rp_gemini');
-  if(savedKey) APP.geminiKey=savedKey;
+  if (g("a-new-id")) g("a-new-id").value = genId();
 
-  if($('new-hub-id')) $('new-hub-id').value=genHubId();
-
-  await initFirebase();
-
-  const savedHubId=localStorage.getItem('rp_hubId');
-  const sessionAuth=sessionStorage.getItem('rp_auth');
-
-  if(savedHubId && sessionAuth==='true') {
-    APP.hubId=savedHubId;
-    enterApp();
-  } else if(savedHubId) {
-    switchAuthTab('existing');
-    $('existing-hub-id').value=savedHubId;
+  try {
+    await loadFirebase();
+  } catch(e) {
+    toast("Firebase connection error", "err");
+    console.error(e); return;
   }
 
-  checkMobile();
-  applyTranslations();
+  var savedHub = localStorage.getItem("rp_hub");
+  var sessionOk = sessionStorage.getItem("rp_ok");
+
+  if (savedHub && sessionOk === "1") {
+    APP.hubId = savedHub;
+    enterApp();
+  } else if (savedHub) {
+    switchTab("exist");
+    g("a-ex-id").value = savedHub;
+  }
+
+  // check mobile
+  if (window.innerWidth < 768) {
+    var mb = g("menu-btn"); if (mb) mb.style.display = "flex";
+  }
 }
 
-window.closeModal = closeModal;
-window.openModal = openModal;
-window.navigate = navigate;
-window.confirmAction = confirmAction;
-window.saveSettings = function() {
-  const key=$('settings-api-key-inline')?.value.trim()||$('settings-api-key')?.value.trim();
-  if(key){ APP.geminiKey=key; sessionStorage.setItem('rp_gemini',key); showToast(t('apiKeySaved'),'success'); }
-  closeModal('settings-modal');
-}
+// Make functions global
+window.switchTab = switchTab;
+window.doCreate = doCreate;
+window.doLogin = doLogin;
+window.doLogout = doLogout;
+window.setLang = setLang;
+window.setAuthLang = setAuthLang;
+window.go = go;
+window.copyHub = copyHub;
+window.closeM = closeM;
+window.openM = openM;
+window.saveClient = saveClient;
+window.openClientModal = openClientModal;
+window.saveQuote = saveQuote;
+window.openQuoteModal = openQuoteModal;
+window.addRow = addRow;
+window.updateTotals = updateTotals;
+window.saveTxn = saveTxn;
+window.openTxnModal = openTxnModal;
+window.setTxType = setTxType;
+window.toggleSidebar = toggleSidebar;
+window.genPDF = genPDF;
 
 init();
 </script>
